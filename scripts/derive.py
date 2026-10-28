@@ -6,13 +6,13 @@
 """Derive the facts github_actions describes from a repository's own files.
 
 Reads the workflow files under ``.github/workflows/`` and every ``action.yml``
-or ``action.yaml`` of a repository, with ``yaml.safe_load`` and nothing else.
-For each, it prints the frontmatter a knowledge concept of the matching class
-carries: ``GhaWorkflow`` or ``GhaReusableWorkflow`` for a workflow and
-``GhaAction`` for an action. It also prints the name of each check run a
-top-level workflow's jobs report, as the ``check_context`` a ruleset would
-require, with the ``job_path`` and ``skip_conditions`` of the
-``GhaRequiredStatusCheck`` that names it.
+or ``action.yaml`` of a repository, with ``yaml.safe_load``. For each, it
+prints the frontmatter a knowledge concept of the matching class carries:
+``GhaWorkflow`` or ``GhaReusableWorkflow`` for a workflow and ``GhaAction``
+for an action. It also prints the name of each check run a top-level
+workflow's jobs report, as the ``check_context`` a ruleset would require, with
+the ``job_path`` and ``skip_conditions`` of the ``GhaRequiredStatusCheck``
+that names it.
 
 A check run is named after its job: the job's ``name``, or its id when it has
 none. A job of a called workflow is named after the calling job and the
