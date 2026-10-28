@@ -28,6 +28,7 @@ Set ``GITHUB_TOKEN`` to raise the API rate limit. Usage::
 
     python scripts/check_upstream_release.py [--report FILE]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -71,7 +72,11 @@ KNOWN_DIFFERENCES: set[str] = set()
 
 def _get(url: str) -> bytes:
     req = urllib.request.Request(
-        url, headers={"Accept": "application/vnd.github+json", "User-Agent": "lmodel-github-actions-upstream-check"}
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "lmodel-github-actions-upstream-check",
+        },
     )
     token = os.environ.get("GITHUB_TOKEN")
     if token:
@@ -117,21 +122,37 @@ def check() -> tuple[list[str], bool]:
         elif name in KNOWN_DIFFERENCES:
             known.append(name)
         elif pinned is None:
-            differing.append(f"`{name}` is not at `{upstream_path}` in the pinned commit")
+            differing.append(
+                f"`{name}` is not at `{upstream_path}` in the pinned commit"
+            )
         else:
-            differing.append(f"`{name}` differs from `{upstream_path}` at the pinned commit")
-    extra = sorted(p.name for p in COPY.iterdir() if p.is_file() and p.name not in FILES)
+            differing.append(
+                f"`{name}` differs from `{upstream_path}` at the pinned commit"
+            )
+    extra = sorted(
+        p.name for p in COPY.iterdir() if p.is_file() and p.name not in FILES
+    )
     differing += [f"`{name}` is in the copy but not in the pin list" for name in extra]
-    report.append(f"- {matching} of {len(FILES)} copied files match the pinned commit byte for byte.")
+    report.append(
+        f"- {matching} of {len(FILES)} copied files match the pinned commit byte for byte."
+    )
     if known:
-        report.append(f"- Known differences, listed in NOTICE: {', '.join(f'`{k}`' for k in known)}.")
+        report.append(
+            f"- Known differences, listed in NOTICE: {', '.join(f'`{k}`' for k in known)}."
+        )
     if differing:
         attention = True
-        report.append(f"- **{len(differing)} copied file(s) differ from the pinned commit in a way not listed:**")
+        report.append(
+            f"- **{len(differing)} copied file(s) differ from the pinned commit in a way not listed:**"
+        )
         report += [f"  - {d}" for d in differing]
 
     head = json.loads(_get(f"{API}/repos/{REPO}/commits/HEAD"))["sha"]
-    moved = [name for name in WATCHED if _upstream_sha(FILES[name], head) != _upstream_sha(FILES[name], PINNED_COMMIT)]
+    moved = [
+        name
+        for name in WATCHED
+        if _upstream_sha(FILES[name], head) != _upstream_sha(FILES[name], PINNED_COMMIT)
+    ]
     if moved:
         attention = True
         report.append(
@@ -141,7 +162,9 @@ def check() -> tuple[list[str], bool]:
             f"update NOTICE, and review the schema against the change."
         )
     else:
-        report.append(f"- SchemaStore's default branch (`{head}`) holds the same two schemas as the pin.")
+        report.append(
+            f"- SchemaStore's default branch (`{head}`) holds the same two schemas as the pin."
+        )
 
     versions = json.loads(_get(f"{API}/versions"))
     newer = sorted(v for v in versions if v > PINNED_API_VERSION)
@@ -153,13 +176,17 @@ def check() -> tuple[list[str], bool]:
             f"rules or check runs, then move `PINNED_API_VERSION` here and the schema header's annotation."
         )
     else:
-        report.append(f"- Supported REST API versions: {', '.join(sorted(versions))}; none newer than the pin.")
+        report.append(
+            f"- Supported REST API versions: {', '.join(sorted(versions))}; none newer than the pin."
+        )
     return report, attention
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--report", type=Path, help="Also write the Markdown report to this file")
+    parser.add_argument(
+        "--report", type=Path, help="Also write the Markdown report to this file"
+    )
     args = parser.parse_args(argv)
     lines, attention = check()
     text = "\n".join(lines) + "\n"
