@@ -48,7 +48,7 @@ CONTRIBUTING.md's Releasing section and the [Semantic release](../workflows/sema
 ## For each change
 
 1. Write the change under `## [Unreleased]` in `CHANGELOG.md` as you go. The release refuses an empty section, through `node .github/scripts/changelog-release.mjs check`.
-2. Type the commit with Conventional Commits for what the change is. Only `feat:`, `fix:`, `security:` and a breaking `!` cut a release, and other types leave their entries for the next release that does. Give a pull request that would release a releasing type in its title too, since a squash merge takes its subject from the title.
+2. Type the commit with Conventional Commits for what the change is. Only `feat:`, `fix:`, `security:` and a breaking `!` cut a release, and other types leave their entries for the next release that does. When a pull request would release, give it a releasing type in its title too, since a squash merge takes its subject from the title.
 3. Merge to `main`. semantic-release retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release with the section's text as its notes. Once the repository variable `KNOWLEDGE_RELEASE_ENABLED` is `true`, it then dispatches [Knowledge Release](../workflows/knowledge-release.md) for the tag, which attaches the schema copy and the bundle when the bundle changed. Run that workflow by hand with `force` when only the schema changed.
 
 ## Staying below 1.0.0

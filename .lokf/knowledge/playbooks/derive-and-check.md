@@ -37,7 +37,7 @@ status: draft
 
 # Derive and check concepts from workflow files
 
-`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's own files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load` and nothing else. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the unreleased additions.[^changelog.md]
+`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load` and nothing else. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the unreleased additions.[^changelog.md]
 
 ## Run it
 
@@ -68,7 +68,7 @@ Without `--check`, the script prints one YAML mapping with four keys:
 - **`workflows`** gives, for each workflow file, the frontmatter of the concept that describes it. A file whose triggers include `workflow_call` is a `GhaReusableWorkflow`, with its inputs, outputs and secrets, and any other file is a `GhaWorkflow`. Each records `workflow_path`, `triggers`, `permissions` and `jobs`, and sets a key only when the file states it. The script reads the `on` key even where YAML 1.1 reads a bare `on` as `true`.
 - **`actions`** gives, for each action file, the frontmatter of a `GhaAction`: `action_path`, `using`, and its inputs and outputs.
 - **`checks`** gives, for each top-level workflow, the name of each check run its jobs report, which is the `check_context` a ruleset would require, with the `job_path` and `skip_conditions` of the `GhaRequiredStatusCheck` that would name it.
-- **`findings`** lists what the OpenSSF Baseline and Scorecard call out: a `write` permission at a workflow's top level, a caller that passes `secrets: inherit`, and a `uses` that is not pinned to a commit, or, for a `docker://` image, to a digest.
+- **`findings`** lists what the OpenSSF Baseline and Scorecard call out. It names a `write` permission at a workflow's top level, a caller that passes `secrets: inherit`, and a `uses` that is not pinned to a commit, or, for a `docker://` image, to a digest.
 
 ## How it names a check
 
@@ -78,7 +78,7 @@ The script names a check by the rule in [Required status check](../glossary/requ
 - a job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side;
 - a matrix job's name adds its matrix values in parentheses, joined by a comma and a space, and a `name` that reads the matrix context takes the values in its own place instead.
 
-A path filter under an event (`paths` or `paths-ignore`) and a job's `if` are recorded as skip conditions, and a called job's check carries its caller's `if` too. A job whose matrix an expression sets, and a job that calls a workflow in another repository, are reported as unresolved, because the script reads only the repository it is given. It stops following calls at ten levels, which a comment calls GitHub's own limit on how deep workflows can call one another.
+A path filter under an event (`paths` or `paths-ignore`) and a job's `if` are recorded as skip conditions, and a called job's check carries its caller's `if` too. A job whose matrix an expression sets, and a job that calls a workflow in another repository, are reported as unresolved, because the script reads only the repository it is given. It stops following calls at ten levels, which a comment calls GitHub's limit on how deep workflows can call one another.
 
 ## What the check compares
 

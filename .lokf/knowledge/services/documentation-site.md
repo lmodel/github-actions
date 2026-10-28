@@ -31,7 +31,7 @@ verified:
 
 # github-actions documentation site
 
-`website/` holds an Astro Starlight site, which the README describes as built from the README, `docs/`, the schema's pages and the knowledge bundle.[^readme.md] `website/site.config.mjs` names the repository `lmodel/github-actions`, the address `https://lmodel.github.io` and the base path `/github-actions`.[^site.config.mjs] So once the repository is published and the site deployed, its pages sit under `https://lmodel.github.io/github-actions/`. NOTICE says that the site derives from the ktl-website templates.
+`website/` holds an Astro Starlight site, which the README describes as built from the README, `docs/`, the schema's pages and the knowledge bundle.[^readme.md] `website/site.config.mjs` names the repository `lmodel/github-actions`, the address `https://lmodel.github.io` and the base path `/github-actions`.[^site.config.mjs] So once the repository is published and the site deployed, its pages are served under `https://lmodel.github.io/github-actions/`. NOTICE says that the site derives from the ktl-website templates.
 
 ## What the pages come from
 

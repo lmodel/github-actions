@@ -64,7 +64,7 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 - the key and `uses` patterns are SchemaStore's;
 - no class, enum, type or subset name in `.lokf/github-actions.yaml` appears in `.lokf/lokf.yaml` or `tests/neighbours/slsa.yaml`, and a slot or attribute name they share carries the same IRI.
 
-`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it comes from slsa's branch `chore/lokf-0-9-0` as commit `80716f3` left it, which releases as slsa 0.7.0, and that it is to be replaced with that release's schema asset once that is published.
+`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it comes from slsa's branch `chore/lokf-0-9-0` as commit `80716f3` left it, which releases as slsa 0.7.0. The comment also says that the copy is to be replaced with that release's schema asset once that release is published.
 
 ## tests/test_derive.py
 

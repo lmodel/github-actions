@@ -44,7 +44,13 @@ The class's comments state the rule:
 
 The comment says that the otterdog documentation states the rule for a called job, and the README adds that none of GitHub's pages states it.[^readme.md] `job_path` records the job ids from the top-level workflow's job to the job that reports the check, with the calling job's id first for a job of a called workflow.
 
-`scripts/derive.py` applies the rule to a repository's workflow files.[^derive.py] Its docstring adds that a matrix job's values are joined by a comma and a space, that a `name` which reads the matrix context takes the values in its own place, and that the check names of a job that calls a workflow in another repository are reported as unresolved. See [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
+`scripts/derive.py` applies the rule to a repository's workflow files.[^derive.py] Its docstring adds these details:
+
+- a matrix job's values are joined by a comma and a space;
+- a `name` that reads the matrix context takes the values in its own place;
+- the check names of a job that calls a workflow in another repository are reported as unresolved.
+
+See [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
 
 ## What else the class records
 

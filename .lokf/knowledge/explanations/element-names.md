@@ -41,7 +41,7 @@ verified:
 
 `docs/about.md` says that the schema's element names are its own.[^about.md] Classes carry the `Gha` prefix, such as `GhaWorkflow` and `GhaRequiredStatusCheck`, so that they can be imported beside other vocabularies. Slots are snake_case and named after GitHub's keys. Permissible values keep GitHub's strings, such as `node24` and `github-hosted`. Every class and enum links to the page it renders, and every element lives under `gha:`, which is `https://w3id.org/lmodel/github-actions/`.
 
-`.linkmllint.yaml` keeps LinkML's recommended lint rules but lowers `standard_naming` to a warning.[^linkmllint.yaml] Its comment says that the permissible values are written as GitHub writes them (`node20`, `github-hosted`, `Repository`), so that a script compares a concept with a workflow file or a REST response without translating, and that no one case convention holds for all of them.
+`.linkmllint.yaml` keeps LinkML's recommended lint rules but lowers `standard_naming` to a warning.[^linkmllint.yaml] Its comment says that the permissible values are written as GitHub writes them (`node20`, `github-hosted`, `Repository`), so that a script compares a concept with a workflow file or a REST response without translating. It adds that no one case convention holds for all of them.
 
 ## Three schemas in one namespace
 

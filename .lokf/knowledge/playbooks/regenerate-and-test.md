@@ -49,7 +49,7 @@ CONTRIBUTING.md asks for Python 3.10 or later, uv and just.[^contributing.md] Cl
 ## Change the schema
 
 1. Edit the files in `src/github_actions/schema/`. Leave `src/github_actions/schema/schemastore/` as upstream wrote it: [Move the upstream pins](update-upstream-pins.md) says how to replace it.
-2. Follow the schema's conventions: UpperCamelCase classes and enums, snake_case slots, GitHub's own strings as permissible values, attributes unless two classes share a field, and a short description on every element. Name in `see_also` the page each description renders, and keep every name apart from LOKF's and slsa's, as [Element names and the shared namespace](../explanations/element-names.md) explains.
+2. Follow the schema's conventions: UpperCamelCase classes and enums, snake_case slots, GitHub's strings as permissible values, attributes unless two classes share a field, and a short description on every element. Name in `see_also` the page each description renders, and keep every name apart from LOKF's and slsa's, as [Element names and the shared namespace](../explanations/element-names.md) explains.
 3. Regenerate. `just gen-project` writes `project/` and the Python models, `just gen-doc` writes `docs/schema/github_actions.yaml` and the pages in `docs/elements/`, `just gen-merged` writes `docs/schema/github_actions_merged.yaml`, and `just lokf-adapt` writes `.lokf/github-actions.yaml`. Commit the output. [Generated artefacts](../datasets/generated-artefacts.md) lists what each writes.
 4. Add example data to `tests/data/valid/` and `tests/data/invalid/`, named `ClassName-###.yaml`, with an invalid example for each constraint. [Test data and schema tests](../datasets/test-data.md) describes the folders.
 5. If the change alters behaviour and not just wording, add an entry under `## [Unreleased]` in `CHANGELOG.md`.
@@ -63,7 +63,7 @@ CONTRIBUTING.md asks for Python 3.10 or later, uv and just.[^contributing.md] Cl
 - Update `uv.lock`, or `.lokf/uv.lock`, in the same change as a dependency edit, because CI installs with `uv sync --locked` and fails otherwise.
 - Run `cd .lokf && just lokf-validate` after a change to `.lokf/`.
 
-[Build and test](../workflows/main.md) runs `just test` on Python 3.10 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell, which CONTRIBUTING.md says are easy to trip locally.
+[Build and test](../workflows/main.md) runs `just test` on Python 3.10 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell, which CONTRIBUTING.md says a change can easily fail locally.
 
 [^contributing.md]: CONTRIBUTING.md, Development setup and Before opening a pull request
 [^justfile]: justfile, the `_wsl2_compat_check`, `update`, `test` and `lint` recipes

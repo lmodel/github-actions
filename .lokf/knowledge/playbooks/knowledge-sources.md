@@ -63,7 +63,7 @@ status: draft
 
 # Knowledge sources
 
-Steady-state refresh runs re-verify these sources instead of discovering them again. Update this map whenever the repository's knowledge geography changes.
+Steady-state refresh runs re-verify these sources instead of discovering them again. Update this map whenever a knowledge source in the repository is added, moved or removed.
 
 Each concept derived from a file or folder of this repository names it by its path from the repository root, in `resource` and in `sources`. `knowledge-report.sh worklist` lists the concepts whose source moved since their stamp. It never fetches a page, so re-read the external pages this table names when the schema header's reading date moves.
 
@@ -87,7 +87,7 @@ Each concept derived from a file or folder of this repository names it by its pa
 | `AI_COVENANT.md` | `policies/ai-covenant` | re-read the project note and the section on agent automation |
 | GitHub's workflow syntax, reusable workflows and metadata syntax pages, the REST API's rules and check runs pages, and GitHub's build type at `https://actions.github.io/buildtypes/workflow/v1` | the four `references/` | external authorities, read on the date the schema header gives; the pages are versionless, so re-read them when that date moves |
 
-These are not knowledge sources, and are left out on purpose:
+These are not knowledge sources, and are left out:
 
 - `.github/ISSUE_TEMPLATE/`, `.github/pull_request_template.md` and `CODE_OF_CONDUCT.md` (governance text);
 - `uv.lock`, `.gitignore`, `.editorconfig`, `.yamllint.yaml`, `.markdownlint-cli2.jsonc`, `lychee.toml` and `config.public.mk` (tooling);

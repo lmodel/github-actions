@@ -61,7 +61,7 @@ The workflow module declares the prefixes `cdx:` and `spdx_build:` for the first
 
 - Runs and events, such as CDEvents and GitHub's run logs, are records, not facts of a file. So the model holds no run, job run or check run, and no workflow `ref`.
 - GUAC gathers SBOMs, provenance and scores into a graph. The README calls it a consumer of models like this one, not a vocabulary to borrow from.
-- SCITT and RATS define how evidence travels and what the word means, and need no class here.
+- SCITT and RATS define how evidence is exchanged and what the word means, and need no class here.
 - `docs/about.md` adds that a job's steps are not modelled, nor the parameters of a ruleset's rules other than its required status checks, and that secrets are named, never valued.
 
 [^about.md]: docs/about.md, the first paragraph and What is left out

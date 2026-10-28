@@ -39,11 +39,11 @@ SECURITY.md asks for a report through GitHub's private vulnerability reporting f
 
 ## Supported versions
 
-Only the latest release receives fixes. A security fix is released as a patch and noted in `CHANGELOG.md`. The schema is pre-1.0 by design.
+Only the latest release receives fixes. A security fix is released as a patch and noted in `CHANGELOG.md`. The schema is pre-1.0.
 
 ## What the repository ships
 
-The repository ships a LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. `scripts/check_upstream_release.py` runs only in [Upstream watch](../workflows/upstream-watch.md): it reads SchemaStore's repository and GitHub's list of API versions, and writes nothing but its report. `scripts/derive.py` runs in no workflow of the repository. A host runs it over its own files, on a pull request too, so it parses them with `yaml.safe_load`, runs nothing they contain and writes nothing: see [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
+The repository releases a LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. `scripts/check_upstream_release.py` runs only in [Upstream watch](../workflows/upstream-watch.md): it reads SchemaStore's repository and GitHub's list of API versions, and writes nothing but its report. `scripts/derive.py` runs in no workflow of the repository. A host runs it over its own files, on a pull request too, so it parses them with `yaml.safe_load`, runs nothing they contain and writes nothing: see [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
 
 ## What holds each surface
 

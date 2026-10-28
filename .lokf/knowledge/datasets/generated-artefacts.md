@@ -46,7 +46,7 @@ These files are generated from the schema in `src/github_actions/schema/` and ne
 
 ## project/
 
-`just gen-project` runs LinkML's `gen-project` with `.linkml/generators.yaml`, which skips the markdown generator and merges imports for the others.[^generators.yaml] The recipe then moves the Python output into `src/github_actions/datamodel/`, writes the Pydantic model with `gen-pydantic`, and runs `gen-java`, `gen-typescript` and `gen-owl` on their own, because some generators ignore the configuration file or cannot create directories.[^justfile] `project/` holds one folder for each of `excel`, `graphql`, `java` (one file per class), `jsonld` (the context and the schema), `jsonschema`, `owl`, `prefixmap`, `protobuf`, `shacl`, `shex`, `sqlschema` and `typescript`.
+`just gen-project` runs LinkML's `gen-project` with `.linkml/generators.yaml`, which skips the markdown generator and merges imports for the others.[^generators.yaml] The recipe then moves the Python output into `src/github_actions/datamodel/` and writes the Pydantic model with `gen-pydantic`. It runs `gen-java`, `gen-typescript` and `gen-owl` on their own, because some generators ignore the configuration file or cannot create directories.[^justfile] `project/` holds one folder for each of `excel`, `graphql`, `java` (one file per class), `jsonld` (the context and the schema), `jsonschema`, `owl`, `prefixmap`, `protobuf`, `shacl`, `shex`, `sqlschema` and `typescript`.
 
 ## The Python models
 
@@ -54,7 +54,7 @@ These files are generated from the schema in `src/github_actions/schema/` and ne
 
 ## docs/schema/ and docs/elements/
 
-`just gen-doc` writes `docs/schema/github_actions.yaml` with `gen-yaml`, and the schema's Markdown pages into `docs/elements/`. `project.justfile` says that the first file folds in the modules' elements but keeps the `imports:` list, so a tool that loads it looks for the modules beside it.[^project.justfile] `just gen-merged`, run after `gen-doc`, writes `docs/schema/github_actions_merged.yaml`, which has no imports at all, for vendoring or loading offline. Git ignores the pages in `docs/elements/`, and the [documentation site](../services/documentation-site.md) builds them when it needs them.
+`just gen-doc` writes `docs/schema/github_actions.yaml` with `gen-yaml`, and the schema's Markdown pages into `docs/elements/`. `project.justfile` says that the first file copies in the modules' elements but keeps the `imports:` list. So a tool that loads it looks for the modules beside it.[^project.justfile] `just gen-merged`, run after `gen-doc`, writes `docs/schema/github_actions_merged.yaml`, which has no imports, for vendoring or loading offline. Git ignores the pages in `docs/elements/`, and the [documentation site](../services/documentation-site.md) builds them when it needs them.
 
 ## The domain schema copy
 

@@ -58,7 +58,7 @@ verified:
 
 # Lint & docs (lint-and-docs.yaml)
 
-`.github/workflows/lint-and-docs.yaml` is the workflow named "Lint & docs". It runs static checks on the shell scripts, the workflows and the prose. A header comment says that it never touches the schema, the Python test suite or the knowledge bundle's own semantics, which [Build and test](main.md) and [Knowledge Registrar](knowledge-registrar.md) check.[^lint-and-docs.yaml] It runs on a push to `main`, on every pull request, every Monday at 06:00 UTC to catch link rot, and by hand.
+`.github/workflows/lint-and-docs.yaml` is the workflow named "Lint & docs". It runs static checks on the shell scripts, the workflows and the prose. A header comment says that it never touches the schema, the Python test suite or the knowledge bundle's semantics, which [Build and test](main.md) and [Knowledge Registrar](knowledge-registrar.md) check.[^lint-and-docs.yaml] It runs on a push to `main`, on every pull request, every Monday at 06:00 UTC to catch link rot, and by hand.
 
 Each of its four jobs runs on `ubuntu-latest` with `contents: read`, after harden-runner in audit mode and a checkout without persisted credentials:
 
