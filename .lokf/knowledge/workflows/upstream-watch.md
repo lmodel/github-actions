@@ -36,6 +36,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 9c3541e73cc92d04fdb429a1b340eeeccdae2d37
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T21:21:37Z"
 ---
 
 # Upstream watch (upstream-watch.yaml)

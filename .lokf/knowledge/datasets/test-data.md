@@ -38,6 +38,9 @@ generated:
   at: "2026-10-28T20:03:46Z"
   revision: a86d8591547d1112e880fd60e399749a70698be0
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T21:21:37Z"
 ---
 
 # Test data and schema tests

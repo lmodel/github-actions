@@ -15,11 +15,9 @@ sources:
   - id: github_actions_action.yaml
     resource: src/github_actions/schema/github_actions_action.yaml
     title: the GhaAction comment
-  - resource: docs/about.md
-    title: the list of sources
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-28T21:21:37Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -28,7 +26,7 @@ verified:
 
 # GitHub Actions build type
 
-`docs/about.md` names GitHub's [build type](https://actions.github.io/buildtypes/workflow/v1) for SLSA provenance among the model's sources. The README says that a workflow's identity in provenance is `workflow_path`, `workflow_repository` and `runner_environment`, as the build type writes them, and that the identity of a workflow comes from the build type.[^readme.md]
+The README says that a workflow's identity in provenance is `workflow_path`, `workflow_repository` and `runner_environment`, as GitHub's [build type](https://actions.github.io/buildtypes/workflow/v1) for SLSA provenance writes them, and that a workflow's identity comes from the build type.[^readme.md]
 
 The workflow module says how each field follows it:[^github_actions_workflow.yaml]
 

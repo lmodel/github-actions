@@ -19,7 +19,7 @@ sources:
     title: the Deriving the facts from a repository section
   - id: security.md
     resource: SECURITY.md
-    title: the What this repository ships section
+    title: the What this repository releases section
   - id: test_derive.py
     resource: tests/test_derive.py
     title: the eleven tests
@@ -30,8 +30,7 @@ sources:
     title: the fixture repository
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T20:03:46Z"
-  revision: d38a5e0e1804844b6100e90b820c162e42f64543
+  at: "2026-10-28T21:21:37Z"
 status: draft
 ---
 
@@ -41,7 +40,7 @@ status: draft
 
 ## Run it
 
-The script's only dependency is PyYAML, named in its PEP 723 header, so `uv run` needs no project. The README gives two commands:[^readme.md]
+The script's only dependency is PyYAML, declared in its PEP 723 header, so `uv run` needs no project. The README gives two commands:[^readme.md]
 
 ```bash
 uv run scripts/derive.py --root ../host-repository
@@ -53,7 +52,7 @@ uv run scripts/derive.py --root ../host-repository --check ../host-repository/.l
 - `--check BUNDLE` compares the facts with a knowledge bundle.
 - `--strict` makes the check fail on findings as well as on drift.
 
-The README says that a host copies the script at a pinned release of this repository and records the version beside it.
+The README says that a host copies the script from a pinned release and records the version beside it.
 
 In this repository, pass `--exclude tests/`. The script looks for action files in the whole tree, and would otherwise also read the two fixture actions under `tests/derive/repo/`, which no concept describes. So the check of this bundle, run from the repository root, is:
 
@@ -112,5 +111,5 @@ The README says that the fixtures show each rule. `just test` runs these tests w
 [^derive.py]: scripts/derive.py, the docstring, the options and compare()
 [^changelog.md]: CHANGELOG.md, the last item under Added
 [^readme.md]: README.md, the Deriving the facts from a repository section
-[^security.md]: SECURITY.md, the What this repository ships section
+[^security.md]: SECURITY.md, the What this repository releases section
 [^test_derive.py]: tests/test_derive.py, the eleven test functions

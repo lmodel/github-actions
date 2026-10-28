@@ -3,7 +3,7 @@ type: Policy
 id: https://w3id.org/lmodel/github-actions/knowledge/policies/security-policy
 genre: reference
 title: Security policy
-description: "How to report a vulnerability in github-actions (GitHub's private vulnerability reporting, not a public issue), which release gets fixes, what the repository ships and runs, what holds each workflow, and the three repository settings not yet in force: required reviewers on the release Environment, a deletion and force-push rule on main, and secret scanning with push protection."
+description: "How to report a vulnerability in github-actions (GitHub's private vulnerability reporting, not a public issue), which release gets fixes, what the repository releases and runs, what holds each workflow, and the three repository settings not yet in force: required reviewers on the release Environment, a deletion and force-push rule on main, and secret scanning with push protection."
 resource: SECURITY.md
 references:
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/main
@@ -24,8 +24,7 @@ sources:
     title: the three update entries
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T20:03:46Z"
-  revision: d38a5e0e1804844b6100e90b820c162e42f64543
+  at: "2026-10-28T21:21:37Z"
 status: draft
 ---
 
@@ -39,9 +38,9 @@ SECURITY.md asks for a report through GitHub's private vulnerability reporting f
 
 ## Supported versions
 
-Only the latest release receives fixes. A security fix is released as a patch and noted in `CHANGELOG.md`. The schema is pre-1.0.
+Only the latest release receives fixes. A security fix is released as a patch and noted in `CHANGELOG.md`. The schema stays below 1.0.
 
-## What the repository ships
+## What the repository releases
 
 The repository releases a LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. `scripts/check_upstream_release.py` runs only in [Upstream watch](../workflows/upstream-watch.md): it reads SchemaStore's repository and GitHub's list of API versions, and writes nothing but its report. `scripts/derive.py` runs in no workflow of the repository. A host runs it over its own files, on a pull request too, so it parses them with `yaml.safe_load`, runs nothing they contain and writes nothing: see [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
 

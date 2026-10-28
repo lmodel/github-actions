@@ -27,8 +27,7 @@ sources:
     title: the rules on names and conventions
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
+  at: "2026-10-28T21:21:37Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -45,23 +44,23 @@ verified:
 
 ## Three schemas in one namespace
 
-The README says that a host imports the schema's adapt copy beside `lokf.yaml` and slsa's copy, and that LinkML merges the three into one namespace, where the last definition of a name wins silently.[^readme.md] So no class, enum or type shares a name with either, and a slot shares a name only where it shares LOKF's meaning and IRI: `description` and `required`.
+The README says that a host imports the schema's adapt copy beside `lokf.yaml` and slsa's copy, and that LinkML merges the three into one namespace, where the last definition of a name wins silently.[^readme.md] So no class, enum or type shares a name with either, and a slot shares a name only where it carries LOKF's meaning and IRI: `description` and `required`.
 
 The core module's comments say how those two stay apart.[^github_actions_core.yaml] The `description` slot carries the IRI `schema:description`, so `lokf adapt` folds it into LOKF's slot and a bundle reads one `description` key. `required` is an attribute of `GhaRequiredMixin` rather than a slot, with the IRI `schema:valueRequired`, because `lokf adapt` keeps an attribute's name where it would rename a slot that shares one with `lokf.yaml`.
 
-Where GitHub's key is a name LOKF already defines, the schema renames the slot:
+`docs/about.md` says that a key is renamed only where a knowledge bundle already uses the name, and the README points there for the list:
 
 - `input_type` for an input's `type`, because a bundle reads `type` as the class of the concept;
 - `ruleset_target` for a ruleset's `target`;
 - `check_context` for a required check's `context`.
 
-In the adapt copy, LOKF's `id` stands in for each class's own identifier (`workflow_uri`, `action_uri`, `ruleset_uri` and `check_uri`), and an action's name and description are the concept's `title` and `description`.
+In the adapt copy, LOKF's `id` replaces each class's own identifier (`workflow_uri`, `action_uri`, `ruleset_uri` and `check_uri`), and an action's name and description are the concept's `title` and `description`.
 
 ## How the rule is checked
 
 `test_names_apart_from_lokf_and_slsa` in `tests/test_schema_rules.py` reads `.lokf/github-actions.yaml`, `.lokf/lokf.yaml` and `tests/neighbours/slsa.yaml`.[^test_schema_rules.py] It fails when a class, enum, type or subset name appears in the copy and in a neighbour, or when a slot or attribute name they share expands to a different IRI. CONTRIBUTING.md asks contributors to keep names apart from LOKF's and slsa's for the same reason.
 
-[^about.md]: docs/about.md, the third paragraph
+[^about.md]: docs/about.md, the second paragraph
 [^linkmllint.yaml]: .linkmllint.yaml, the comment and rules
 [^readme.md]: README.md, the Knowledge Trust Ladder (KTL) section
 [^github_actions_core.yaml]: src/github_actions/schema/github_actions_core.yaml, the comments on description and on required

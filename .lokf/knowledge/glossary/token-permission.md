@@ -27,7 +27,7 @@ generated:
 status: draft
 verified:
   - by: process:ktl-librarian
-    at: "2026-10-28T20:03:46Z"
+    at: "2026-10-28T21:21:37Z"
 ---
 
 # GITHUB_TOKEN permission

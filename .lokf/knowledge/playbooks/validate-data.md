@@ -19,6 +19,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 4c6d307b6b74004e1acabb092ae1ffb14c49c214
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T21:21:37Z"
 ---
 
 # Validate data against the schema

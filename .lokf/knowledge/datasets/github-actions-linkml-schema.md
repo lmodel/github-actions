@@ -45,8 +45,7 @@ sources:
     title: the schema line
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T20:03:46Z"
-  revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
+  at: "2026-10-28T21:21:37Z"
 status: draft
 ---
 
@@ -56,7 +55,7 @@ status: draft
 
 ## Modules
 
-The schema directory's README lists the umbrella and four modules.[^schema-readme.md] The core module imports only `linkml:types`. The workflow and action modules import the core, and the rules module imports the workflow module, because a required check names the workflow that reports it. Each module lints alone, and no module imports the umbrella, so an importer can take one module.
+The schema directory's README lists the umbrella and four modules.[^schema-readme.md] `LINKML_SCHEMA_NAME` in `config.public.mk` names the umbrella, so the `just` recipes generate from it. The core module imports only `linkml:types`. The workflow and action modules import the core, and the rules module imports the workflow module, because a required check names the workflow that reports it. Each module lints alone, and no module imports the umbrella, so an importer can take one module.
 
 - **`github_actions_core.yaml`** holds what workflows and actions share: the `gha_identifier` type, which is the key form GitHub accepts for a job, an input, an output or a secret; the abstract classes `GhaInput` and `GhaOutput`; and the mixin `GhaRequiredMixin`, which carries `required`.[^github_actions_core.yaml]
 - **`github_actions_workflow.yaml`** holds `GhaWorkflow` and its jobs (`GhaWorkflowJob`), and `GhaReusableWorkflow` with `GhaWorkflowInput`, `GhaWorkflowOutput` and `GhaWorkflowSecret`. It also holds the `gha_permission` type and the `GhaWorkflowInputType` and `GhaRunnerEnvironment` enums.[^github_actions_workflow.yaml]

@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/schemastore-copy
 genre: reference
 title: SchemaStore copy
-description: SchemaStore's `github-workflow.json` and `github-action.json`, the machine-readable form of a workflow file and an action's metadata file, copied with SchemaStore's LICENSE and NOTICE into `src/github_actions/schema/schemastore/` at commit f7c2f3b; never edited here, compared by tests with the schema, and checked weekly against upstream.
+description: SchemaStore's `github-workflow.json` and `github-action.json`, the JSON Schemas of a workflow file and an action's metadata file, copied with SchemaStore's LICENSE and NOTICE into `src/github_actions/schema/schemastore/` at commit f7c2f3b; never edited here, compared by tests with the schema, and checked weekly against upstream.
 resource: src/github_actions/schema/schemastore
 license: Apache-2.0
 source:
@@ -31,8 +31,7 @@ sources:
     title: the exclude list
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 9c3541e73cc92d04fdb429a1b340eeeccdae2d37
+  at: "2026-10-28T21:21:37Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -43,7 +42,7 @@ verified:
 
 NOTICE says that `src/github_actions/schema/schemastore/` holds a copy of two files from JSON Schema Store, retrieved from SchemaStore's tree at commit `f7c2f3bcb512651bd980ed6896639ea8ded9ddf0`.[^notice] `github-workflow.json` is the schema of a GitHub Actions workflow file, and `github-action.json` is the schema of an action's metadata file. SchemaStore's own LICENSE and NOTICE sit beside them, copied from the root of the same commit. NOTICE says that every file is identical to its counterpart there, and that the files are licensed under the Apache License 2.0 and carry the notice "JSON Schema Store, Copyright 2015-Current Mads Kristensen and Contributors".
 
-The two schemas give their `$id` as `https://json.schemastore.org/github-workflow.json` and `https://json.schemastore.org/github-action.json`, and are written in JSON Schema draft-07. The README calls them the machine-readable form of the two files that GitHub's pages describe.
+The two schemas give their `$id` as `https://json.schemastore.org/github-workflow.json` and `https://json.schemastore.org/github-action.json`, and are written in JSON Schema draft-07. The README says that the schema header pins the SchemaStore commit they were copied from.
 
 ## Never edited here
 

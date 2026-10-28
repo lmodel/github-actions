@@ -25,8 +25,7 @@ sources:
     title: the docstring's statement of the naming rule
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T20:03:46Z"
-  revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
+  at: "2026-10-28T21:21:37Z"
 status: draft
 ---
 
@@ -42,7 +41,7 @@ The class's comments state the rule:
 - a job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side, such as `test / unit`;
 - a matrix job's check name adds its matrix values in parentheses, such as `docs (3.13)`.
 
-The comment says that the otterdog documentation states the rule for a called job, and the README adds that none of GitHub's pages states it.[^readme.md] `job_path` records the job ids from the top-level workflow's job to the job that reports the check, with the calling job's id first for a job of a called workflow.
+The comment says that the otterdog documentation states the rule for a called job, and the README names otterdog among the schema's influences for that rule.[^readme.md] `job_path` records the job ids from the top-level workflow's job to the job that reports the check, with the calling job's id first for a job of a called workflow.
 
 `scripts/derive.py` applies the rule to a repository's workflow files.[^derive.py] Its docstring adds these details:
 

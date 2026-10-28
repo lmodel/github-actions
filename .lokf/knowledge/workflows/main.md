@@ -28,6 +28,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 3c6aabc4cfb8758627880b26002dba6dd7781a1d
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T21:21:37Z"
 ---
 
 # Build and test (main.yaml)

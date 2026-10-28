@@ -6,20 +6,18 @@ title: GitHub REST API rules and check runs
 description: "The GitHub REST API's rules and check runs pages at API version 2026-03-10: the source of GhaRepositoryRuleset, GhaBypassActor and GhaRequiredStatusCheck, whose fields are named after REST fields such as `source_type`, `enforcement` and `required_status_checks[].context`."
 resource: https://docs.github.com/en/rest/repos/rules
 sources:
-  - id: about.md
-    resource: docs/about.md
-    title: the list of sources
+  - id: readme.md
+    resource: README.md
+    title: the What it models section
   - id: github_actions_rules.yaml
     resource: src/github_actions/schema/github_actions_rules.yaml
     title: the module comment, the field descriptions and the see_also entries
   - id: check_upstream_release.py
     resource: scripts/check_upstream_release.py
     title: PINNED_API_VERSION and the version check
-  - resource: README.md
-    title: the What it models section
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-28T21:21:37Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -28,7 +26,7 @@ verified:
 
 # GitHub REST API rules and check runs
 
-`docs/about.md` names the REST API's [rules](https://docs.github.com/en/rest/repos/rules) and [check runs](https://docs.github.com/en/rest/checks/runs) pages, at API version 2026-03-10, among the model's sources.[^about.md] The rules module's comment says that its fields follow that version, and that none of the version's breaking changes touches rulesets, rules or check runs, so they read the same at 2022-11-28.[^github_actions_rules.yaml]
+The README says that `GhaRepositoryRuleset` and `GhaRequiredStatusCheck` come from the REST API's [rules](https://docs.github.com/en/rest/repos/rules) and [check runs](https://docs.github.com/en/rest/checks/runs) pages at API version 2026-03-10.[^readme.md] The rules module's comment says that its fields follow that version, and that none of the version's breaking changes touches rulesets, rules or check runs, so they read the same at 2022-11-28.[^github_actions_rules.yaml]
 
 The module names each field after the REST field it renders:
 
@@ -42,6 +40,6 @@ The module names each field after the REST field it renders:
 
 `scripts/check_upstream_release.py` pins the version as `PINNED_API_VERSION` and asks GitHub's API for the list of supported versions on each run. It reports a newer version than the pin, and asks for its breaking changes to be read for changes to rulesets, rules or check runs.[^check_upstream_release.py]
 
-[^about.md]: docs/about.md, the first paragraph
+[^readme.md]: README.md, the What it models section
 [^github_actions_rules.yaml]: src/github_actions/schema/github_actions_rules.yaml, the module comment and the attribute descriptions
 [^check_upstream_release.py]: scripts/check_upstream_release.py, PINNED_API_VERSION and the end of check()

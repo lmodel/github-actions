@@ -2,6 +2,16 @@
 
 ## 2026-10-28
 
+* **Changed**: Workflow syntax, Metadata syntax, REST API rules and check runs, and GitHub Actions build type now cite the README's What it models section for each page, since `docs/about.md` no longer lists the model's sources.
+* **Rewrite**: Scope, influences and mappings follows the README's shorter sections; it drops the claims no source now makes, that no single specification stands behind the model and that the mapped vocabularies did not shape it.
+* **Changed**: Element names cites the naming paragraph of `docs/about.md` at its new place, and takes the rule for a renamed key from that page, which the README now points to.
+* **Changed**: SchemaStore copy no longer calls the two files a machine-readable form, a phrase the README dropped.
+* **Changed**: Security policy follows SECURITY.md's renamed section, What this repository releases, and its wording on staying below 1.0.
+* **Changed**: Derive and check follows the README's reworded Deriving section and SECURITY.md's renamed section.
+* **Changed**: Required status check no longer says that none of GitHub's pages states the called-job rule, a claim the README dropped.
+* **Changed**: Knowledge Release cites CONTRIBUTING.md for when a release carries the schema copy, since the README now points there.
+* **Changed**: Release the schema follows CONTRIBUTING.md's wording on which commit types start a release.
+* **Changed**: github-actions LinkML schema records that `LINKML_SCHEMA_NAME` in `config.public.mk` names the umbrella file, as the schema directory's README now says.
 * **Prose**: reworded 2 more concept bodies, cutting phrases that carried no fact. No fact, link, number or frontmatter changed.
 * **Prose**: reworded 16 concept bodies in plain English. No fact, link, number or frontmatter changed.
 * **Added**: Derive and check concepts from workflow files, from `scripts/derive.py`, its tests and the README's section on it, which d38a5e0 added.
