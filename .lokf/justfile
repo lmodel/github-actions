@@ -15,7 +15,7 @@ bundle := "knowledge"
 # schema's relative imports from the working directory, and uv.lock may hold
 # such a version. The three workflows run these recipes, so a host sets its
 # schema on this one line and nowhere else.
-schema := ""
+schema := "github-actions.yaml"
 _validate := if schema == "" { "uv run lokf validate" } else { "cd " + quote(parent_directory(justfile_directory() / schema)) + " && uv run --project " + quote(justfile_directory()) + " lokf validate --schema " + quote(file_name(schema)) }
 _bundle := if schema == "" { bundle } else { quote(justfile_directory() / bundle) }
 

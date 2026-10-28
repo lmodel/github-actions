@@ -66,9 +66,10 @@ skip = [
   "project/*",
   "src/github_actions/datamodel/github_actions_pydantic.py",
   "src/github_actions/datamodel/github_actions.py",
-  # SchemaStore's schemas, copied as published, and files copied in by the
-  # KTL sidecar sync or written by npm, not by hand.
+  # SchemaStore's schemas and slsa's adapt copy, copied as published, and
+  # files copied in by the KTL sidecar sync or written by npm, not by hand.
   "src/github_actions/schema/schemastore/*",
+  "tests/neighbours/*",
   ".lokf/scripts/*",
   "website/package-lock.json",
 ]
@@ -90,6 +91,7 @@ extend-exclude = [
   "src/github_actions/datamodel/github_actions_pydantic.py",
   "src/github_actions/datamodel/github_actions.py",
   "src/github_actions/schema/schemastore/*",
+  "tests/neighbours/*",
   ".lokf/scripts/*",
   "website/package-lock.json",
 ]

@@ -115,3 +115,56 @@ def test_key_and_uses_patterns_are_schemastores():
         "uses"
     ]["pattern"]
     assert _pattern(sv, "calls", "GhaWorkflowJob").pattern == uses
+
+
+# What a host imports beside this schema's adapt copy: LOKF's schema, pinned
+# by the sidecar, and lmodel/slsa's adapt copy, from slsa's branch
+# chore/lokf-0-9-0, as 80716f3 left it, which releases as slsa 0.7.0. Replace the slsa
+# file with that release's schema asset once it is published.
+COPY = ROOT / ".lokf" / "github-actions.yaml"
+NEIGHBOURS = (ROOT / ".lokf" / "lokf.yaml", ROOT / "tests" / "neighbours" / "slsa.yaml")
+ELEMENT_KINDS = ("classes", "enums", "types", "subsets")
+
+
+def _names(path):
+    """Each kind of element a schema file declares, and every slot and
+    attribute name with the IRI it expands to."""
+    doc = yaml.safe_load(path.read_text())
+    prefixes = doc.get("prefixes") or {}
+
+    def expand(curie):
+        prefix, _, local = curie.partition(":")
+        return prefixes[prefix] + local if prefix in prefixes else curie
+
+    default = doc.get("default_prefix")
+    elements = {kind: set(doc.get(kind) or {}) for kind in ELEMENT_KINDS}
+    slots = {}
+    owners = [doc.get("slots") or {}]
+    owners += [
+        (cls or {}).get("attributes") or {}
+        for cls in (doc.get("classes") or {}).values()
+    ]
+    for owner in owners:
+        for name, slot in owner.items():
+            uri = (slot or {}).get("slot_uri") or f"{default}:{name}"
+            slots.setdefault(name, set()).add(expand(uri))
+    return elements, slots
+
+
+def test_names_apart_from_lokf_and_slsa():
+    """A host imports the copy beside lokf.yaml and slsa's copy, and LinkML
+    merges the three into one namespace: a class, enum, type or subset name
+    must be the copy's alone, and a slot or attribute name it shares must
+    carry the same IRI, so a key means one thing in the host's context."""
+    elements, slots = _names(COPY)
+    for neighbour in NEIGHBOURS:
+        their_elements, their_slots = _names(neighbour)
+        for kind in ELEMENT_KINDS:
+            assert not elements[kind] & their_elements[kind], (neighbour.name, kind)
+        for name in slots.keys() & their_slots.keys():
+            assert slots[name] == their_slots[name], (
+                neighbour.name,
+                name,
+                slots[name],
+                their_slots[name],
+            )

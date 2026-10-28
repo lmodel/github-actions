@@ -767,7 +767,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "lokf", extras = ["build"], specifier = ">=0.8.0" },
+    { name = "lokf", extras = ["build"], specifier = ">=0.9.0" },
     { name = "rust-just", specifier = "==1.47.0" },
 ]
 
