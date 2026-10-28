@@ -1,12 +1,13 @@
 name: Semantic release
 
 # Computes the next version for this repository from Conventional Commits on
-# `main` and promotes CHANGELOG.md's "## [Unreleased]" section into a dated
-# heading via .github/scripts/changelog-release.mjs, then tags the commit and
-# publishes a GitHub Release built from that same text, then dispatches the
-# knowledge release, which attaches the schema's adapt copy and the bundle
-# when the bundle has changed, once KNOWLEDGE_RELEASE_ENABLED is `true`. No
-# file carries the version, so CHANGELOG.md is the only file this job commits.
+# `main`, and promotes CHANGELOG.md's "## [Unreleased]" section into a dated
+# heading via .github/scripts/changelog-release.mjs. It then tags the commit
+# and publishes a GitHub Release built from that same text. Once
+# KNOWLEDGE_RELEASE_ENABLED is `true`, it dispatches the knowledge release,
+# which attaches the schema's adapt copy and the bundle when the bundle has
+# changed. No file carries the version, so CHANGELOG.md is the only file this
+# job commits.
 #
 # The schema stays below 1.0.0 until its shape settles. Two things keep it
 # there. The `v0.0.0` baseline tag stops semantic-release defaulting a
@@ -90,7 +91,7 @@ jobs:
             echo "No feat/fix/security or breaking commit here, so this pull request releases nothing."
           fi
 
-      # With no v* tag at all, semantic-release treats the next release as the
+      # With no v* tag, semantic-release treats the next release as the
       # first and makes it 1.0.0, which a host's pin would then hold. The
       # `v0.0.0` baseline tag is what keeps this repository in 0.x.
       - name: Refuse to release before the baseline tag exists
@@ -202,7 +203,7 @@ jobs:
       # The release above is made with GITHUB_TOKEN, and GitHub starts no
       # workflow from an event that token causes, so knowledge-release.yaml's
       # `release` trigger never fires here. A dispatch is the one exception,
-      # so once KNOWLEDGE_RELEASE_ENABLED arms that workflow, this step asks
+      # so once KNOWLEDGE_RELEASE_ENABLED turns on that workflow, this step asks
       # it to attach the schema copy and the bundle zip to the release.
       - name: Attach the schema copy and the knowledge bundle
         if: steps.release.outputs.released == 'true' && vars.KNOWLEDGE_RELEASE_ENABLED == 'true'

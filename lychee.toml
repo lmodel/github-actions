@@ -36,7 +36,7 @@ exclude = [
 ]
 
 # knowledge_bundle is a symlink to .lokf/knowledge (the Obsidian vault entry
-# point, see ktl-sidecar Step 2) - exclude it so lychee doesn't walk the
+# point, see ktl-sidecar Step 2). Exclude it so lychee does not walk the
 # same files twice, once at each path. A local .venv/ holds installed
 # packages' prose, not this repository's. docs/templates-linkml/ holds the
 # copier template's placeholders, not links, and project/ and docs/elements/

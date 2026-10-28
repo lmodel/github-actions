@@ -3,7 +3,7 @@
 # warning level, which `just lint` (errors only) does not fail on. The
 # permissible values are GitHub's own strings, written as GitHub writes them
 # (`node20`, `github-hosted`, `Repository`), so that a script compares a
-# concept with a workflow file or a REST response without translating; no one
+# concept with a workflow file or a REST response without translating. No one
 # case convention holds for all of them.
 extends: recommended
 rules:

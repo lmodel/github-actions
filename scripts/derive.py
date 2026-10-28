@@ -6,9 +6,9 @@
 """Derive the facts github_actions describes from a repository's own files.
 
 Reads the workflow files under ``.github/workflows/`` and every ``action.yml``
-or ``action.yaml`` of a repository, with ``yaml.safe_load`` and nothing else,
-and prints, for each, the frontmatter a knowledge concept of the matching
-class carries: ``GhaWorkflow`` or ``GhaReusableWorkflow`` for a workflow and
+or ``action.yaml`` of a repository, with ``yaml.safe_load`` and nothing else.
+For each, it prints the frontmatter a knowledge concept of the matching class
+carries: ``GhaWorkflow`` or ``GhaReusableWorkflow`` for a workflow and
 ``GhaAction`` for an action. It also prints the name of each check run a
 top-level workflow's jobs report, as the ``check_context`` a ruleset would
 require, with the ``job_path`` and ``skip_conditions`` of the
@@ -16,8 +16,8 @@ require, with the ``job_path`` and ``skip_conditions`` of the
 
 A check run is named after its job: the job's ``name``, or its id when it has
 none. A job of a called workflow is named after the calling job and the
-called job, joined by a slash with a space on each side, and a matrix job's
-name adds its matrix values in parentheses, joined by a comma and a space.
+called job, joined by a slash with a space on each side. A matrix job's name
+adds its matrix values in parentheses, joined by a comma and a space.
 A ``name`` that reads the matrix context takes the values in its own place
 instead. A job that calls a workflow in another repository cannot be followed,
 since this script reads only the repository it is given; its check names are
@@ -28,11 +28,11 @@ out: a ``write`` permission at the top level of a workflow, a caller that
 passes ``secrets: inherit``, and a ``uses`` that is not pinned to a commit.
 
 With ``--check BUNDLE``, it compares the facts with the concepts in a
-knowledge bundle, and exits 1 on drift: a file with no concept, a concept
-whose file is gone, a fact the two disagree on, or a required check that no
-job of the workflow its ``emitted_by`` names reports. A required check whose
-job a path filter or an ``if`` can skip is a finding, since a skipped job
-reports success; ``--strict`` makes findings fail too.
+knowledge bundle, and exits 1 on drift. Drift is a file with no concept, a
+concept whose file is gone, a fact the two disagree on, or a required check
+that no job of the workflow its ``emitted_by`` names reports. A required check
+whose job a path filter or an ``if`` can skip is a finding, since a skipped
+job reports success; ``--strict`` makes findings fail too.
 
 The files are read as data and never run, so the script is safe on files a
 pull request changed. Usage::

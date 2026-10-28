@@ -1,14 +1,15 @@
 # Example data for github-actions
 
-This folder contains example data for testing and demonstrating the datamodel,
-sorted in subfolders:
+This folder holds example data for testing and demonstrating the datamodel, in
+three subfolders:
 
-- `valid` for data conforming to the datamodel. Used to verify the datamodel.
-- `invalid` for data not conforming to the datamodel. Used to verify the validation.
-- `problem` for data which are not yet handled correctly in the current schema version,
-   again separated into valid/invalid.
+- `valid`: data that conforms to the datamodel, used to verify the datamodel.
+- `invalid`: data that does not conform to the datamodel, used to verify the
+  validation.
+- `problem`: data the current schema version does not yet handle correctly,
+  again split into valid and invalid.
 
-The filenames of all example data must conform to the scheme `ClassName-###.yaml`
-where ClassName must be the name of a class from the schema, as it is written there. "###" can be a number
-or one or more other characters allowed in filenames. The ClassName is derived by
-splitting at the first "-" and taking the part before the "-".
+Name every example file by the scheme `ClassName-###.yaml`. ClassName is the
+name of a class in the schema, written as the schema writes it. "###" can be a
+number or one or more other characters allowed in filenames. The ClassName is
+derived by splitting at the first "-" and taking the part before the "-".

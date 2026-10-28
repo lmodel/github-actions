@@ -13,11 +13,11 @@ A LinkML schema for what a GitHub Actions workflow file, an action's metadata fi
 | `src/github_actions/datamodel/`, `project/`, `docs/schema/` | Artefacts generated from the schema. |
 | `docs/` | The documentation site's pages. |
 | `tests/`, `tests/data/` | Python tests; valid and invalid example data. |
-| `.lokf/knowledge/` | This repository's own knowledge bundle. |
+| `.lokf/knowledge/` | This repository's knowledge bundle. |
 
 ## Development setup
 
-Python 3.10+, [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just) are needed.
+You need Python 3.10+, [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just).
 
 ```bash
 git clone https://github.com/lmodel/github-actions.git
@@ -52,7 +52,7 @@ npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes  
 - **Actions are pinned to commit SHAs**, the version in a trailing comment, and bumped by Dependabot, never by hand to a tag.
 - **The skills pin moves with the sidecar copies.** When moving `TRUST_LADDER_SKILLS_REF` in `.github/workflows/knowledge-librarian.yaml`, copy the other `knowledge-*.yaml` workflows and `.lokf/scripts/` and `.lokf/m365/` from that release's `skills/ktl-sidecar/templates/` in the same pull request.
 - **If your change alters behaviour** (not just wording), add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
-- Keep changes focused, and fill in the PR template's checklist.
+- Keep changes focused, and fill in the pull request template's checklist.
 
 ## Code of conduct
 
@@ -69,10 +69,10 @@ Use the [issue tracker](https://github.com/lmodel/github-actions/issues) for pro
 ## Releasing (maintainers)
 
 - Write `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) as you go; the release job refuses an empty one (`.github/scripts/changelog-release.mjs check`).
-- Type the commit ([Conventional Commits](https://www.conventionalcommits.org/)) for what the change *is*. Only `feat:`, `fix:`, `security:` and a breaking `!` cut a release; other types leave their entries for the next release that does. A pull request that would release must carry a releasing type in its title too, since a squash merge takes its subject from it.
+- Type the commit ([Conventional Commits](https://www.conventionalcommits.org/)) for what the change *is*. Only `feat:`, `fix:`, `security:` and a breaking `!` start a release; other types leave their entries for the next release that does. A pull request that would release must carry a releasing type in its title too, since a squash merge takes its subject from it.
 - On merge, [`semantic-release.yml`](.github/workflows/semantic-release.yml) retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release. No file is bumped. Once `KNOWLEDGE_RELEASE_ENABLED` is `true`, it dispatches `.github/workflows/knowledge-release.yaml`, which attaches the schema copy and the bundle when the bundle changed; run it with `force` when only the schema did.
 - That step runs behind the `release` GitHub Environment; configure required reviewers on it in Settings → Environments, or every qualifying merge is released unattended.
-- Below 1.0.0: push the `v0.0.0` baseline tag on `main` before the first releasing merge, which then releases 0.1.0; both release jobs refuse to run without a `v*` tag, as semantic-release would otherwise start at 1.0.0. `.releaserc.json` maps `breaking: true` to `minor`; reaching 1.0.0 means removing that rule in its own PR.
+- Below 1.0.0: push the `v0.0.0` baseline tag on `main` before the first releasing merge, which then releases 0.1.0; both release jobs refuse to run without a `v*` tag, as semantic-release would otherwise start at 1.0.0. `.releaserc.json` maps `breaking: true` to `minor`; reaching 1.0.0 means removing that rule in a pull request of its own.
 - A branch rule requiring pull requests, status checks or signed commits would reject the release job's own push to `main`; leave them off. [SECURITY.md](SECURITY.md) says what holds `main` instead, and the shared design is on [KTL's releasing page](https://github.com/noelmcloughlin/knowledge-trust-ladder/blob/main/docs/releasing.md).
 
 ## License

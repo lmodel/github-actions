@@ -1,6 +1,6 @@
 name: Lint & docs
 
-# Static checks for the shell, workflows, and prose this repo ships. These never
+# Static checks for the shell, workflows, and prose this repo holds. These never
 # touch the schema or the Python test suite (see main.yaml) or the LOKF
 # bundle's own semantics (see knowledge-registrar.yaml).
 # A push to a pull request's branch is covered by `pull_request`; `push` is
@@ -119,9 +119,10 @@ jobs:
             --remap '^https://github\.com/([^/]+/[^/]+)/blob/([^?#]+)([?#].*)?$ https://raw.githubusercontent.com/$1/$2'
             "**/*.md"
           fail: true
-      # Not codespell-project/actions-codespell: it hands its path to
-      # codespell unquoted under /bin/sh, where `**/*.md` means `*/*.md` and
-      # skips every file at the root and in dot-folders. git ls-files lists
+      # This step does not use codespell-project/actions-codespell. That
+      # action passes its path to codespell unquoted under /bin/sh. There
+      # `**/*.md` means `*/*.md` and skips every file at the root and in
+      # dot-folders. git ls-files lists
       # tracked files only, so the knowledge_bundle link is not read twice;
       # [tool.codespell] in pyproject.toml supplies the ignore list.
       - name: codespell

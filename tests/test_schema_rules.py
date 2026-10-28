@@ -153,7 +153,7 @@ def _names(path):
 
 def test_names_apart_from_lokf_and_slsa():
     """A host imports the copy beside lokf.yaml and slsa's copy, and LinkML
-    merges the three into one namespace: a class, enum, type or subset name
+    merges the three into one namespace. So a class, enum, type or subset name
     must be the copy's alone, and a slot or attribute name it shares must
     carry the same IRI, so a key means one thing in the host's context."""
     elements, slots = _names(COPY)

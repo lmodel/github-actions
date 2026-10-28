@@ -8,7 +8,7 @@
 
 # `just gen-doc` writes docs/schema/github_actions.yaml with the modules'
 # elements folded in but the `imports:` list kept, so a tool that loads it
-# looks for the modules beside it. This file has no imports at all: the one to
+# looks for the modules beside it. This file has no imports: the one to
 # vendor or load offline. Run it after gen-doc.
 [group('model development')]
 gen-merged:

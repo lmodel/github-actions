@@ -1,10 +1,13 @@
 ---
 # https://pre-commit.com/
+#
 # No hook may rewrite a file this repository does not write by hand:
-# SchemaStore's files, kept byte for byte so scripts/check_upstream_release.py
-# can match them by git object hash; what the LinkML generators and
-# `lokf adapt` write, which the next run would rewrite back; and the KTL
-# sidecar's scripts, which the weekly sync replaces.
+#
+# - SchemaStore's files, kept byte for byte so scripts/check_upstream_release.py
+#   can match them by git object hash;
+# - what the LinkML generators and `lokf adapt` write, which the next run would
+#   rewrite back;
+# - the KTL sidecar's scripts, which the weekly sync replaces.
 exclude: >-
   (?x)^(
     src/github_actions/schema/schemastore/|
