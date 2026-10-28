@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/test-data
 genre: reference
 title: Test data and schema tests
-description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy and its names with LOKF's and slsa's, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/."
+description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy, the adapt copy's names with LOKF's and slsa's, and the copy's mappings with its prefixes, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/."
 resource: tests/data
 about:
   - https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
@@ -18,7 +18,7 @@ sources:
     title: the three tests
   - id: test_schema_rules.py
     resource: tests/test_schema_rules.py
-    title: the seven tests and the neighbour comment
+    title: the eight tests and the neighbour comment
   - id: test_derive.py
     resource: tests/test_derive.py
     title: the eleven tests and the fixture path
@@ -30,13 +30,10 @@ sources:
   - resource: tests/neighbours/slsa.yaml
     title: the header lokf adapt wrote
   - resource: CONTRIBUTING.md
-    title: the rule on example data
-  - resource: examples/README.md
-    title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T20:03:46Z"
-  revision: a86d8591547d1112e880fd60e399749a70698be0
+  at: "2026-10-28T22:46:12Z"
+  revision: 58a052654bf903ca9ab8b634d8a06a2523c482db
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -57,7 +54,7 @@ The first test loads each valid file into the generated dataclass of the class i
 
 ## tests/test_schema_rules.py
 
-Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) and with the upstream watch, and one compares its names with its neighbours':[^test_schema_rules.py]
+Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) and with the upstream watch, and two check the adapt copy:[^test_schema_rules.py]
 
 - the schema header's pins equal those in `scripts/check_upstream_release.py`, and the reading date equals the header's `version`;
 - the permission pattern admits every scope and level SchemaStore lists;
@@ -66,8 +63,9 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 - the trigger pattern admits every event SchemaStore names;
 - the key and `uses` patterns are SchemaStore's;
 - no class, enum, type or subset name in `.lokf/github-actions.yaml` appears in `.lokf/lokf.yaml` or `tests/neighbours/slsa.yaml`, and a slot or attribute name they share carries the same IRI.
+- every mapping in `.lokf/github-actions.yaml` is a CURIE whose prefix the copy binds, because a full address that no prefix covers makes every `lokf convert --schema` over the copy warn that it has no namespace.
 
-`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it comes from slsa's branch `chore/lokf-0-9-0` as commit `80716f3` left it, which releases as slsa 0.7.0. The comment also says that the copy is to be replaced with that release's schema asset once that release is published.
+`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it is the `schema-v0.7.0-slsa.yaml` asset of slsa's v0.7.0 release, checked against its `.sha256` and attestation.
 
 ## tests/test_derive.py
 
@@ -79,6 +77,6 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 
 [^data-readme.md]: tests/data/README.md, the whole page
 [^test_data.py]: tests/test_data.py, the three test functions
-[^test_schema_rules.py]: tests/test_schema_rules.py, the seven test functions and the comment above COPY
+[^test_schema_rules.py]: tests/test_schema_rules.py, the eight test functions and the comment above COPY
 [^justfile]: justfile, the `test`, `_test-schema`, `_test-python` and `_test-examples` recipes
 [^test_derive.py]: tests/test_derive.py, the docstring and the fixture path

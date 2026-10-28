@@ -47,6 +47,9 @@ generated:
   by: process:ktl-librarian
   at: "2026-10-28T21:21:37Z"
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T22:46:12Z"
 ---
 
 # github-actions LinkML schema

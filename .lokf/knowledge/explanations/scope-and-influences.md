@@ -19,11 +19,13 @@ sources:
     title: the prefixes, mappings and their comments
   - resource: src/github_actions/schema/github_actions_action.yaml
     title: the close mapping of GhaAction
-  - resource: src/github_actions/schema/github_actions_rules.yaml
-    title: the related mapping and comment of GhaRequiredStatusCheck
+  - id: github_actions_rules.yaml
+    resource: src/github_actions/schema/github_actions_rules.yaml
+    title: the prefixes, the related mapping and the comment of GhaRequiredStatusCheck
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T21:21:37Z"
+  at: "2026-10-28T22:46:12Z"
+  revision: 8ec02d94004392285d419058b78e894d0d0d7802
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -56,7 +58,7 @@ The README says that the schema maps to three vocabularies.
 - **SPDX 3.0.1.** Its `Build` records a run of a workflow, so it is a related term for `GhaWorkflow`, not a close one.
 - **in-toto's Test Result predicate.** It records what a required check found, so it is a related term for `GhaRequiredStatusCheck`, not a close one.
 
-The workflow module declares the prefixes `cdx:` and `spdx_build:` for the first two, and the rules module names the in-toto predicate by its address.[^github_actions_workflow.yaml]
+The workflow module declares the prefixes `cdx:` and `spdx_build:` for the first two.[^github_actions_workflow.yaml] The rules module declares `in_toto:` as `https://in-toto.io/attestation/` and names the predicate `in_toto:test-result/v0.1`.[^github_actions_rules.yaml]
 
 ## Not modelled
 
@@ -68,3 +70,4 @@ The workflow module declares the prefixes `cdx:` and `spdx_build:` for the first
 [^readme.md]: README.md, the What it models, Influences, Mappings and Not modelled here sections
 [^about.md]: docs/about.md, the What is left out section
 [^github_actions_workflow.yaml]: src/github_actions/schema/github_actions_workflow.yaml, the prefixes and the mappings of GhaWorkflow and triggers
+[^github_actions_rules.yaml]: src/github_actions/schema/github_actions_rules.yaml, the prefixes and the related mapping of GhaRequiredStatusCheck

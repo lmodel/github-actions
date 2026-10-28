@@ -2,6 +2,8 @@
 
 ## 2026-10-28
 
+* **Changed**: Scope, influences and mappings now says that the rules module declares the `in_toto:` prefix and names the Test Result predicate by a CURIE, as cd7488c made it.
+* **Changed**: Test data and schema tests now counts eight schema tests, including the new check that every mapping in the adapt copy uses a bound prefix, and says that the slsa neighbour is slsa's v0.7.0 release asset.
 * **Changed**: Workflow syntax, Metadata syntax, REST API rules and check runs, and GitHub Actions build type now cite the README's What it models section for each page, since `docs/about.md` no longer lists the model's sources.
 * **Rewrite**: Scope, influences and mappings follows the README's shorter sections; it drops the claims no source now makes, that no single specification stands behind the model and that the mapped vocabularies did not shape it.
 * **Changed**: Element names cites the naming paragraph of `docs/about.md` at its new place, and takes the rule for a renamed key from that page, which the README now points to.
