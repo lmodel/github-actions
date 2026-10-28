@@ -2,6 +2,7 @@
 
 ## 2026-10-28
 
+* **Prose**: reworded 2 more concept bodies, cutting phrases that carried no fact. No fact, link, number or frontmatter changed.
 * **Prose**: reworded 16 concept bodies in plain English. No fact, link, number or frontmatter changed.
 * **Added**: Derive and check concepts from workflow files, from `scripts/derive.py`, its tests and the README's section on it, which d38a5e0 added.
 * **Changed**: the test data concept gives the naming rule as `ClassName-###.yaml`, as `tests/data/README.md` has since a86d859, and names `tests/test_derive.py` and its fixtures, which d38a5e0 added.

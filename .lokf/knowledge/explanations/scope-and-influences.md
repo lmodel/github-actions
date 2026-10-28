@@ -39,11 +39,11 @@ verified:
 
 ## Influences
 
-The README names what shaped the design, and nothing else:
+The README names what shaped the design:
 
 - **SLSA.** The identity of a workflow comes from GitHub's build type for SLSA provenance, and a reusable workflow that signs provenance is its builder. A required check is a technical control in the sense of SLSA's Source track, so the evidence that a control held is left to lmodel/slsa.
 - **The OpenSSF Baseline and Scorecard.** They decided which facts are fields, because their controls read a workflow's inputs, its permissions, the status checks a branch requires and whether a dependency is pinned.
-- **otterdog.** It gave the rule that a called job's check is named `caller job / called job`, with a space on each side of the slash, which none of GitHub's pages states.
+- **otterdog.** It gave the rule that a called job's check is named `caller job / called job`, with a space on each side of the slash.
 - **LOKF and the Knowledge Trust Ladder (KTL).** They gave the naming rule, the classes rooted on `Concept`, and the inlined value classes, so that `lokf adapt` needs no `--fold`.
 - **lmodel/slsa.** It gave the module layout, the release asset and the governance files.
 

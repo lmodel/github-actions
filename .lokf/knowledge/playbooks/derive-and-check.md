@@ -37,7 +37,7 @@ status: draft
 
 # Derive and check concepts from workflow files
 
-`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load` and nothing else. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the unreleased additions.[^changelog.md]
+`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load`. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the unreleased additions.[^changelog.md]
 
 ## Run it
 
