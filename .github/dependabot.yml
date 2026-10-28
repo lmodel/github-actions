@@ -30,3 +30,14 @@ updates:
       python:
         patterns:
           - "*"
+
+  # The .lokf/ sidecar's toolchain (the `lokf` package), kept apart from the
+  # package tree: it maintains the knowledge bundle and has nothing to do
+  # with the schema. A major bump can require concept frontmatter changes,
+  # so these want a human read, not a rubber stamp.
+  - package-ecosystem: uv
+    directory: "/.lokf"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(lokf)"
