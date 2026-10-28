@@ -1,0 +1,5 @@
+# A skip condition is the path of a key under on or jobs.
+check_uri: https://example.org/knowledge/service/checks/docs
+check_context: docs
+skip_conditions:
+  - paths-ignore

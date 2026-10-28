@@ -1,0 +1,5 @@
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]

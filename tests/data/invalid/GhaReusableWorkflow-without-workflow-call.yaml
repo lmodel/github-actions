@@ -1,0 +1,7 @@
+# A reusable workflow is one whose on key names workflow_call.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/tests.yml
+workflow_path: .github/workflows/tests.yml
+triggers: [push]
+jobs:
+  - job_id: unit
+    runs_on: [ubuntu-latest]

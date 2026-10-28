@@ -1,0 +1,9 @@
+# A reusable workflow's output is set from a job's output.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/tests.yml
+workflow_path: .github/workflows/tests.yml
+triggers: [workflow_call]
+outputs:
+  - output_id: report-url
+jobs:
+  - job_id: unit
+    runs_on: [ubuntu-latest]

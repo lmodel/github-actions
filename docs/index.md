@@ -21,13 +21,16 @@ importer may take one module.
 ## Validating data
 
 `linkml-validate -s src/github_actions/schema/github_actions.yaml -C GhaReusableWorkflow workflow.yaml`
-checks a file against the JSON Schema generated from the schema. The models in
-`src/github_actions/datamodel/` check less. The dataclasses check required
-fields and enum values but no patterns. The Pydantic models also check
-patterns, but they leave out the rules: that a reusable workflow's triggers
-include `workflow_call`, and that a job that calls a reusable workflow names
-no runner labels or runner group. Validate a file before loading it into
-either model.
+checks a file against the JSON Schema generated from the schema, and
+`tests/test_data.py` holds every example to it. The models in
+`src/github_actions/datamodel/` check less, as LinkML 1.12.1 generates them.
+The dataclasses check required fields and enum values, but no pattern or
+minimum. The Pydantic models also check minimums and the patterns a field
+carries itself, but not those of the `gha_identifier` and `gha_permission`
+types, so a job, input, output or secret key and a permission go unchecked.
+Neither checks the rules: that a reusable workflow's triggers include
+`workflow_call`, and that a job that calls a reusable workflow names no runner
+labels or runner group. Validate a file before loading it into either model.
 
 Some rules have no check at all:
 

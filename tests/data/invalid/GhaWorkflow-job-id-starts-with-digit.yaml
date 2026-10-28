@@ -1,0 +1,7 @@
+# A job id starts with a letter or an underscore.
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [push]
+jobs:
+  - job_id: 2fast
+    runs_on: [ubuntu-latest]

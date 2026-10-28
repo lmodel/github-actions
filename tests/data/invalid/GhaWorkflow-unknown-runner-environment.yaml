@@ -1,0 +1,7 @@
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [push]
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]
+    runner_environment: cloud-hosted

@@ -1,0 +1,12 @@
+# The shorthand stands alone, and a job in the same repository is called by
+# its local path.
+workflow_uri: https://github.com/example-org/service/.github/workflows/nightly.yml
+workflow_path: .github/workflows/nightly.yml
+triggers:
+  - schedule
+  - workflow_dispatch
+permissions:
+  - read-all
+jobs:
+  - job_id: scan
+    calls: ./.github/workflows/scan.yaml

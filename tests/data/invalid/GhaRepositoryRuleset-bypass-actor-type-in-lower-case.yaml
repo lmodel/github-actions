@@ -1,0 +1,7 @@
+# An actor type is written as GitHub writes it, such as Team.
+ruleset_uri: https://github.com/example-org/service/rules/42
+ruleset_target: branch
+enforcement: active
+bypass_actors:
+  - actor_id: 3
+    actor_type: team

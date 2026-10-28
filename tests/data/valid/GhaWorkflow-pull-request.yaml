@@ -1,0 +1,23 @@
+# A top-level workflow: one job runs on a runner group, the other calls a
+# reusable workflow in another repository, pinned to a commit.
+workflow_uri: https://github.com/example-org/service/.github/workflows/pull-request.yml
+workflow_path: .github/workflows/pull-request.yml
+workflow_repository: https://github.com/example-org/service
+triggers:
+  - pull_request
+  - merge_group
+permissions:
+  - "contents: read"
+jobs:
+  - job_id: lint
+    job_name: Lint
+    runs_on:
+      - linux
+      - x64
+    runner_group: ci-runners
+    runner_environment: self-hosted
+  - job_id: test
+    calls: example-org/ci-workflows/.github/workflows/python-tests.yml@9f2c1e0d4b7a6c5e3f1a2b3c4d5e6f7a8b9c0d1e
+    job_permissions:
+      - "contents: read"
+      - "checks: write"

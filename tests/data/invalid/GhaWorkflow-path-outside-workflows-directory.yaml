@@ -1,0 +1,7 @@
+# GitHub reads workflow files only from .github/workflows.
+workflow_uri: https://github.com/example-org/service/ci/build.yml
+workflow_path: ci/build.yml
+triggers: [push]
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]

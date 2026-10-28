@@ -1,0 +1,10 @@
+# A check whose job a path filter can skip, recorded so a reader sees it.
+check_uri: https://example.org/knowledge/service/checks/docs
+check_context: docs (3.13)
+integration_id: 15368
+job_path:
+  - docs
+skip_conditions:
+  - on.pull_request.paths
+  - jobs.docs.if
+emitted_by: https://github.com/example-org/service/.github/workflows/docs.yml

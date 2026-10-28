@@ -1,0 +1,6 @@
+# An action's input must be described.
+action_uri: https://github.com/example-org/ci-workflows/actions/setup
+action_path: actions/setup/action.yml
+using: composite
+inputs:
+  - input_id: python-version

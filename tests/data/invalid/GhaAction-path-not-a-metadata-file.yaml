@@ -1,0 +1,4 @@
+# The path names the action.yml or action.yaml file.
+action_uri: https://github.com/example-org/ci-workflows/actions/setup
+action_path: actions/setup
+using: composite

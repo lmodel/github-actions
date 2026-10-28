@@ -1,0 +1,11 @@
+# The check a job of a called workflow reports: the calling job's name and
+# the called job's, joined by a slash with a space on each side.
+check_uri: https://example.org/knowledge/service/checks/test-unit
+check_context: test / unit
+integration_id: 15368
+strict_policy: true
+do_not_enforce_on_create: false
+job_path:
+  - test
+  - unit
+emitted_by: https://github.com/example-org/service/.github/workflows/pull-request.yml

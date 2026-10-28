@@ -1,0 +1,7 @@
+# Event names are lower case, as GitHub writes them.
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [Push]
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]
