@@ -1,0 +1,242 @@
+# metamodel_version: 1.12.0
+# version: 2026-10-28
+BASE <https://w3id.org/lmodel/github-actions/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX linkml: <https://w3id.org/linkml/>
+PREFIX schema1: <http://schema.org/>
+
+
+linkml:String xsd:string
+
+linkml:Integer xsd:integer
+
+linkml:Boolean xsd:boolean
+
+linkml:Float xsd:float
+
+linkml:Double xsd:double
+
+linkml:Decimal xsd:decimal
+
+linkml:Time xsd:time
+
+linkml:Date xsd:date
+
+linkml:Datetime xsd:dateTime
+
+linkml:DateOrDatetime linkml:DateOrDatetime
+
+linkml:Uriorcurie IRI
+
+linkml:Curie xsd:string
+
+linkml:Uri IRI
+
+linkml:Ncname xsd:string
+
+linkml:Objectidentifier IRI
+
+linkml:Nodeidentifier NONLITERAL
+
+linkml:Jsonpointer xsd:string
+
+linkml:Jsonpath xsd:string
+
+linkml:Sparqlpath xsd:string
+
+<GhaIdentifier> xsd:string
+
+<GhaPermission> xsd:string
+
+<GhaAction> CLOSED {
+    (  $<GhaAction_tes> (  <inputs> @<GhaActionInput> * ;
+          <outputs> @<GhaActionOutput> * ;
+          <action_path> @linkml:String ;
+          <using> [ <https://w3id.org/lmodel/github-actions/GhaActionRuntime#composite>
+             <https://w3id.org/lmodel/github-actions/GhaActionRuntime#docker>
+             <https://w3id.org/lmodel/github-actions/GhaActionRuntime#node20>
+             <https://w3id.org/lmodel/github-actions/GhaActionRuntime#node24> ]
+       ) ;
+       rdf:type [ <Action> ]
+    )
+}
+
+<GhaActionInput> CLOSED {
+    (  $<GhaActionInput_tes> (  &<GhaInput_tes> ;
+          rdf:type [ <Input> ] ? ;
+          <deprecation_message> @linkml:String ? ;
+          schema1:description @linkml:String
+       ) ;
+       rdf:type [ <ActionInput> ] ?
+    )
+}
+
+<GhaActionOutput> CLOSED {
+    (  $<GhaActionOutput_tes> (  &<GhaOutput_tes> ;
+          rdf:type [ <Output> ] ? ;
+          schema1:description @linkml:String
+       ) ;
+       rdf:type [ <ActionOutput> ] ?
+    )
+}
+
+<GhaBypassActor> CLOSED {
+    (  $<GhaBypassActor_tes> (  <actor_id> @linkml:Integer ? ;
+          <actor_type> @linkml:String ;
+          <bypass_mode> @linkml:String ?
+       ) ;
+       rdf:type [ <BypassActor> ] ?
+    )
+}
+
+<GhaDocument> CLOSED {
+    (  $<GhaDocument_tes> (  <workflows> @<GhaWorkflow> * ;
+          <reusable_workflows> @<GhaReusableWorkflow> * ;
+          <actions> @<GhaAction> * ;
+          <rulesets> @<GhaRepositoryRuleset> * ;
+          <required_checks> @<GhaRequiredStatusCheck> *
+       ) ;
+       rdf:type [ <Document> ] ?
+    )
+}
+
+<GhaInput>  (
+    @<GhaActionInput> OR @<GhaWorkflowInput>
+)
+
+<GhaInput_struct> {
+    (  $<GhaInput_tes> (  &<GhaRequiredMixin_tes> ;
+          rdf:type [ <GhaRequiredMixin> ] ? ;
+          schema1:description @linkml:String ? ;
+          <input_id> @<GhaIdentifier> ;
+          <default> @linkml:String ? ;
+          schema1:valueRequired @linkml:Boolean ?
+       ) ;
+       rdf:type [ <Input> ] ?
+    )
+}
+
+<GhaOutput>  (
+    @<GhaActionOutput> OR @<GhaWorkflowOutput>
+)
+
+<GhaOutput_struct> {
+    (  $<GhaOutput_tes> (  schema1:description @linkml:String ? ;
+          <output_expression> @linkml:String ? ;
+          <output_id> @<GhaIdentifier>
+       ) ;
+       rdf:type [ <Output> ] ?
+    )
+}
+
+<GhaRepositoryRuleset> CLOSED {
+    (  $<GhaRepositoryRuleset_tes> (  <ruleset_id> @linkml:Integer ? ;
+          <ruleset_source_type> [ <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Repository>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Organization>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Enterprise> ] ? ;
+          <ruleset_source> @linkml:String ? ;
+          <ruleset_target> [ <https://w3id.org/lmodel/github-actions/GhaRulesetTarget#branch>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetTarget#tag>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetTarget#push> ] ;
+          <enforcement> [ <https://w3id.org/lmodel/github-actions/GhaRulesetEnforcement#active>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetEnforcement#evaluate>
+             <https://w3id.org/lmodel/github-actions/GhaRulesetEnforcement#disabled> ] ;
+          <ref_name_include> @linkml:String * ;
+          <ref_name_exclude> @linkml:String * ;
+          <bypass_actors> @<GhaBypassActor> * ;
+          <rule_types> @linkml:String * ;
+          <requires_check> @<GhaRequiredStatusCheck> *
+       ) ;
+       rdf:type [ <RepositoryRuleset> ]
+    )
+}
+
+<GhaRequiredMixin> {
+    (  $<GhaRequiredMixin_tes> schema1:valueRequired @linkml:Boolean ? ;
+       rdf:type [ <GhaRequiredMixin> ] ?
+    )
+}
+
+<GhaRequiredStatusCheck> CLOSED {
+    (  $<GhaRequiredStatusCheck_tes> (  <check_context> @linkml:String ;
+          <integration_id> @linkml:Integer ? ;
+          <strict_policy> @linkml:Boolean ? ;
+          <do_not_enforce_on_create> @linkml:Boolean ? ;
+          <job_path> @<GhaIdentifier> * ;
+          <skip_conditions> @linkml:String * ;
+          <emitted_by> @<GhaWorkflow> ?
+       ) ;
+       rdf:type [ <RequiredStatusCheck> ]
+    )
+}
+
+<GhaReusableWorkflow> CLOSED {
+    (  $<GhaReusableWorkflow_tes> (  &<GhaWorkflow_tes> ;
+          rdf:type [ <Workflow> ] ? ;
+          <inputs> @<GhaWorkflowInput> * ;
+          <outputs> @<GhaWorkflowOutput> * ;
+          <secrets> @<GhaWorkflowSecret> * ;
+          <triggers> @linkml:String +
+       ) ;
+       rdf:type [ <ReusableWorkflow> ]
+    )
+}
+
+<GhaWorkflow>  (
+    CLOSED {
+       (  $<GhaWorkflow_tes> (  <triggers> @linkml:String + ;
+             <workflow_path> @linkml:String ;
+             <workflow_repository> @linkml:Uri ? ;
+             <permissions> @<GhaPermission> * ;
+             <jobs> @<GhaWorkflowJob> +
+          ) ;
+          rdf:type [ <Workflow> ]
+       )
+    } OR @<GhaReusableWorkflow>
+)
+
+<GhaWorkflowInput> CLOSED {
+    (  $<GhaWorkflowInput_tes> (  &<GhaInput_tes> ;
+          rdf:type [ <Input> ] ? ;
+          <input_type> [ <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#boolean>
+             <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#number>
+             <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#string> ]
+       ) ;
+       rdf:type [ <WorkflowInput> ] ?
+    )
+}
+
+<GhaWorkflowJob> CLOSED {
+    (  $<GhaWorkflowJob_tes> (  <job_id> @<GhaIdentifier> ;
+          <job_name> @linkml:String ? ;
+          <calls> @linkml:String ? ;
+          <runs_on> @linkml:String * ;
+          <runner_group> @linkml:String ? ;
+          <runner_environment> [ <https://w3id.org/lmodel/github-actions/GhaRunnerEnvironment#github-hosted>
+             <https://w3id.org/lmodel/github-actions/GhaRunnerEnvironment#self-hosted> ] ? ;
+          <job_permissions> @<GhaPermission> *
+       ) ;
+       rdf:type [ <WorkflowJob> ] ?
+    )
+}
+
+<GhaWorkflowOutput> CLOSED {
+    (  $<GhaWorkflowOutput_tes> (  &<GhaOutput_tes> ;
+          rdf:type [ <Output> ] ? ;
+          <output_expression> @linkml:String
+       ) ;
+       rdf:type [ <WorkflowOutput> ] ?
+    )
+}
+
+<GhaWorkflowSecret> CLOSED {
+    (  $<GhaWorkflowSecret_tes> (  &<GhaRequiredMixin_tes> ;
+          rdf:type [ <GhaRequiredMixin> ] ? ;
+          schema1:description @linkml:String ? ;
+          <secret_id> @<GhaIdentifier> ;
+          schema1:valueRequired @linkml:Boolean ?
+       ) ;
+       rdf:type [ <WorkflowSecret> ] ?
+    )
+}

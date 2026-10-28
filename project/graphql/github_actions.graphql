@@ -1,0 +1,188 @@
+# metamodel_version: 1.12.0
+# version: 2026-10-28
+enum GhaActionRuntime
+  {
+    composite
+    docker
+    node20
+    node24
+  }
+
+enum GhaRulesetEnforcement
+  {
+    active
+    evaluate
+    disabled
+  }
+
+enum GhaRulesetSourceType
+  {
+    Repository
+    Organization
+    Enterprise
+  }
+
+enum GhaRulesetTarget
+  {
+    branch
+    tag
+    push
+  }
+
+enum GhaRunnerEnvironment
+  {
+    github__HYPHEN_MINUS__hosted
+    self__HYPHEN_MINUS__hosted
+  }
+
+enum GhaWorkflowInputType
+  {
+    boolean
+    number
+    string
+  }
+
+type GhaAction
+  {
+    inputs: [GhaActionInput]
+    outputs: [GhaActionOutput]
+    actionUri: String!
+    actionPath: String!
+    using: GhaActionRuntime!
+  }
+
+type GhaActionInput
+  {
+    inputId: GhaIdentifier!
+    default: String
+    required: Boolean
+    deprecationMessage: String
+    description: String!
+  }
+
+type GhaActionOutput
+  {
+    outputExpression: String
+    outputId: GhaIdentifier!
+    description: String!
+  }
+
+type GhaBypassActor
+  {
+    actorId: Int
+    actorType: String!
+    bypassMode: String
+  }
+
+type GhaDocument
+  {
+    workflows: [GhaWorkflow]
+    reusableWorkflows: [GhaReusableWorkflow]
+    actions: [GhaAction]
+    rulesets: [GhaRepositoryRuleset]
+    requiredChecks: [GhaRequiredStatusCheck]
+  }
+
+type GhaInput implements GhaRequiredMixin
+  {
+    description: String
+    inputId: GhaIdentifier!
+    default: String
+    required: Boolean
+  }
+
+interface GhaOutput
+  {
+    description: String
+    outputExpression: String
+    outputId: GhaIdentifier!
+  }
+
+type GhaRepositoryRuleset
+  {
+    rulesetUri: String!
+    rulesetId: Int
+    rulesetSourceType: GhaRulesetSourceType
+    rulesetSource: String
+    rulesetTarget: GhaRulesetTarget!
+    enforcement: GhaRulesetEnforcement!
+    refNameInclude: [String]
+    refNameExclude: [String]
+    bypassActors: [GhaBypassActor]
+    ruleTypes: [String]
+    requiresCheck: [GhaRequiredStatusCheck]
+  }
+
+interface GhaRequiredMixin
+  {
+    required: Boolean
+  }
+
+type GhaRequiredStatusCheck
+  {
+    checkUri: String!
+    checkContext: String!
+    integrationId: Int
+    strictPolicy: Boolean
+    doNotEnforceOnCreate: Boolean
+    jobPath: [GhaIdentifier]
+    skipConditions: [String]
+    emittedBy: GhaWorkflow
+  }
+
+type GhaReusableWorkflow
+  {
+    workflowUri: String!
+    workflowPath: String!
+    workflowRepository: String
+    permissions: [GhaPermission]
+    jobs: [GhaWorkflowJob]!
+    inputs: [GhaWorkflowInput]
+    outputs: [GhaWorkflowOutput]
+    secrets: [GhaWorkflowSecret]
+    triggers: [String]!
+  }
+
+type GhaWorkflow
+  {
+    triggers: [String]!
+    workflowUri: String!
+    workflowPath: String!
+    workflowRepository: String
+    permissions: [GhaPermission]
+    jobs: [GhaWorkflowJob]!
+  }
+
+type GhaWorkflowInput
+  {
+    description: String
+    inputId: GhaIdentifier!
+    default: String
+    required: Boolean
+    inputType: GhaWorkflowInputType!
+  }
+
+type GhaWorkflowJob
+  {
+    jobId: GhaIdentifier!
+    jobName: String
+    calls: String
+    runsOn: [String]
+    runnerGroup: String
+    runnerEnvironment: GhaRunnerEnvironment
+    jobPermissions: [GhaPermission]
+  }
+
+type GhaWorkflowOutput
+  {
+    description: String
+    outputId: GhaIdentifier!
+    outputExpression: String!
+  }
+
+type GhaWorkflowSecret implements GhaRequiredMixin
+  {
+    description: String
+    secretId: GhaIdentifier!
+    required: Boolean
+  }

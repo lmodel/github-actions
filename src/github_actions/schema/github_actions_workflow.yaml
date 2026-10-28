@@ -1,0 +1,314 @@
+---
+id: https://w3id.org/lmodel/github-actions/github_actions_workflow
+name: github_actions_workflow
+title: GitHub Actions workflows
+description: >-
+  Workflow files and their jobs, and the reusable workflows that other
+  workflows call, with the inputs, outputs and secrets they declare.
+license: Apache-2.0
+see_also:
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
+
+default_prefix: gha
+default_range: string
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gha: https://w3id.org/lmodel/github-actions/
+  xsd: http://www.w3.org/2001/XMLSchema#
+  cdx: "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/"
+  spdx_build: https://spdx.org/rdf/3.0.1/terms/Build/
+
+imports:
+  - linkml:types
+  - ./github_actions_core
+
+types:
+  gha_permission:
+    typeof: string
+    base: str
+    uri: xsd:string
+    description: >-
+      One grant of access to a workflow's GITHUB_TOKEN, written as the scope, a
+      colon and `read`, `write` or `none`; `read-all`, `write-all` or `{}` stands
+      alone for the shorthand of the same name or the empty map.
+    pattern: "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$"
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions
+    comments:
+      - >-
+        A pattern rather than an enumeration of scopes, because GitHub adds
+        scopes; tests/test_schema_rules.py checks that it admits every scope
+        SchemaStore's schema lists at the pinned commit.
+
+slots:
+  triggers:
+    description: >-
+      The names of the events under the file's `on` key, such as `push`,
+      `pull_request`, `schedule` or `workflow_call`.
+    slot_uri: gha:triggers
+    multivalued: true
+    pattern: "^[a-z_]+$"
+    related_mappings:
+      - cdx:trigger
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+    comments:
+      - >-
+        A slot rather than an attribute because GhaReusableWorkflow refines it;
+        a pattern rather than an enumeration, because GitHub adds events.
+
+classes:
+  GhaWorkflow:
+    class_uri: gha:Workflow
+    description: >-
+      A workflow file in a repository's `.github/workflows` directory: the
+      events that run it, the access its GITHUB_TOKEN gets, and its jobs.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+    close_mappings:
+      - cdx:workflow
+    related_mappings:
+      - spdx_build:Build
+    slots:
+      - triggers
+    slot_usage:
+      triggers:
+        required: true
+    comments:
+      - >-
+        SPDX 3.0.1's Build records one run of a build, such as a run of this
+        workflow, so it is a related term and not a close one.
+      - >-
+        The ref a run checks the file out at belongs to the run, and GitHub's
+        build type records it in provenance as workflow.ref; it is not a fact
+        of the file, so it is not modelled here.
+    attributes:
+      workflow_uri:
+        identifier: true
+        description: >-
+          The file's address on its forge without a ref:
+          `https://github.com/<owner>/<repo>/.github/workflows/<file>`.
+        range: uri
+        comments:
+          - >-
+            GitHub's build type forms a reusable workflow's builder.id from
+            this address, followed by `@` and the ref.
+      workflow_path:
+        description: >-
+          The file's path from the repository root, as GitHub's build type
+          writes workflow.path. GitHub reads no subdirectory of
+          `.github/workflows`.
+        required: true
+        pattern: "^\\.github/workflows/[^/]+\\.ya?ml$"
+        see_also:
+          - https://actions.github.io/buildtypes/workflow/v1
+      workflow_repository:
+        description: >-
+          The repository that holds the file, as GitHub's build type writes
+          workflow.repository: an HTTPS address without `.git`.
+        range: uri
+        pattern: "^https://[^/]+/[^/]+/[^/]+$"
+        see_also:
+          - https://actions.github.io/buildtypes/workflow/v1
+      permissions:
+        description: >-
+          The access the file's top-level `permissions` key gives every job's
+          GITHUB_TOKEN. Absent when the file sets none, so the repository's or
+          organization's default applies; a scope the map leaves out gets no
+          access.
+        range: gha_permission
+        multivalued: true
+      jobs:
+        description: The jobs under the file's `jobs` key.
+        range: GhaWorkflowJob
+        multivalued: true
+        required: true
+        inlined: true
+        inlined_as_list: true
+
+  GhaReusableWorkflow:
+    is_a: GhaWorkflow
+    class_uri: gha:ReusableWorkflow
+    description: >-
+      A workflow that other workflows call as a job, because its `on` key
+      names `workflow_call`; it declares the inputs, outputs and secrets its
+      callers pass and read.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call
+    comments:
+      - >-
+        When it generates provenance it is the builder: GitHub's build type
+        sets builder.id to the server's address followed by the job's workflow
+        reference, which names this file and its ref.
+    slots:
+      - inputs
+      - outputs
+    slot_usage:
+      triggers:
+        has_member:
+          equals_string: workflow_call
+      inputs:
+        description: The inputs under the file's `on.workflow_call.inputs` key.
+        range: GhaWorkflowInput
+      outputs:
+        description: The outputs under the file's `on.workflow_call.outputs` key.
+        range: GhaWorkflowOutput
+    attributes:
+      secrets:
+        description: >-
+          The secrets under the file's `on.workflow_call.secrets` key, by name
+          only; no value is ever recorded.
+        range: GhaWorkflowSecret
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+
+  GhaWorkflowJob:
+    class_uri: gha:WorkflowJob
+    description: >-
+      A job under a workflow's `jobs` key: steps that run on a runner, or a
+      call to a reusable workflow.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs
+    rules:
+      # One rule per field: gen-json-schema turns two ABSENT conditions in one
+      # rule into "not both", which a calling job with only runs_on passes.
+      - description: >-
+          A job that calls a reusable workflow names no runner labels: a
+          calling job takes no `runs-on` key, and the called workflow's jobs
+          choose their own runners.
+        preconditions:
+          slot_conditions:
+            calls:
+              value_presence: PRESENT
+        postconditions:
+          slot_conditions:
+            runs_on:
+              value_presence: ABSENT
+      - description: A job that calls a reusable workflow names no runner group.
+        preconditions:
+          slot_conditions:
+            calls:
+              value_presence: PRESENT
+        postconditions:
+          slot_conditions:
+            runner_group:
+              value_presence: ABSENT
+    attributes:
+      job_id:
+        description: The job's key under `jobs`.
+        range: gha_identifier
+        required: true
+      job_name:
+        description: >-
+          The job's `name`, which GitHub shows and its check run takes; the
+          check run takes the job's id when it has none.
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname
+      calls:
+        description: >-
+          The reusable workflow the job runs, its `uses` value:
+          `./.github/workflows/<file>` in the same repository, or
+          `<owner>/<repo>/.github/workflows/<file>@<ref>`.
+        pattern: "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$"
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses
+      runs_on:
+        description: >-
+          The runner labels from the job's `runs-on`: one label, a list, or the
+          `labels` of a group. A runner must carry every one.
+        multivalued: true
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on
+      runner_group:
+        description: The runner group the job's `runs-on.group` names.
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group
+      runner_environment:
+        description: >-
+          Whether the job's runner is hosted by GitHub or by the repository's
+          owner, as GitHub's build type records runner_environment for a run.
+        range: GhaRunnerEnvironment
+      job_permissions:
+        description: >-
+          The access the job's own `permissions` key gives its GITHUB_TOKEN, in
+          place of the workflow's. A called workflow can lower its token's
+          access, never raise it.
+        range: gha_permission
+        multivalued: true
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions
+
+  GhaWorkflowInput:
+    is_a: GhaInput
+    class_uri: gha:WorkflowInput
+    description: An input under a reusable workflow's `on.workflow_call.inputs` key.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs
+    attributes:
+      input_type:
+        description: >-
+          The input's `type`, which a reusable workflow's input must state.
+          Named input_type because a knowledge bundle reads `type` as the
+          class of the concept.
+        range: GhaWorkflowInputType
+        required: true
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype
+
+  GhaWorkflowOutput:
+    is_a: GhaOutput
+    class_uri: gha:WorkflowOutput
+    description: >-
+      An output under a reusable workflow's `on.workflow_call.outputs` key,
+      set from an output of one of its jobs.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_calloutputs
+    slot_usage:
+      output_expression:
+        required: true
+
+  GhaWorkflowSecret:
+    class_uri: gha:WorkflowSecret
+    description: >-
+      A secret under a reusable workflow's `on.workflow_call.secrets` key, by
+      name; its value is never recorded.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets
+    mixins:
+      - GhaRequiredMixin
+    slots:
+      - description
+    attributes:
+      secret_id:
+        description: The key a caller passes the secret under.
+        range: gha_identifier
+        required: true
+
+enums:
+  GhaWorkflowInputType:
+    description: The types a reusable workflow's input may state.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype
+    permissible_values:
+      boolean:
+        description: True or false.
+      number:
+        description: A number.
+      string:
+        description: A string.
+
+  GhaRunnerEnvironment:
+    description: Who hosts the runner a job runs on, as GitHub's build type records it.
+    see_also:
+      - https://actions.github.io/buildtypes/workflow/v1
+    permissible_values:
+      github-hosted:
+        title: GitHub-hosted
+        description: A runner that GitHub hosts.
+      self-hosted:
+        title: Self-hosted
+        description: A runner that the repository's owner hosts.

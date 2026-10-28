@@ -4,8 +4,12 @@
 # name in this file is not possible until a known issue in just is fixed,
 # https://github.com/casey/just/issues/2540
 
-# Generate a single self-contained merged LinkML YAML with all imports resolved
-[group('model development - extended')]
-gen-merged-schema:
-  mkdir -p {{dest}}/linkml
-  uv run gen-linkml --mergeimports -o {{dest}}/linkml/{{schema_name}}.merged.linkml.yaml {{source_schema_path}}
+# ============ The merged schema for the docs site ============
+
+# `just gen-doc` writes docs/schema/github_actions.yaml with the modules'
+# elements folded in but the `imports:` list kept, so a tool that loads it
+# looks for the modules beside it. This file has no imports at all: the one to
+# vendor or load offline. Run it after gen-doc.
+[group('model development')]
+gen-merged:
+  uv run gen-linkml --mergeimports -f yaml {{source_schema_path}} > docs/schema/{{schema_name}}_merged.yaml

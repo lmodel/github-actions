@@ -1,0 +1,2515 @@
+{
+  "name": "github_actions",
+  "annotations": [
+    {
+      "tag": "schemastore_commit",
+      "value": "f7c2f3bcb512651bd980ed6896639ea8ded9ddf0"
+    },
+    {
+      "tag": "rest_api_version",
+      "value": "2026-03-10"
+    },
+    {
+      "tag": "docs_read",
+      "value": "2026-10-28"
+    }
+  ],
+  "description": "A LinkML model of what GitHub Actions files and repository rulesets state: workflows and their jobs, reusable workflows with their inputs, outputs and secrets, actions with their runtimes, and the rulesets and required status checks that tie a workflow's jobs to the refs a ruleset protects.",
+  "title": "GitHub Actions workflows, actions and repository rulesets",
+  "comments": [
+    "GitHub's documentation is versionless, so the version is the date its pages were read. With the SchemaStore commit in source and the REST API version in the annotations, it says which state of GitHub the model renders; scripts/check_upstream_release.py reads the same three pins and reports when one moves. The release tags are the schema's own versions.",
+    "github_actions_core imports only the LinkML types, the workflow and action modules import the core, the rules module imports the workflow module, and this file adds only the document root, so an importer can take one module."
+  ],
+  "source": "https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json",
+  "see_also": [
+    "https://lmodel.github.io/github-actions",
+    "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+    "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax",
+    "https://docs.github.com/en/rest/repos/rules",
+    "https://docs.github.com/en/rest/checks/runs",
+    "https://actions.github.io/buildtypes/workflow/v1"
+  ],
+  "id": "https://w3id.org/lmodel/github-actions",
+  "version": "2026-10-28",
+  "imports": [
+    "linkml:types",
+    "./github_actions_core",
+    "./github_actions_workflow",
+    "./github_actions_action",
+    "./github_actions_rules"
+  ],
+  "license": "Apache-2.0",
+  "prefixes": [
+    {
+      "prefix_prefix": "linkml",
+      "prefix_reference": "https://w3id.org/linkml/"
+    },
+    {
+      "prefix_prefix": "gha",
+      "prefix_reference": "https://w3id.org/lmodel/github-actions/"
+    }
+  ],
+  "default_prefix": "gha",
+  "default_range": "string",
+  "types": [
+    {
+      "name": "string",
+      "definition_uri": "https://w3id.org/linkml/String",
+      "description": "A character string",
+      "notes": [
+        "In RDF serializations, a slot with range of string is treated as a literal or type xsd:string. If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"string\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Text"
+      ],
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "integer",
+      "definition_uri": "https://w3id.org/linkml/Integer",
+      "description": "An integer",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"integer\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Integer"
+      ],
+      "base": "int",
+      "uri": "http://www.w3.org/2001/XMLSchema#integer",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "boolean",
+      "definition_uri": "https://w3id.org/linkml/Boolean",
+      "description": "A binary (true or false) value",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"boolean\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Boolean"
+      ],
+      "base": "Bool",
+      "uri": "http://www.w3.org/2001/XMLSchema#boolean",
+      "repr": "bool",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "float",
+      "definition_uri": "https://w3id.org/linkml/Float",
+      "description": "A real number that conforms to the xsd:float specification",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"float\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Float"
+      ],
+      "base": "float",
+      "uri": "http://www.w3.org/2001/XMLSchema#float",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "double",
+      "definition_uri": "https://w3id.org/linkml/Double",
+      "description": "A real number that conforms to the xsd:double specification",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"double\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "close_mappings": [
+        "schema:Float"
+      ],
+      "base": "float",
+      "uri": "http://www.w3.org/2001/XMLSchema#double",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "decimal",
+      "definition_uri": "https://w3id.org/linkml/Decimal",
+      "description": "A real number with arbitrary precision that conforms to the xsd:decimal specification",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"decimal\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "broad_mappings": [
+        "schema:Number"
+      ],
+      "base": "Decimal",
+      "uri": "http://www.w3.org/2001/XMLSchema#decimal",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "time",
+      "definition_uri": "https://w3id.org/linkml/Time",
+      "description": "A time object represents a (local) time of day, independent of any particular day",
+      "notes": [
+        "URI is dateTime because OWL reasoners do not work with straight date or time",
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"time\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Time"
+      ],
+      "base": "XSDTime",
+      "uri": "http://www.w3.org/2001/XMLSchema#time",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "date",
+      "definition_uri": "https://w3id.org/linkml/Date",
+      "description": "a date (year, month and day) in an idealized calendar",
+      "notes": [
+        "URI is dateTime because OWL reasoners don't work with straight date or time",
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"date\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:Date"
+      ],
+      "base": "XSDDate",
+      "uri": "http://www.w3.org/2001/XMLSchema#date",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "datetime",
+      "definition_uri": "https://w3id.org/linkml/Datetime",
+      "description": "The combination of a date and time",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"datetime\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "exact_mappings": [
+        "schema:DateTime"
+      ],
+      "base": "XSDDateTime",
+      "uri": "http://www.w3.org/2001/XMLSchema#dateTime",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "date_or_datetime",
+      "definition_uri": "https://w3id.org/linkml/DateOrDatetime",
+      "description": "Either a date or a datetime",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"date_or_datetime\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "str",
+      "uri": "https://w3id.org/linkml/DateOrDatetime",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "uriorcurie",
+      "definition_uri": "https://w3id.org/linkml/Uriorcurie",
+      "description": "a URI or a CURIE",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"uriorcurie\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "URIorCURIE",
+      "uri": "http://www.w3.org/2001/XMLSchema#anyURI",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "curie",
+      "definition_uri": "https://w3id.org/linkml/Curie",
+      "conforms_to": "https://www.w3.org/TR/curie/",
+      "description": "a compact URI",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"curie\"."
+      ],
+      "comments": [
+        "in RDF serializations this MUST be expanded to a URI",
+        "in non-RDF serializations MAY be serialized as the compact representation"
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "Curie",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "uri",
+      "definition_uri": "https://w3id.org/linkml/Uri",
+      "conforms_to": "https://www.ietf.org/rfc/rfc3987.txt",
+      "description": "a complete URI",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"uri\"."
+      ],
+      "comments": [
+        "in RDF serializations a slot with range of uri is treated as a literal or type xsd:anyURI unless it is an identifier or a reference to an identifier, in which case it is translated directly to a node"
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "close_mappings": [
+        "schema:URL"
+      ],
+      "base": "URI",
+      "uri": "http://www.w3.org/2001/XMLSchema#anyURI",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "ncname",
+      "definition_uri": "https://w3id.org/linkml/Ncname",
+      "description": "Prefix part of CURIE",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"ncname\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "NCName",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "objectidentifier",
+      "definition_uri": "https://w3id.org/linkml/Objectidentifier",
+      "description": "A URI or CURIE that represents an object in the model.",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"objectidentifier\"."
+      ],
+      "comments": [
+        "Used for inheritance and type checking"
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "ElementIdentifier",
+      "uri": "http://www.w3.org/ns/shex#iri",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "nodeidentifier",
+      "definition_uri": "https://w3id.org/linkml/Nodeidentifier",
+      "description": "A URI, CURIE or BNODE that represents a node in a model.",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"nodeidentifier\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "NodeIdentifier",
+      "uri": "http://www.w3.org/ns/shex#nonLiteral",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "jsonpointer",
+      "definition_uri": "https://w3id.org/linkml/Jsonpointer",
+      "conforms_to": "https://datatracker.ietf.org/doc/html/rfc6901",
+      "description": "A string encoding a JSON Pointer. The value of the string MUST conform to JSON Point syntax and SHOULD dereference to a valid object within the current instance document when encoded in tree form.",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"jsonpointer\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "jsonpath",
+      "definition_uri": "https://w3id.org/linkml/Jsonpath",
+      "conforms_to": "https://www.ietf.org/archive/id/draft-goessner-dispatch-jsonpath-00.html",
+      "description": "A string encoding a JSON Path. The value of the string MUST conform to JSON Point syntax and SHOULD dereference to zero or more valid objects within the current instance document when encoded in tree form.",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"jsonpath\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "sparqlpath",
+      "definition_uri": "https://w3id.org/linkml/Sparqlpath",
+      "conforms_to": "https://www.w3.org/TR/sparql11-query/#propertypaths",
+      "description": "A string encoding a SPARQL Property Path. The value of the string MUST conform to SPARQL syntax and SHOULD dereference to zero or more valid objects within the current instance document when encoded as RDF.",
+      "notes": [
+        "If you are authoring schemas in LinkML YAML, the type is referenced with the lower case \"sparqlpath\"."
+      ],
+      "from_schema": "https://w3id.org/linkml/types",
+      "imported_from": "linkml:types",
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "repr": "str",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "gha_identifier",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaIdentifier",
+      "description": "A key GitHub accepts for a job, an input, an output or a secret: a letter or an underscore, then letters, digits, hyphens or underscores.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_id"
+      ],
+      "typeof": "string",
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+      "@type": "TypeDefinition"
+    },
+    {
+      "name": "gha_permission",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaPermission",
+      "description": "One grant of access to a workflow's GITHUB_TOKEN, written as the scope, a colon and `read`, `write` or `none`; `read-all`, `write-all` or `{}` stands alone for the shorthand of the same name or the empty map.",
+      "comments": [
+        "A pattern rather than an enumeration of scopes, because GitHub adds scopes; tests/test_schema_rules.py checks that it admits every scope SchemaStore's schema lists at the pinned commit."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions"
+      ],
+      "typeof": "string",
+      "base": "str",
+      "uri": "http://www.w3.org/2001/XMLSchema#string",
+      "pattern": "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$",
+      "@type": "TypeDefinition"
+    }
+  ],
+  "enums": [
+    {
+      "name": "GhaWorkflowInputType",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflowInputType",
+      "description": "The types a reusable workflow's input may state.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype"
+      ],
+      "permissible_values": [
+        {
+          "text": "boolean",
+          "description": "True or false."
+        },
+        {
+          "text": "number",
+          "description": "A number."
+        },
+        {
+          "text": "string",
+          "description": "A string."
+        }
+      ]
+    },
+    {
+      "name": "GhaRunnerEnvironment",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRunnerEnvironment",
+      "description": "Who hosts the runner a job runs on, as GitHub's build type records it.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://actions.github.io/buildtypes/workflow/v1"
+      ],
+      "permissible_values": [
+        {
+          "text": "github-hosted",
+          "description": "A runner that GitHub hosts.",
+          "title": "GitHub-hosted"
+        },
+        {
+          "text": "self-hosted",
+          "description": "A runner that the repository's owner hosts.",
+          "title": "Self-hosted"
+        }
+      ]
+    },
+    {
+      "name": "GhaActionRuntime",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaActionRuntime",
+      "description": "The runtimes an action's `runs.using` may name.",
+      "comments": [
+        "SchemaStore's schema at the pinned commit also accepts node12 and node16, which GitHub's metadata syntax page no longer lists; tests/test_schema_rules.py checks that those two are the only difference."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-composite-actions",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-docker-container-actions"
+      ],
+      "permissible_values": [
+        {
+          "text": "composite",
+          "description": "Steps that run in the calling job, as a workflow's steps do."
+        },
+        {
+          "text": "docker",
+          "description": "A Docker container."
+        },
+        {
+          "text": "node20",
+          "description": "JavaScript, run by Node.js 20."
+        },
+        {
+          "text": "node24",
+          "description": "JavaScript, run by Node.js 24."
+        }
+      ]
+    },
+    {
+      "name": "GhaRulesetSourceType",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRulesetSourceType",
+      "description": "What can own a ruleset, as the REST field `source_type` names it.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules"
+      ],
+      "permissible_values": [
+        {
+          "text": "Repository",
+          "description": "A repository's own ruleset."
+        },
+        {
+          "text": "Organization",
+          "description": "An organization's ruleset, applied to the repositories it targets."
+        },
+        {
+          "text": "Enterprise",
+          "description": "An enterprise's ruleset, applied to the repositories it targets."
+        }
+      ]
+    },
+    {
+      "name": "GhaRulesetTarget",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRulesetTarget",
+      "description": "What a ruleset applies to, as the REST field `target` names it.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules"
+      ],
+      "permissible_values": [
+        {
+          "text": "branch",
+          "description": "Branches; GitHub's default."
+        },
+        {
+          "text": "tag",
+          "description": "Tags."
+        },
+        {
+          "text": "push",
+          "description": "Pushes, by the files they change."
+        }
+      ]
+    },
+    {
+      "name": "GhaRulesetEnforcement",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRulesetEnforcement",
+      "description": "Whether GitHub enforces a ruleset, as the REST field `enforcement` names it.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules"
+      ],
+      "permissible_values": [
+        {
+          "text": "active",
+          "description": "Enforced."
+        },
+        {
+          "text": "evaluate",
+          "description": "Evaluated and reported but not enforced, so administrators can test its rules; only on GitHub Enterprise."
+        },
+        {
+          "text": "disabled",
+          "description": "Neither enforced nor evaluated."
+        }
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "name": "description",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/description",
+      "description": "What the input, output or secret is for, as the file describes it.",
+      "comments": [
+        "It means what LOKF's description means and carries the same IRI, so lokf adapt folds it into LOKF's slot and a knowledge bundle reads one description key."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "http://schema.org/description"
+      ],
+      "slot_uri": "http://schema.org/description",
+      "owner": "GhaWorkflowSecret",
+      "domain_of": [
+        "GhaInput",
+        "GhaOutput",
+        "GhaWorkflowSecret"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "inputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "description": "The inputs that the reusable workflow or the action declares.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaReusableWorkflow",
+        "GhaAction"
+      ],
+      "range": "GhaInput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "outputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "description": "The outputs that the reusable workflow or the action declares.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaReusableWorkflow",
+        "GhaAction"
+      ],
+      "range": "GhaOutput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "output_expression",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/output_expression",
+      "description": "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.",
+      "comments": [
+        "A slot rather than an attribute because GhaWorkflowOutput refines it."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/output_expression"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/output_expression",
+      "owner": "GhaOutput",
+      "domain_of": [
+        "GhaOutput"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "triggers",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "description": "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.",
+      "comments": [
+        "A slot rather than an attribute because GhaReusableWorkflow refines it; a pattern rather than an enumeration, because GitHub adds events."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+      ],
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/triggers"
+      ],
+      "related_mappings": [
+        "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/trigger"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "pattern": "^[a-z_]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaDocument__workflows",
+      "description": "The workflows other than the reusable ones.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/workflows",
+      "alias": "workflows",
+      "owner": "GhaDocument",
+      "domain_of": [
+        "GhaDocument"
+      ],
+      "range": "GhaWorkflow",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaDocument__reusable_workflows",
+      "description": "The reusable workflows.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/reusable_workflows",
+      "alias": "reusable_workflows",
+      "owner": "GhaDocument",
+      "domain_of": [
+        "GhaDocument"
+      ],
+      "range": "GhaReusableWorkflow",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaDocument__actions",
+      "description": "The actions.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/actions",
+      "alias": "actions",
+      "owner": "GhaDocument",
+      "domain_of": [
+        "GhaDocument"
+      ],
+      "range": "GhaAction",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaDocument__rulesets",
+      "description": "The rulesets.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/rulesets",
+      "alias": "rulesets",
+      "owner": "GhaDocument",
+      "domain_of": [
+        "GhaDocument"
+      ],
+      "range": "GhaRepositoryRuleset",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaDocument__required_checks",
+      "description": "The status checks the rulesets require.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/required_checks",
+      "alias": "required_checks",
+      "owner": "GhaDocument",
+      "domain_of": [
+        "GhaDocument"
+      ],
+      "range": "GhaRequiredStatusCheck",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredMixin__required",
+      "description": "Whether a caller must supply a value.",
+      "comments": [
+        "An attribute rather than a slot: it carries LOKF's IRI for required, and lokf adapt keeps an attribute's name, where it would rename a slot that shares one with lokf.yaml."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "http://schema.org/valueRequired"
+      ],
+      "slot_uri": "http://schema.org/valueRequired",
+      "alias": "required",
+      "owner": "GhaRequiredMixin",
+      "domain_of": [
+        "GhaRequiredMixin"
+      ],
+      "range": "boolean",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaInput__input_id",
+      "description": "The key a caller writes in its `with` map.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/input_id",
+      "alias": "input_id",
+      "owner": "GhaInput",
+      "domain_of": [
+        "GhaInput"
+      ],
+      "range": "gha_identifier",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaInput__default",
+      "description": "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/default",
+      "alias": "default",
+      "owner": "GhaInput",
+      "domain_of": [
+        "GhaInput"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaOutput__output_id",
+      "description": "The key a caller reads the output by.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/output_id",
+      "alias": "output_id",
+      "owner": "GhaOutput",
+      "domain_of": [
+        "GhaOutput"
+      ],
+      "range": "gha_identifier",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflow__workflow_uri",
+      "description": "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.",
+      "comments": [
+        "GitHub's build type forms a reusable workflow's builder.id from this address, followed by `@` and the ref."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/workflow_uri",
+      "identifier": true,
+      "alias": "workflow_uri",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "uri",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflow__workflow_path",
+      "description": "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://actions.github.io/buildtypes/workflow/v1"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/workflow_path",
+      "alias": "workflow_path",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "string",
+      "required": true,
+      "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflow__workflow_repository",
+      "description": "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://actions.github.io/buildtypes/workflow/v1"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/workflow_repository",
+      "alias": "workflow_repository",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "uri",
+      "pattern": "^https://[^/]+/[^/]+/[^/]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflow__permissions",
+      "description": "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/permissions",
+      "alias": "permissions",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "gha_permission",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflow__jobs",
+      "description": "The jobs under the file's `jobs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/jobs",
+      "alias": "jobs",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "range": "GhaWorkflowJob",
+      "required": true,
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaReusableWorkflow__secrets",
+      "description": "The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/secrets",
+      "alias": "secrets",
+      "owner": "GhaReusableWorkflow",
+      "domain_of": [
+        "GhaReusableWorkflow"
+      ],
+      "range": "GhaWorkflowSecret",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__job_id",
+      "description": "The job's key under `jobs`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/job_id",
+      "alias": "job_id",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "gha_identifier",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__job_name",
+      "description": "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/job_name",
+      "alias": "job_name",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__calls",
+      "description": "The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/calls",
+      "alias": "calls",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "string",
+      "pattern": "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__runs_on",
+      "description": "The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/runs_on",
+      "alias": "runs_on",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__runner_group",
+      "description": "The runner group the job's `runs-on.group` names.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/runner_group",
+      "alias": "runner_group",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__runner_environment",
+      "description": "Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/runner_environment",
+      "alias": "runner_environment",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "GhaRunnerEnvironment",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowJob__job_permissions",
+      "description": "The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/job_permissions",
+      "alias": "job_permissions",
+      "owner": "GhaWorkflowJob",
+      "domain_of": [
+        "GhaWorkflowJob"
+      ],
+      "range": "gha_permission",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowInput__input_type",
+      "description": "The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/input_type",
+      "alias": "input_type",
+      "owner": "GhaWorkflowInput",
+      "domain_of": [
+        "GhaWorkflowInput"
+      ],
+      "range": "GhaWorkflowInputType",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaWorkflowSecret__secret_id",
+      "description": "The key a caller passes the secret under.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/secret_id",
+      "alias": "secret_id",
+      "owner": "GhaWorkflowSecret",
+      "domain_of": [
+        "GhaWorkflowSecret"
+      ],
+      "range": "gha_identifier",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaAction__action_uri",
+      "description": "The action's address on its forge without a ref: `https://github.com/<owner>/<repo>`, followed by the directory's path when the action is not at the repository root. A step's `uses` names it as `<owner>/<repo>/<path>@<ref>`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/action_uri",
+      "identifier": true,
+      "alias": "action_uri",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaAction"
+      ],
+      "range": "uri",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaAction__action_path",
+      "description": "The metadata file's path from the repository root.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/action_path",
+      "alias": "action_path",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaAction"
+      ],
+      "range": "string",
+      "required": true,
+      "pattern": "^(.+/)?action\\.ya?ml$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaAction__using",
+      "description": "The runtime that executes the action, its `runs.using` value.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/using",
+      "alias": "using",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaAction"
+      ],
+      "range": "GhaActionRuntime",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaActionInput__deprecation_message",
+      "description": "The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage"
+      ],
+      "slot_uri": "https://w3id.org/lmodel/github-actions/deprecation_message",
+      "alias": "deprecation_message",
+      "owner": "GhaActionInput",
+      "domain_of": [
+        "GhaActionInput"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ruleset_uri",
+      "description": "The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ruleset_uri",
+      "identifier": true,
+      "alias": "ruleset_uri",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "uri",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ruleset_id",
+      "description": "The ruleset's numeric `id` in the REST API.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ruleset_id",
+      "alias": "ruleset_id",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "integer",
+      "minimum_value": 1,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ruleset_source_type",
+      "description": "What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ruleset_source_type",
+      "alias": "ruleset_source_type",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "GhaRulesetSourceType",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ruleset_source",
+      "description": "The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ruleset_source",
+      "alias": "ruleset_source",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "string",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ruleset_target",
+      "description": "What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ruleset_target",
+      "alias": "ruleset_target",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "GhaRulesetTarget",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__enforcement",
+      "description": "Whether GitHub enforces the ruleset, the REST field `enforcement`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/enforcement",
+      "alias": "enforcement",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "GhaRulesetEnforcement",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ref_name_include",
+      "description": "The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ref_name_include",
+      "alias": "ref_name_include",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__ref_name_exclude",
+      "description": "The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/ref_name_exclude",
+      "alias": "ref_name_exclude",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__bypass_actors",
+      "description": "The actors who may bypass the ruleset.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/bypass_actors",
+      "alias": "bypass_actors",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "GhaBypassActor",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__rule_types",
+      "description": "The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.",
+      "comments": [
+        "A pattern rather than an enumeration, because GitHub adds rule types."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/rule_types",
+      "alias": "rule_types",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "pattern": "^[a-z_]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRepositoryRuleset__requires_check",
+      "description": "The status checks the ruleset's required_status_checks rule requires, each a concept of its own.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/requires_check",
+      "alias": "requires_check",
+      "owner": "GhaRepositoryRuleset",
+      "domain_of": [
+        "GhaRepositoryRuleset"
+      ],
+      "range": "GhaRequiredStatusCheck",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaBypassActor__actor_id",
+      "description": "The actor's numeric id; absent for an actor type GitHub takes no id for, such as DeployKey or OrganizationAdmin.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/actor_id",
+      "alias": "actor_id",
+      "owner": "GhaBypassActor",
+      "domain_of": [
+        "GhaBypassActor"
+      ],
+      "range": "integer",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaBypassActor__actor_type",
+      "description": "The kind of actor, the REST field `actor_type`, such as `Team`, `RepositoryRole`, `Integration` or `OrganizationAdmin`.",
+      "comments": [
+        "A pattern rather than an enumeration, because GitHub adds actor types."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/actor_type",
+      "alias": "actor_type",
+      "owner": "GhaBypassActor",
+      "domain_of": [
+        "GhaBypassActor"
+      ],
+      "range": "string",
+      "required": true,
+      "pattern": "^[A-Z][A-Za-z]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaBypassActor__bypass_mode",
+      "description": "When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`.",
+      "comments": [
+        "A pattern rather than an enumeration, because GitHub adds bypass modes."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/bypass_mode",
+      "alias": "bypass_mode",
+      "owner": "GhaBypassActor",
+      "domain_of": [
+        "GhaBypassActor"
+      ],
+      "range": "string",
+      "pattern": "^[a-z_]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__check_uri",
+      "description": "An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/check_uri",
+      "identifier": true,
+      "alias": "check_uri",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "uri",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__check_context",
+      "description": "The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/check_context",
+      "alias": "check_context",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "string",
+      "required": true,
+      "pattern": "\\S",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__integration_id",
+      "description": "The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/integration_id",
+      "alias": "integration_id",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "integer",
+      "minimum_value": 1,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__strict_policy",
+      "description": "Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/strict_policy",
+      "alias": "strict_policy",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "boolean",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__do_not_enforce_on_create",
+      "description": "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/do_not_enforce_on_create",
+      "alias": "do_not_enforce_on_create",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "boolean",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__job_path",
+      "description": "The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/job_path",
+      "list_elements_ordered": true,
+      "alias": "job_path",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "gha_identifier",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__skip_conditions",
+      "description": "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/skip_conditions",
+      "alias": "skip_conditions",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "string",
+      "multivalued": true,
+      "pattern": "^(on|jobs)\\.\\S+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "ghaRequiredStatusCheck__emitted_by",
+      "description": "The top-level workflow whose job reports the check.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/emitted_by",
+      "alias": "emitted_by",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "range": "GhaWorkflow",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaWorkflow_triggers",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "description": "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.",
+      "comments": [
+        "A slot rather than an attribute because GhaReusableWorkflow refines it; a pattern rather than an enumeration, because GitHub adds events."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+      ],
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/triggers"
+      ],
+      "related_mappings": [
+        "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/trigger"
+      ],
+      "is_a": "triggers",
+      "domain": "GhaWorkflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "alias": "triggers",
+      "owner": "GhaWorkflow",
+      "domain_of": [
+        "GhaWorkflow"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "triggers",
+      "range": "string",
+      "required": true,
+      "multivalued": true,
+      "pattern": "^[a-z_]+$",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaReusableWorkflow_triggers",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "description": "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.",
+      "comments": [
+        "A slot rather than an attribute because GhaReusableWorkflow refines it; a pattern rather than an enumeration, because GitHub adds events."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+      ],
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/triggers"
+      ],
+      "related_mappings": [
+        "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/trigger"
+      ],
+      "is_a": "GhaWorkflow_triggers",
+      "domain": "GhaReusableWorkflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/triggers",
+      "alias": "triggers",
+      "owner": "GhaReusableWorkflow",
+      "domain_of": [
+        "GhaReusableWorkflow"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "triggers",
+      "range": "string",
+      "required": true,
+      "multivalued": true,
+      "pattern": "^[a-z_]+$",
+      "has_member": {
+        "equals_string": "workflow_call",
+        "@type": "AnonymousSlotExpression"
+      },
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaReusableWorkflow_inputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "description": "The inputs under the file's `on.workflow_call.inputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "is_a": "inputs",
+      "domain": "GhaReusableWorkflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "alias": "inputs",
+      "owner": "GhaReusableWorkflow",
+      "domain_of": [
+        "GhaReusableWorkflow"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "inputs",
+      "range": "GhaWorkflowInput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaReusableWorkflow_outputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "description": "The outputs under the file's `on.workflow_call.outputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "is_a": "outputs",
+      "domain": "GhaReusableWorkflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "alias": "outputs",
+      "owner": "GhaReusableWorkflow",
+      "domain_of": [
+        "GhaReusableWorkflow"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "outputs",
+      "range": "GhaWorkflowOutput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaWorkflowOutput_output_expression",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/output_expression",
+      "description": "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.",
+      "comments": [
+        "A slot rather than an attribute because GhaWorkflowOutput refines it."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/output_expression"
+      ],
+      "is_a": "output_expression",
+      "domain": "GhaWorkflowOutput",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/output_expression",
+      "alias": "output_expression",
+      "owner": "GhaWorkflowOutput",
+      "domain_of": [
+        "GhaWorkflowOutput"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "output_expression",
+      "range": "string",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaAction_inputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "description": "The inputs under the metadata file's `inputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "is_a": "inputs",
+      "domain": "GhaAction",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/inputs",
+      "alias": "inputs",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaAction"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "inputs",
+      "range": "GhaActionInput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaAction_outputs",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "description": "The outputs under the metadata file's `outputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "is_a": "outputs",
+      "domain": "GhaAction",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/outputs",
+      "alias": "outputs",
+      "owner": "GhaAction",
+      "domain_of": [
+        "GhaAction"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "outputs",
+      "range": "GhaActionOutput",
+      "multivalued": true,
+      "inlined": true,
+      "inlined_as_list": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaActionInput_description",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/description",
+      "description": "What the input, output or secret is for, as the file describes it.",
+      "comments": [
+        "It means what LOKF's description means and carries the same IRI, so lokf adapt folds it into LOKF's slot and a knowledge bundle reads one description key."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "http://schema.org/description"
+      ],
+      "is_a": "description",
+      "domain": "GhaActionInput",
+      "slot_uri": "http://schema.org/description",
+      "alias": "description",
+      "owner": "GhaActionInput",
+      "domain_of": [
+        "GhaActionInput"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "description",
+      "range": "string",
+      "required": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "GhaActionOutput_description",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/description",
+      "description": "What the input, output or secret is for, as the file describes it.",
+      "comments": [
+        "It means what LOKF's description means and carries the same IRI, so lokf adapt folds it into LOKF's slot and a knowledge bundle reads one description key."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mappings": [
+        "http://schema.org/description"
+      ],
+      "is_a": "description",
+      "domain": "GhaActionOutput",
+      "slot_uri": "http://schema.org/description",
+      "alias": "description",
+      "owner": "GhaActionOutput",
+      "domain_of": [
+        "GhaActionOutput"
+      ],
+      "is_usage_slot": true,
+      "usage_slot_name": "description",
+      "range": "string",
+      "required": true,
+      "@type": "SlotDefinition"
+    }
+  ],
+  "classes": [
+    {
+      "name": "GhaDocument",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaDocument",
+      "description": "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories.",
+      "from_schema": "https://w3id.org/lmodel/github-actions",
+      "exact_mappings": [
+        "gha:Document"
+      ],
+      "slots": [
+        "ghaDocument__workflows",
+        "ghaDocument__reusable_workflows",
+        "ghaDocument__actions",
+        "ghaDocument__rulesets",
+        "ghaDocument__required_checks"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "workflows",
+          "description": "The workflows other than the reusable ones.",
+          "range": "GhaWorkflow",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "reusable_workflows",
+          "description": "The reusable workflows.",
+          "range": "GhaReusableWorkflow",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "actions",
+          "description": "The actions.",
+          "range": "GhaAction",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "rulesets",
+          "description": "The rulesets.",
+          "range": "GhaRepositoryRuleset",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "required_checks",
+          "description": "The status checks the rulesets require.",
+          "range": "GhaRequiredStatusCheck",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/Document",
+      "tree_root": true,
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaRequiredMixin",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRequiredMixin",
+      "description": "The field that says whether a caller must supply a value.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "mixin": true,
+      "slots": [
+        "ghaRequiredMixin__required"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "required",
+          "description": "Whether a caller must supply a value.",
+          "comments": [
+            "An attribute rather than a slot: it carries LOKF's IRI for required, and lokf adapt keeps an attribute's name, where it would rename a slot that shares one with lokf.yaml."
+          ],
+          "slot_uri": "schema:valueRequired",
+          "range": "boolean",
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/GhaRequiredMixin",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaInput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaInput",
+      "description": "An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "exact_mappings": [
+        "gha:Input"
+      ],
+      "abstract": true,
+      "mixins": [
+        "GhaRequiredMixin"
+      ],
+      "slots": [
+        "description",
+        "ghaInput__input_id",
+        "ghaInput__default",
+        "ghaRequiredMixin__required"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "input_id",
+          "description": "The key a caller writes in its `with` map.",
+          "range": "gha_identifier",
+          "required": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "default",
+          "description": "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.",
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/Input",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaOutput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaOutput",
+      "description": "An output that a reusable workflow or an action declares for the job or step that calls it to read.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_core",
+      "exact_mappings": [
+        "gha:Output"
+      ],
+      "abstract": true,
+      "slots": [
+        "description",
+        "output_expression",
+        "ghaOutput__output_id"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "output_id",
+          "description": "The key a caller reads the output by.",
+          "range": "gha_identifier",
+          "required": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/Output",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaWorkflow",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflow",
+      "description": "A workflow file in a repository's `.github/workflows` directory: the events that run it, the access its GITHUB_TOKEN gets, and its jobs.",
+      "comments": [
+        "SPDX 3.0.1's Build records one run of a build, such as a run of this workflow, so it is a related term and not a close one.",
+        "The ref a run checks the file out at belongs to the run, and GitHub's build type records it in provenance as workflow.ref; it is not a fact of the file, so it is not modelled here."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"
+      ],
+      "exact_mappings": [
+        "gha:Workflow"
+      ],
+      "close_mappings": [
+        "cdx:workflow"
+      ],
+      "related_mappings": [
+        "spdx_build:Build"
+      ],
+      "slots": [
+        "GhaWorkflow_triggers",
+        "ghaWorkflow__workflow_uri",
+        "ghaWorkflow__workflow_path",
+        "ghaWorkflow__workflow_repository",
+        "ghaWorkflow__permissions",
+        "ghaWorkflow__jobs"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "workflow_uri",
+          "description": "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.",
+          "comments": [
+            "GitHub's build type forms a reusable workflow's builder.id from this address, followed by `@` and the ref."
+          ],
+          "identifier": true,
+          "range": "uri",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "workflow_path",
+          "description": "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.",
+          "see_also": [
+            "https://actions.github.io/buildtypes/workflow/v1"
+          ],
+          "required": true,
+          "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "workflow_repository",
+          "description": "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.",
+          "see_also": [
+            "https://actions.github.io/buildtypes/workflow/v1"
+          ],
+          "range": "uri",
+          "pattern": "^https://[^/]+/[^/]+/[^/]+$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "permissions",
+          "description": "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.",
+          "range": "gha_permission",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "jobs",
+          "description": "The jobs under the file's `jobs` key.",
+          "range": "GhaWorkflowJob",
+          "required": true,
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/Workflow",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaReusableWorkflow",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaReusableWorkflow",
+      "description": "A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read.",
+      "comments": [
+        "When it generates provenance it is the builder: GitHub's build type sets builder.id to the server's address followed by the job's workflow reference, which names this file and its ref."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call"
+      ],
+      "exact_mappings": [
+        "gha:ReusableWorkflow"
+      ],
+      "is_a": "GhaWorkflow",
+      "slots": [
+        "ghaWorkflow__workflow_uri",
+        "ghaWorkflow__workflow_path",
+        "ghaWorkflow__workflow_repository",
+        "ghaWorkflow__permissions",
+        "ghaWorkflow__jobs",
+        "GhaReusableWorkflow_inputs",
+        "GhaReusableWorkflow_outputs",
+        "ghaReusableWorkflow__secrets",
+        "GhaReusableWorkflow_triggers"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "secrets",
+          "description": "The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded.",
+          "range": "GhaWorkflowSecret",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/ReusableWorkflow",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaWorkflowJob",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflowJob",
+      "description": "A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs"
+      ],
+      "exact_mappings": [
+        "gha:WorkflowJob"
+      ],
+      "slots": [
+        "ghaWorkflowJob__job_id",
+        "ghaWorkflowJob__job_name",
+        "ghaWorkflowJob__calls",
+        "ghaWorkflowJob__runs_on",
+        "ghaWorkflowJob__runner_group",
+        "ghaWorkflowJob__runner_environment",
+        "ghaWorkflowJob__job_permissions"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "job_id",
+          "description": "The job's key under `jobs`.",
+          "range": "gha_identifier",
+          "required": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "job_name",
+          "description": "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname"
+          ],
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "calls",
+          "description": "The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses"
+          ],
+          "pattern": "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "runs_on",
+          "description": "The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on"
+          ],
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "runner_group",
+          "description": "The runner group the job's `runs-on.group` names.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group"
+          ],
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "runner_environment",
+          "description": "Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run.",
+          "range": "GhaRunnerEnvironment",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "job_permissions",
+          "description": "The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions"
+          ],
+          "range": "gha_permission",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/WorkflowJob",
+      "rules": [
+        {
+          "preconditions": {
+            "slot_conditions": [
+              {
+                "name": "calls",
+                "value_presence": "PRESENT",
+                "@type": "SlotDefinition"
+              }
+            ],
+            "@type": "AnonymousClassExpression"
+          },
+          "postconditions": {
+            "slot_conditions": [
+              {
+                "name": "runs_on",
+                "value_presence": "ABSENT",
+                "@type": "SlotDefinition"
+              }
+            ],
+            "@type": "AnonymousClassExpression"
+          },
+          "description": "A job that calls a reusable workflow names no runner labels: a calling job takes no `runs-on` key, and the called workflow's jobs choose their own runners.",
+          "@type": "ClassRule"
+        },
+        {
+          "preconditions": {
+            "slot_conditions": [
+              {
+                "name": "calls",
+                "value_presence": "PRESENT",
+                "@type": "SlotDefinition"
+              }
+            ],
+            "@type": "AnonymousClassExpression"
+          },
+          "postconditions": {
+            "slot_conditions": [
+              {
+                "name": "runner_group",
+                "value_presence": "ABSENT",
+                "@type": "SlotDefinition"
+              }
+            ],
+            "@type": "AnonymousClassExpression"
+          },
+          "description": "A job that calls a reusable workflow names no runner group.",
+          "@type": "ClassRule"
+        }
+      ],
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaWorkflowInput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflowInput",
+      "description": "An input under a reusable workflow's `on.workflow_call.inputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs"
+      ],
+      "exact_mappings": [
+        "gha:WorkflowInput"
+      ],
+      "is_a": "GhaInput",
+      "slots": [
+        "description",
+        "ghaInput__input_id",
+        "ghaInput__default",
+        "ghaRequiredMixin__required",
+        "ghaWorkflowInput__input_type"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "input_type",
+          "description": "The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype"
+          ],
+          "range": "GhaWorkflowInputType",
+          "required": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/WorkflowInput",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaWorkflowOutput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflowOutput",
+      "description": "An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_calloutputs"
+      ],
+      "exact_mappings": [
+        "gha:WorkflowOutput"
+      ],
+      "is_a": "GhaOutput",
+      "slots": [
+        "description",
+        "ghaOutput__output_id",
+        "GhaWorkflowOutput_output_expression"
+      ],
+      "slot_usage": {},
+      "class_uri": "https://w3id.org/lmodel/github-actions/WorkflowOutput",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaWorkflowSecret",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaWorkflowSecret",
+      "description": "A secret under a reusable workflow's `on.workflow_call.secrets` key, by name; its value is never recorded.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets"
+      ],
+      "exact_mappings": [
+        "gha:WorkflowSecret"
+      ],
+      "mixins": [
+        "GhaRequiredMixin"
+      ],
+      "slots": [
+        "description",
+        "ghaWorkflowSecret__secret_id",
+        "ghaRequiredMixin__required"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "secret_id",
+          "description": "The key a caller passes the secret under.",
+          "range": "gha_identifier",
+          "required": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/WorkflowSecret",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaAction",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaAction",
+      "description": "An action: a directory whose `action.yml` or `action.yaml` file names its inputs, its outputs and the runtime that executes it. A workflow step runs it with `uses`.",
+      "comments": [
+        "SLSA counts the actions a build runs among its steps, which the tenant defines; an action is never a build's trust boundary, as a reusable workflow that signs provenance is.",
+        "The metadata file's name and description are the concept's title and description in a knowledge bundle, so the class adds neither."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax"
+      ],
+      "exact_mappings": [
+        "gha:Action"
+      ],
+      "close_mappings": [
+        "cdx:task"
+      ],
+      "slots": [
+        "GhaAction_inputs",
+        "GhaAction_outputs",
+        "ghaAction__action_uri",
+        "ghaAction__action_path",
+        "ghaAction__using"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "action_uri",
+          "description": "The action's address on its forge without a ref: `https://github.com/<owner>/<repo>`, followed by the directory's path when the action is not at the repository root. A step's `uses` names it as `<owner>/<repo>/<path>@<ref>`.",
+          "identifier": true,
+          "range": "uri",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "action_path",
+          "description": "The metadata file's path from the repository root.",
+          "required": true,
+          "pattern": "^(.+/)?action\\.ya?ml$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "using",
+          "description": "The runtime that executes the action, its `runs.using` value.",
+          "range": "GhaActionRuntime",
+          "required": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/Action",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaActionInput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaActionInput",
+      "description": "An input under an action's `inputs` key.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs"
+      ],
+      "exact_mappings": [
+        "gha:ActionInput"
+      ],
+      "is_a": "GhaInput",
+      "slots": [
+        "ghaInput__input_id",
+        "ghaInput__default",
+        "ghaRequiredMixin__required",
+        "ghaActionInput__deprecation_message",
+        "GhaActionInput_description"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "deprecation_message",
+          "description": "The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated.",
+          "see_also": [
+            "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage"
+          ],
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/ActionInput",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaActionOutput",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaActionOutput",
+      "description": "An output under an action's `outputs` key.",
+      "comments": [
+        "Only a composite action sets an output from an expression; a Docker or JavaScript action writes its outputs while it runs, so its outputs have no output_expression."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_action",
+      "see_also": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-docker-container-and-javascript-actions",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-composite-actions"
+      ],
+      "exact_mappings": [
+        "gha:ActionOutput"
+      ],
+      "is_a": "GhaOutput",
+      "slots": [
+        "output_expression",
+        "ghaOutput__output_id",
+        "GhaActionOutput_description"
+      ],
+      "slot_usage": {},
+      "class_uri": "https://w3id.org/lmodel/github-actions/ActionOutput",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaRepositoryRuleset",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRepositoryRuleset",
+      "description": "A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets.",
+      "comments": [
+        "SLSA's Source track calls such rules technical controls on protected named references, and asks that their meaning be documented and their enforcement recorded in attestations; the slsa schema models that evidence.",
+        "Of the rules' parameters, only those of required_status_checks are modelled, as GhaRequiredStatusCheck; rule_types says which other rules the ruleset holds."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules",
+        "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets"
+      ],
+      "exact_mappings": [
+        "gha:RepositoryRuleset"
+      ],
+      "slots": [
+        "ghaRepositoryRuleset__ruleset_uri",
+        "ghaRepositoryRuleset__ruleset_id",
+        "ghaRepositoryRuleset__ruleset_source_type",
+        "ghaRepositoryRuleset__ruleset_source",
+        "ghaRepositoryRuleset__ruleset_target",
+        "ghaRepositoryRuleset__enforcement",
+        "ghaRepositoryRuleset__ref_name_include",
+        "ghaRepositoryRuleset__ref_name_exclude",
+        "ghaRepositoryRuleset__bypass_actors",
+        "ghaRepositoryRuleset__rule_types",
+        "ghaRepositoryRuleset__requires_check"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "ruleset_uri",
+          "description": "The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.",
+          "identifier": true,
+          "range": "uri",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ruleset_id",
+          "description": "The ruleset's numeric `id` in the REST API.",
+          "range": "integer",
+          "minimum_value": 1,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ruleset_source_type",
+          "description": "What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.",
+          "range": "GhaRulesetSourceType",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ruleset_source",
+          "description": "The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ruleset_target",
+          "description": "What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.",
+          "range": "GhaRulesetTarget",
+          "required": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "enforcement",
+          "description": "Whether GitHub enforces the ruleset, the REST field `enforcement`.",
+          "range": "GhaRulesetEnforcement",
+          "required": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ref_name_include",
+          "description": "The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "ref_name_exclude",
+          "description": "The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "bypass_actors",
+          "description": "The actors who may bypass the ruleset.",
+          "range": "GhaBypassActor",
+          "multivalued": true,
+          "inlined": true,
+          "inlined_as_list": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "rule_types",
+          "description": "The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.",
+          "comments": [
+            "A pattern rather than an enumeration, because GitHub adds rule types."
+          ],
+          "multivalued": true,
+          "pattern": "^[a-z_]+$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "requires_check",
+          "description": "The status checks the ruleset's required_status_checks rule requires, each a concept of its own.",
+          "range": "GhaRequiredStatusCheck",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/RepositoryRuleset",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaBypassActor",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaBypassActor",
+      "description": "An actor who may bypass a ruleset, and when.",
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules"
+      ],
+      "exact_mappings": [
+        "gha:BypassActor"
+      ],
+      "slots": [
+        "ghaBypassActor__actor_id",
+        "ghaBypassActor__actor_type",
+        "ghaBypassActor__bypass_mode"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "actor_id",
+          "description": "The actor's numeric id; absent for an actor type GitHub takes no id for, such as DeployKey or OrganizationAdmin.",
+          "range": "integer",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "actor_type",
+          "description": "The kind of actor, the REST field `actor_type`, such as `Team`, `RepositoryRole`, `Integration` or `OrganizationAdmin`.",
+          "comments": [
+            "A pattern rather than an enumeration, because GitHub adds actor types."
+          ],
+          "required": true,
+          "pattern": "^[A-Z][A-Za-z]+$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "bypass_mode",
+          "description": "When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`.",
+          "comments": [
+            "A pattern rather than an enumeration, because GitHub adds bypass modes."
+          ],
+          "pattern": "^[a-z_]+$",
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/BypassActor",
+      "@type": "ClassDefinition"
+    },
+    {
+      "name": "GhaRequiredStatusCheck",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/GhaRequiredStatusCheck",
+      "description": "A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.",
+      "comments": [
+        "GitHub Actions reports each job as a check run named after the job: its name, or its id when it has none. A job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side, as the otterdog documentation states (https://otterdog.readthedocs.io/en/latest/reference/organization/repository/status-check/). A matrix job's check name adds its matrix values in parentheses.",
+        "A job that a path filter or an `if` skips reports success and does not block a merge, even when its check is required; skip_conditions records what can skip it, so a reader can see the hole.",
+        "SLSA's Source track lets an organization carry such a control into a Source Verification Summary Attestation as an ORG_SOURCE_ property, whose meaning the organization defines; slsa-framework's source-tool emits one as GH_REQUIRED_CHECK_ followed by the check's name.",
+        "in-toto's Test Result predicate is the shape of an attestation of what the check found, so it is a related term and not a close one."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "see_also": [
+        "https://docs.github.com/en/rest/repos/rules",
+        "https://docs.github.com/en/rest/checks/runs",
+        "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks",
+        "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks"
+      ],
+      "exact_mappings": [
+        "gha:RequiredStatusCheck"
+      ],
+      "related_mappings": [
+        "https://in-toto.io/attestation/test-result/v0.1"
+      ],
+      "slots": [
+        "ghaRequiredStatusCheck__check_uri",
+        "ghaRequiredStatusCheck__check_context",
+        "ghaRequiredStatusCheck__integration_id",
+        "ghaRequiredStatusCheck__strict_policy",
+        "ghaRequiredStatusCheck__do_not_enforce_on_create",
+        "ghaRequiredStatusCheck__job_path",
+        "ghaRequiredStatusCheck__skip_conditions",
+        "ghaRequiredStatusCheck__emitted_by"
+      ],
+      "slot_usage": {},
+      "attributes": [
+        {
+          "name": "check_uri",
+          "description": "An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.",
+          "identifier": true,
+          "range": "uri",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "check_context",
+          "description": "The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.",
+          "required": true,
+          "pattern": "\\S",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "integration_id",
+          "description": "The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.",
+          "range": "integer",
+          "minimum_value": 1,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "strict_policy",
+          "description": "Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.",
+          "range": "boolean",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "do_not_enforce_on_create",
+          "description": "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.",
+          "range": "boolean",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "job_path",
+          "description": "The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.",
+          "list_elements_ordered": true,
+          "range": "gha_identifier",
+          "multivalued": true,
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "skip_conditions",
+          "description": "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.",
+          "multivalued": true,
+          "pattern": "^(on|jobs)\\.\\S+$",
+          "@type": "SlotDefinition"
+        },
+        {
+          "name": "emitted_by",
+          "description": "The top-level workflow whose job reports the check.",
+          "range": "GhaWorkflow",
+          "@type": "SlotDefinition"
+        }
+      ],
+      "class_uri": "https://w3id.org/lmodel/github-actions/RequiredStatusCheck",
+      "@type": "ClassDefinition"
+    }
+  ],
+  "metamodel_version": "1.12.0",
+  "source_file": "github_actions.yaml",
+  "source_file_date": "2026-10-28T19:06:23",
+  "source_file_size": 3147,
+  "@type": "SchemaDefinition",
+  "@context": [
+    "project/jsonld/github_actions.context.jsonld",
+    "https://w3id.org/linkml/types.context.jsonld",
+    "./github_actions_core.context.jsonld",
+    "./github_actions_workflow.context.jsonld",
+    "./github_actions_action.context.jsonld",
+    "./github_actions_rules.context.jsonld",
+    {
+      "@base": "https://w3id.org/lmodel/github-actions/"
+    }
+  ]
+}

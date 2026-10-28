@@ -1,0 +1,678 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix gha: <https://w3id.org/lmodel/github-actions/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+gha:Action a sh:NodeShape ;
+	rdfs:comment "An action: a directory whose `action.yml` or `action.yaml` file names its inputs, its outputs and the runtime that executes it. A workflow step runs it with `uses`." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n24 ;
+	sh:property _:c14n119 , _:c14n55 , _:c14n66 , _:c14n67 , _:c14n8 ;
+	sh:targetClass gha:Action .
+gha:ActionInput a sh:NodeShape ;
+	rdfs:comment "An input under an action's `inputs` key." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n32 ;
+	sh:property _:c14n23 , _:c14n59 , _:c14n80 , _:c14n83 , _:c14n97 ;
+	sh:targetClass gha:ActionInput .
+gha:ActionOutput a sh:NodeShape ;
+	rdfs:comment "An output under an action's `outputs` key." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n5 ;
+	sh:property _:c14n14 , _:c14n21 , _:c14n96 ;
+	sh:targetClass gha:ActionOutput .
+gha:BypassActor a sh:NodeShape ;
+	rdfs:comment "An actor who may bypass a ruleset, and when." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n15 ;
+	sh:property _:c14n38 , _:c14n43 , _:c14n62 ;
+	sh:targetClass gha:BypassActor .
+gha:Document a sh:NodeShape ;
+	rdfs:comment "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n28 ;
+	sh:property _:c14n111 , _:c14n116 , _:c14n36 , _:c14n51 , _:c14n94 ;
+	sh:targetClass gha:Document .
+gha:GhaRequiredMixin a sh:NodeShape ;
+	rdfs:comment "The field that says whether a caller must supply a value." ;
+	sh:closed false ;
+	sh:ignoredProperties _:c14n81 ;
+	sh:property _:c14n1 ;
+	sh:targetClass gha:GhaRequiredMixin .
+gha:Input a sh:NodeShape ;
+	rdfs:comment "An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map." ;
+	sh:closed false ;
+	sh:ignoredProperties _:c14n118 ;
+	sh:property _:c14n100 , _:c14n102 , _:c14n31 , _:c14n74 ;
+	sh:targetClass gha:Input .
+gha:Output a sh:NodeShape ;
+	rdfs:comment "An output that a reusable workflow or an action declares for the job or step that calls it to read." ;
+	sh:closed false ;
+	sh:ignoredProperties _:c14n49 ;
+	sh:property _:c14n18 , _:c14n20 , _:c14n22 ;
+	sh:targetClass gha:Output .
+gha:RepositoryRuleset a sh:NodeShape ;
+	rdfs:comment "A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n68 ;
+	sh:property _:c14n103 , _:c14n105 , _:c14n27 , _:c14n42 , _:c14n45 , _:c14n46 , _:c14n52 , _:c14n65 , _:c14n70 , _:c14n73 , _:c14n88 ;
+	sh:targetClass gha:RepositoryRuleset .
+gha:RequiredStatusCheck a sh:NodeShape ;
+	rdfs:comment "A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n64 ;
+	sh:property _:c14n107 , _:c14n110 , _:c14n117 , _:c14n34 , _:c14n35 , _:c14n76 , _:c14n79 , _:c14n87 ;
+	sh:targetClass gha:RequiredStatusCheck .
+gha:ReusableWorkflow a sh:NodeShape ;
+	rdfs:comment "A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n16 ;
+	sh:property _:c14n106 , _:c14n108 , _:c14n11 , _:c14n58 , _:c14n6 , _:c14n75 , _:c14n89 , _:c14n92 , _:c14n99 ;
+	sh:targetClass gha:ReusableWorkflow .
+gha:Workflow a sh:NodeShape ;
+	rdfs:comment "A workflow file in a repository's `.github/workflows` directory: the events that run it, the access its GITHUB_TOKEN gets, and its jobs." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n12 ;
+	sh:property _:c14n104 , _:c14n4 , _:c14n41 , _:c14n53 , _:c14n85 , _:c14n9 ;
+	sh:targetClass gha:Workflow .
+gha:WorkflowInput a sh:NodeShape ;
+	rdfs:comment "An input under a reusable workflow's `on.workflow_call.inputs` key." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n2 ;
+	sh:property _:c14n101 , _:c14n115 , _:c14n48 , _:c14n57 , _:c14n78 ;
+	sh:targetClass gha:WorkflowInput .
+gha:WorkflowJob a sh:NodeShape ;
+	rdfs:comment "A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n69 ;
+	sh:property _:c14n19 , _:c14n3 , _:c14n37 , _:c14n39 , _:c14n61 , _:c14n90 , _:c14n91 ;
+	sh:targetClass gha:WorkflowJob .
+gha:WorkflowOutput a sh:NodeShape ;
+	rdfs:comment "An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n77 ;
+	sh:property _:c14n109 , _:c14n112 , _:c14n93 ;
+	sh:targetClass gha:WorkflowOutput .
+gha:WorkflowSecret a sh:NodeShape ;
+	rdfs:comment "A secret under a reusable workflow's `on.workflow_call.secrets` key, by name; its value is never recorded." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n30 ;
+	sh:property _:c14n114 , _:c14n63 , _:c14n82 ;
+	sh:targetClass gha:WorkflowSecret .
+_:c14n0 rdf:first "docker" ;
+	rdf:rest _:c14n86 .
+_:c14n1 sh:datatype xsd:boolean ;
+	sh:description "Whether a caller must supply a value." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/valueRequired> .
+_:c14n10 rdf:first "Enterprise" ;
+	rdf:rest rdf:nil .
+_:c14n100 sh:datatype xsd:boolean ;
+	sh:description "Whether a caller must supply a value." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path <http://schema.org/valueRequired> .
+_:c14n101 sh:datatype xsd:boolean ;
+	sh:description "Whether a caller must supply a value." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path <http://schema.org/valueRequired> .
+_:c14n102 sh:datatype xsd:string ;
+	sh:description "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:default .
+_:c14n103 sh:class gha:BypassActor ;
+	sh:description "The actors who may bypass the ruleset." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path gha:bypass_actors .
+_:c14n104 sh:class gha:WorkflowJob ;
+	sh:description "The jobs under the file's `jobs` key." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 5 ;
+	sh:path gha:jobs .
+_:c14n105 sh:description "Whether GitHub enforces the ruleset, the REST field `enforcement`." ;
+	sh:in _:c14n60 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 5 ;
+	sh:path gha:enforcement .
+_:c14n106 sh:class gha:WorkflowSecret ;
+	sh:description "The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 2 ;
+	sh:path gha:secrets .
+_:c14n107 sh:datatype xsd:integer ;
+	sh:description "The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368." ;
+	sh:maxCount 1 ;
+	sh:minInclusive 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:integration_id .
+_:c14n108 sh:description "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 6 ;
+	sh:path gha:workflow_repository ;
+	sh:pattern "^https://[^/]+/[^/]+/[^/]+$" .
+_:c14n109 sh:datatype xsd:string ;
+	sh:description "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:output_expression .
+_:c14n11 sh:description "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path gha:workflow_uri .
+_:c14n110 sh:class gha:Workflow ;
+	sh:description "The top-level workflow whose job reports the check." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 7 ;
+	sh:path gha:emitted_by .
+_:c14n111 sh:class gha:Action ;
+	sh:description "The actions." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path gha:actions .
+_:c14n112 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/description> .
+_:c14n113 rdf:first gha:outputs ;
+	rdf:rest _:c14n56 .
+_:c14n114 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/description> .
+_:c14n115 sh:datatype xsd:string ;
+	sh:description "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:default .
+_:c14n116 sh:class gha:Workflow ;
+	sh:description "The workflows other than the reusable ones." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path gha:workflows .
+_:c14n117 sh:datatype xsd:boolean ;
+	sh:description "Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:strict_policy .
+_:c14n118 rdf:first rdf:type ;
+	rdf:rest _:c14n54 .
+_:c14n119 sh:description "The runtime that executes the action, its `runs.using` value." ;
+	sh:in _:c14n13 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 4 ;
+	sh:path gha:using .
+_:c14n12 rdf:first rdf:type ;
+	rdf:rest _:c14n50 .
+_:c14n13 rdf:first "composite" ;
+	rdf:rest _:c14n0 .
+_:c14n14 sh:datatype xsd:string ;
+	sh:description "The key a caller reads the output by." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:output_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n15 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n16 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n17 rdf:first "branch" ;
+	rdf:rest _:c14n7 .
+_:c14n18 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/description> .
+_:c14n19 sh:datatype xsd:string ;
+	sh:description "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:job_name .
+_:c14n2 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n20 sh:datatype xsd:string ;
+	sh:description "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:output_expression .
+_:c14n21 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/description> .
+_:c14n22 sh:datatype xsd:string ;
+	sh:description "The key a caller reads the output by." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:output_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n23 sh:datatype xsd:string ;
+	sh:description "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:default .
+_:c14n24 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n25 rdf:first "push" ;
+	rdf:rest rdf:nil .
+_:c14n26 rdf:first "disabled" ;
+	rdf:rest rdf:nil .
+_:c14n27 sh:datatype xsd:string ;
+	sh:description "The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 9 ;
+	sh:path gha:rule_types ;
+	sh:pattern "^[a-z_]+$" .
+_:c14n28 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n29 rdf:first "node24" ;
+	rdf:rest rdf:nil .
+_:c14n3 sh:datatype xsd:string ;
+	sh:description "The runner group the job's `runs-on.group` names." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path gha:runner_group .
+_:c14n30 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n31 sh:datatype xsd:string ;
+	sh:description "The key a caller writes in its `with` map." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:input_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n32 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n33 rdf:first "number" ;
+	rdf:rest _:c14n40 .
+_:c14n34 sh:datatype xsd:string ;
+	sh:description "The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path gha:job_path ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n35 sh:description "An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path gha:check_uri .
+_:c14n36 sh:class gha:RepositoryRuleset ;
+	sh:description "The rulesets." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path gha:rulesets .
+_:c14n37 sh:description "Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run." ;
+	sh:in _:c14n71 ;
+	sh:maxCount 1 ;
+	sh:order 5 ;
+	sh:path gha:runner_environment .
+_:c14n38 sh:datatype xsd:string ;
+	sh:description "When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:bypass_mode ;
+	sh:pattern "^[a-z_]+$" .
+_:c14n39 sh:datatype xsd:string ;
+	sh:description "The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:calls ;
+	sh:pattern "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$" .
+_:c14n4 sh:description "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path gha:workflow_repository ;
+	sh:pattern "^https://[^/]+/[^/]+/[^/]+$" .
+_:c14n40 rdf:first "string" ;
+	rdf:rest rdf:nil .
+_:c14n41 sh:datatype xsd:string ;
+	sh:description "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path gha:permissions ;
+	sh:pattern "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$" .
+_:c14n42 sh:description "What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise." ;
+	sh:in _:c14n44 ;
+	sh:maxCount 1 ;
+	sh:order 2 ;
+	sh:path gha:ruleset_source_type .
+_:c14n43 sh:datatype xsd:integer ;
+	sh:description "The actor's numeric id; absent for an actor type GitHub takes no id for, such as DeployKey or OrganizationAdmin." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path gha:actor_id .
+_:c14n44 rdf:first "Repository" ;
+	rdf:rest _:c14n47 .
+_:c14n45 sh:description "What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own." ;
+	sh:in _:c14n17 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 4 ;
+	sh:path gha:ruleset_target .
+_:c14n46 sh:datatype xsd:string ;
+	sh:description "The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path gha:ref_name_include .
+_:c14n47 rdf:first "Organization" ;
+	rdf:rest _:c14n10 .
+_:c14n48 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path <http://schema.org/description> .
+_:c14n49 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n5 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n50 rdf:first gha:inputs ;
+	rdf:rest _:c14n113 .
+_:c14n51 sh:class gha:RequiredStatusCheck ;
+	sh:description "The status checks the rulesets require." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path gha:required_checks .
+_:c14n52 sh:datatype xsd:string ;
+	sh:description "The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 7 ;
+	sh:path gha:ref_name_exclude .
+_:c14n53 sh:description "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path gha:workflow_uri .
+_:c14n54 rdf:first gha:deprecation_message ;
+	rdf:rest _:c14n95 .
+_:c14n55 sh:description "The action's address on its forge without a ref: `https://github.com/<owner>/<repo>`, followed by the directory's path when the action is not at the repository root. A step's `uses` names it as `<owner>/<repo>/<path>@<ref>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path gha:action_uri .
+_:c14n56 rdf:first gha:secrets ;
+	rdf:rest rdf:nil .
+_:c14n57 sh:description "The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept." ;
+	sh:in _:c14n72 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 0 ;
+	sh:path gha:input_type .
+_:c14n58 sh:datatype xsd:string ;
+	sh:description "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:triggers ;
+	sh:pattern "^[a-z_]+$" .
+_:c14n59 sh:datatype xsd:string ;
+	sh:description "The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path gha:deprecation_message .
+_:c14n6 sh:datatype xsd:string ;
+	sh:description "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path gha:workflow_path ;
+	sh:pattern "^\\.github/workflows/[^/]+\\.ya?ml$" .
+_:c14n60 rdf:first "active" ;
+	rdf:rest _:c14n98 .
+_:c14n61 sh:datatype xsd:string ;
+	sh:description "The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path gha:job_permissions ;
+	sh:pattern "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$" .
+_:c14n62 sh:datatype xsd:string ;
+	sh:description "The kind of actor, the REST field `actor_type`, such as `Team`, `RepositoryRole`, `Integration` or `OrganizationAdmin`." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:actor_type ;
+	sh:pattern "^[A-Z][A-Za-z]+$" .
+_:c14n63 sh:datatype xsd:string ;
+	sh:description "The key a caller passes the secret under." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:secret_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n64 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n65 sh:datatype xsd:string ;
+	sh:description "The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:ruleset_source .
+_:c14n66 sh:class gha:ActionOutput ;
+	sh:description "The outputs under the metadata file's `outputs` key." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 1 ;
+	sh:path gha:outputs .
+_:c14n67 sh:class gha:ActionInput ;
+	sh:description "The inputs under the metadata file's `inputs` key." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 0 ;
+	sh:path gha:inputs .
+_:c14n68 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n69 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n7 rdf:first "tag" ;
+	rdf:rest _:c14n25 .
+_:c14n70 sh:class gha:RequiredStatusCheck ;
+	sh:description "The status checks the ruleset's required_status_checks rule requires, each a concept of its own." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 10 ;
+	sh:path gha:requires_check .
+_:c14n71 rdf:first "github-hosted" ;
+	rdf:rest _:c14n84 .
+_:c14n72 rdf:first "boolean" ;
+	rdf:rest _:c14n33 .
+_:c14n73 sh:description "The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path gha:ruleset_uri .
+_:c14n74 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path <http://schema.org/description> .
+_:c14n75 sh:class gha:WorkflowInput ;
+	sh:description "The inputs under the file's `on.workflow_call.inputs` key." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 0 ;
+	sh:path gha:inputs .
+_:c14n76 sh:datatype xsd:string ;
+	sh:description "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path gha:skip_conditions ;
+	sh:pattern "^(on|jobs)\\.\\S+$" .
+_:c14n77 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n78 sh:datatype xsd:string ;
+	sh:description "The key a caller writes in its `with` map." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:input_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n79 sh:datatype xsd:boolean ;
+	sh:description "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path gha:do_not_enforce_on_create .
+_:c14n8 sh:datatype xsd:string ;
+	sh:description "The metadata file's path from the repository root." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:action_path ;
+	sh:pattern "^(.+/)?action\\.ya?ml$" .
+_:c14n80 sh:datatype xsd:string ;
+	sh:description "The key a caller writes in its `with` map." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:input_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n81 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n82 sh:datatype xsd:boolean ;
+	sh:description "Whether a caller must supply a value." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path <http://schema.org/valueRequired> .
+_:c14n83 sh:datatype xsd:string ;
+	sh:description "What the input, output or secret is for, as the file describes it." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path <http://schema.org/description> .
+_:c14n84 rdf:first "self-hosted" ;
+	rdf:rest rdf:nil .
+_:c14n85 sh:datatype xsd:string ;
+	sh:description "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path gha:triggers ;
+	sh:pattern "^[a-z_]+$" .
+_:c14n86 rdf:first "node20" ;
+	rdf:rest _:c14n29 .
+_:c14n87 sh:datatype xsd:string ;
+	sh:description "The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:check_context ;
+	sh:pattern "\\S" .
+_:c14n88 sh:datatype xsd:integer ;
+	sh:description "The ruleset's numeric `id` in the REST API." ;
+	sh:maxCount 1 ;
+	sh:minInclusive 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:ruleset_id .
+_:c14n89 sh:datatype xsd:string ;
+	sh:description "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 7 ;
+	sh:path gha:permissions ;
+	sh:pattern "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$" .
+_:c14n9 sh:datatype xsd:string ;
+	sh:description "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:workflow_path ;
+	sh:pattern "^\\.github/workflows/[^/]+\\.ya?ml$" .
+_:c14n90 sh:datatype xsd:string ;
+	sh:description "The job's key under `jobs`." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path gha:job_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n91 sh:datatype xsd:string ;
+	sh:description "The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path gha:runs_on .
+_:c14n92 sh:class gha:WorkflowOutput ;
+	sh:description "The outputs under the file's `on.workflow_call.outputs` key." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 1 ;
+	sh:path gha:outputs .
+_:c14n93 sh:datatype xsd:string ;
+	sh:description "The key a caller reads the output by." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path gha:output_id ;
+	sh:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n94 sh:class gha:ReusableWorkflow ;
+	sh:description "The reusable workflows." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path gha:reusable_workflows .
+_:c14n95 rdf:first gha:input_type ;
+	rdf:rest rdf:nil .
+_:c14n96 sh:datatype xsd:string ;
+	sh:description "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path gha:output_expression .
+_:c14n97 sh:datatype xsd:boolean ;
+	sh:description "Whether a caller must supply a value." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path <http://schema.org/valueRequired> .
+_:c14n98 rdf:first "evaluate" ;
+	rdf:rest _:c14n26 .
+_:c14n99 sh:class gha:WorkflowJob ;
+	sh:description "The jobs under the file's `jobs` key." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path gha:jobs .

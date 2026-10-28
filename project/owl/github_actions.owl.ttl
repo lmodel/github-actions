@@ -1,0 +1,1183 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix gha: <https://w3id.org/lmodel/github-actions/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix pav: <http://purl.org/pav/> .
+xsd:string a rdfs:Datatype ;
+	owl:equivalentClass _:c14n252 , _:c14n254 .
+<https://w3id.org/lmodel/github-actions.owl.ttl> dcterms:license "Apache-2.0" ;
+	dcterms:source <https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json> ;
+	dcterms:title "GitHub Actions workflows, actions and repository rulesets" ;
+	pav:version "2026-10-28" ;
+	a owl:Ontology ;
+	rdfs:label "github_actions" ;
+	rdfs:seeAlso <https://actions.github.io/buildtypes/workflow/v1> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax> , <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> , <https://docs.github.com/en/rest/checks/runs> , <https://docs.github.com/en/rest/repos/rules> , <https://lmodel.github.io/github-actions> ;
+	skos:definition "A LinkML model of what GitHub Actions files and repository rulesets state: workflows and their jobs, reusable workflows with their inputs, outputs and secrets, actions with their runtimes, and the rulesets and required status checks that tie a workflow's jobs to the refs a ruleset protects." ;
+	skos:note "GitHub's documentation is versionless, so the version is the date its pages were read. With the SchemaStore commit in source and the REST API version in the annotations, it says which state of GitHub the model renders; scripts/check_upstream_release.py reads the same three pins and reports when one moves. The release tags are the schema's own versions." , "github_actions_core imports only the LinkML types, the workflow and action modules import the core, the rules module imports the workflow module, and this file adds only the document root, so an importer can take one module." ;
+	gha:docs_read "2026-10-28" ;
+	gha:rest_api_version "2026-03-10" ;
+	gha:schemastore_commit "f7c2f3bcb512651bd980ed6896639ea8ded9ddf0" .
+gha:GhaAction a owl:Class ;
+	rdfs:label "GhaAction" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax> ;
+	rdfs:subClassOf _:c14n1 , _:c14n131 , _:c14n14 , _:c14n166 , _:c14n167 , _:c14n180 , _:c14n181 , _:c14n200 , _:c14n23 , _:c14n32 , _:c14n45 , _:c14n82 , _:c14n85 ;
+	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/task> ;
+	skos:definition "An action: a directory whose `action.yml` or `action.yaml` file names its inputs, its outputs and the runtime that executes it. A workflow step runs it with `uses`." ;
+	skos:exactMatch gha:Action ;
+	skos:inScheme gha:github_actions_action ;
+	skos:note "SLSA counts the actions a build runs among its steps, which the tenant defines; an action is never a build's trust boundary, as a reusable workflow that signs provenance is." , "The metadata file's name and description are the concept's title and description in a knowledge bundle, so the class adds neither." .
+gha:GhaActionInput a owl:Class ;
+	rdfs:label "GhaActionInput" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs> ;
+	rdfs:subClassOf gha:GhaInput , _:c14n132 , _:c14n152 , _:c14n2 , _:c14n7 , _:c14n70 , _:c14n91 ;
+	skos:definition "An input under an action's `inputs` key." ;
+	skos:exactMatch gha:ActionInput ;
+	skos:inScheme gha:github_actions_action .
+gha:GhaActionOutput a owl:Class ;
+	rdfs:label "GhaActionOutput" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-composite-actions> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-docker-container-and-javascript-actions> ;
+	rdfs:subClassOf gha:GhaOutput , _:c14n164 , _:c14n195 , _:c14n60 ;
+	skos:definition "An output under an action's `outputs` key." ;
+	skos:exactMatch gha:ActionOutput ;
+	skos:inScheme gha:github_actions_action ;
+	skos:note "Only a composite action sets an output from an expression; a Docker or JavaScript action writes its outputs while it runs, so its outputs have no output_expression." .
+gha:GhaActionRuntime\#composite a owl:Class ;
+	rdfs:label "composite" ;
+	rdfs:subClassOf gha:GhaActionRuntime ;
+	skos:definition "Steps that run in the calling job, as a workflow's steps do." .
+gha:GhaActionRuntime\#docker a owl:Class ;
+	rdfs:label "docker" ;
+	rdfs:subClassOf gha:GhaActionRuntime ;
+	skos:definition "A Docker container." .
+gha:GhaActionRuntime\#node20 a owl:Class ;
+	rdfs:label "node20" ;
+	rdfs:subClassOf gha:GhaActionRuntime ;
+	skos:definition "JavaScript, run by Node.js 20." .
+gha:GhaActionRuntime\#node24 a owl:Class ;
+	rdfs:label "node24" ;
+	rdfs:subClassOf gha:GhaActionRuntime ;
+	skos:definition "JavaScript, run by Node.js 24." .
+gha:GhaActionRuntime a owl:Class ;
+	rdfs:label "GhaActionRuntime" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-composite-actions> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-docker-container-actions> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions> ;
+	owl:unionOf _:c14n102 ;
+	skos:definition "The runtimes an action's `runs.using` may name." ;
+	skos:inScheme gha:github_actions_action ;
+	skos:note "SchemaStore's schema at the pinned commit also accepts node12 and node16, which GitHub's metadata syntax page no longer lists; tests/test_schema_rules.py checks that those two are the only difference." ;
+	linkml:permissible_values gha:GhaActionRuntime\#composite , gha:GhaActionRuntime\#docker , gha:GhaActionRuntime\#node20 , gha:GhaActionRuntime\#node24 .
+gha:GhaBypassActor a owl:Class ;
+	rdfs:label "GhaBypassActor" ;
+	rdfs:seeAlso <https://docs.github.com/en/rest/repos/rules> ;
+	rdfs:subClassOf _:c14n197 , _:c14n20 , _:c14n38 , _:c14n43 , _:c14n79 , _:c14n86 , _:c14n87 , _:c14n90 , _:c14n99 ;
+	skos:definition "An actor who may bypass a ruleset, and when." ;
+	skos:exactMatch gha:BypassActor ;
+	skos:inScheme gha:github_actions_rules .
+gha:GhaDocument a owl:Class ;
+	rdfs:label "GhaDocument" ;
+	rdfs:subClassOf _:c14n113 , _:c14n119 , _:c14n133 , _:c14n161 , _:c14n201 , _:c14n206 , _:c14n31 , _:c14n44 , _:c14n57 , _:c14n78 ;
+	skos:definition "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories." ;
+	skos:exactMatch gha:Document ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+gha:GhaInput a owl:Class ;
+	rdfs:label "GhaInput" ;
+	rdfs:subClassOf gha:GhaRequiredMixin , _:c14n144 , _:c14n177 , _:c14n24 , _:c14n29 , _:c14n33 , _:c14n37 , _:c14n46 , _:c14n8 , _:c14n92 , _:c14n98 ;
+	skos:definition "An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map." ;
+	skos:exactMatch gha:Input ;
+	skos:inScheme gha:github_actions_core .
+gha:GhaOutput a owl:Class ;
+	rdfs:label "GhaOutput" ;
+	rdfs:subClassOf _:c14n139 , _:c14n151 , _:c14n169 , _:c14n172 , _:c14n178 , _:c14n194 , _:c14n51 , _:c14n63 , _:c14n80 , _:c14n94 ;
+	skos:definition "An output that a reusable workflow or an action declares for the job or step that calls it to read." ;
+	skos:exactMatch gha:Output ;
+	skos:inScheme gha:github_actions_core .
+gha:GhaRepositoryRuleset a owl:Class ;
+	rdfs:label "GhaRepositoryRuleset" ;
+	rdfs:seeAlso <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets> , <https://docs.github.com/en/rest/repos/rules> ;
+	rdfs:subClassOf _:c14n0 , _:c14n100 , _:c14n107 , _:c14n109 , _:c14n110 , _:c14n124 , _:c14n127 , _:c14n13 , _:c14n141 , _:c14n147 , _:c14n15 , _:c14n154 , _:c14n174 , _:c14n18 , _:c14n193 , _:c14n204 , _:c14n205 , _:c14n26 , _:c14n3 , _:c14n4 , _:c14n48 , _:c14n54 , _:c14n59 , _:c14n6 , _:c14n62 , _:c14n75 , _:c14n81 , _:c14n95 ;
+	skos:definition "A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets." ;
+	skos:exactMatch gha:RepositoryRuleset ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "Of the rules' parameters, only those of required_status_checks are modelled, as GhaRequiredStatusCheck; rule_types says which other rules the ruleset holds." , "SLSA's Source track calls such rules technical controls on protected named references, and asks that their meaning be documented and their enforcement recorded in attestations; the slsa schema models that evidence." .
+gha:GhaRequiredMixin a owl:Class ;
+	rdfs:label "GhaRequiredMixin" ;
+	rdfs:subClassOf _:c14n137 , _:c14n88 , _:c14n9 ;
+	skos:definition "The field that says whether a caller must supply a value." ;
+	skos:inScheme gha:github_actions_core .
+gha:GhaRequiredStatusCheck a owl:Class ;
+	rdfs:label "GhaRequiredStatusCheck" ;
+	rdfs:seeAlso <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks> , <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks> , <https://docs.github.com/en/rest/checks/runs> , <https://docs.github.com/en/rest/repos/rules> ;
+	rdfs:subClassOf _:c14n11 , _:c14n116 , _:c14n118 , _:c14n121 , _:c14n138 , _:c14n143 , _:c14n146 , _:c14n149 , _:c14n159 , _:c14n165 , _:c14n17 , _:c14n188 , _:c14n189 , _:c14n19 , _:c14n198 , _:c14n21 , _:c14n27 , _:c14n40 , _:c14n69 , _:c14n73 , _:c14n89 , _:c14n93 ;
+	skos:definition "A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report." ;
+	skos:exactMatch gha:RequiredStatusCheck ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "A job that a path filter or an `if` skips reports success and does not block a merge, even when its check is required; skip_conditions records what can skip it, so a reader can see the hole." , "GitHub Actions reports each job as a check run named after the job: its name, or its id when it has none. A job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side, as the otterdog documentation states (https://otterdog.readthedocs.io/en/latest/reference/organization/repository/status-check/). A matrix job's check name adds its matrix values in parentheses." , "SLSA's Source track lets an organization carry such a control into a Source Verification Summary Attestation as an ORG_SOURCE_ property, whose meaning the organization defines; slsa-framework's source-tool emits one as GH_REQUIRED_CHECK_ followed by the check's name." , "in-toto's Test Result predicate is the shape of an attestation of what the check found, so it is a related term and not a close one." ;
+	skos:relatedMatch <https://in-toto.io/attestation/test-result/v0.1> .
+gha:GhaReusableWorkflow a owl:Class ;
+	rdfs:label "GhaReusableWorkflow" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations> , <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call> ;
+	rdfs:subClassOf gha:GhaWorkflow , _:c14n10 , _:c14n123 , _:c14n126 , _:c14n175 , _:c14n179 , _:c14n196 , _:c14n64 , _:c14n71 , _:c14n97 ;
+	skos:definition "A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read." ;
+	skos:exactMatch gha:ReusableWorkflow ;
+	skos:inScheme gha:github_actions_workflow ;
+	skos:note "When it generates provenance it is the builder: GitHub's build type sets builder.id to the server's address followed by the job's workflow reference, which names this file and its ref." .
+gha:GhaRulesetEnforcement\#active a owl:Class ;
+	rdfs:label "active" ;
+	rdfs:subClassOf gha:GhaRulesetEnforcement ;
+	skos:definition "Enforced." .
+gha:GhaRulesetEnforcement\#disabled a owl:Class ;
+	rdfs:label "disabled" ;
+	rdfs:subClassOf gha:GhaRulesetEnforcement ;
+	skos:definition "Neither enforced nor evaluated." .
+gha:GhaRulesetEnforcement\#evaluate a owl:Class ;
+	rdfs:label "evaluate" ;
+	rdfs:subClassOf gha:GhaRulesetEnforcement ;
+	skos:definition "Evaluated and reported but not enforced, so administrators can test its rules; only on GitHub Enterprise." .
+gha:GhaRulesetEnforcement a owl:Class ;
+	rdfs:label "GhaRulesetEnforcement" ;
+	rdfs:seeAlso <https://docs.github.com/en/rest/repos/rules> ;
+	owl:unionOf _:c14n55 ;
+	skos:definition "Whether GitHub enforces a ruleset, as the REST field `enforcement` names it." ;
+	skos:inScheme gha:github_actions_rules ;
+	linkml:permissible_values gha:GhaRulesetEnforcement\#active , gha:GhaRulesetEnforcement\#disabled , gha:GhaRulesetEnforcement\#evaluate .
+gha:GhaRulesetSourceType\#Enterprise a owl:Class ;
+	rdfs:label "Enterprise" ;
+	rdfs:subClassOf gha:GhaRulesetSourceType ;
+	skos:definition "An enterprise's ruleset, applied to the repositories it targets." .
+gha:GhaRulesetSourceType\#Organization a owl:Class ;
+	rdfs:label "Organization" ;
+	rdfs:subClassOf gha:GhaRulesetSourceType ;
+	skos:definition "An organization's ruleset, applied to the repositories it targets." .
+gha:GhaRulesetSourceType\#Repository a owl:Class ;
+	rdfs:label "Repository" ;
+	rdfs:subClassOf gha:GhaRulesetSourceType ;
+	skos:definition "A repository's own ruleset." .
+gha:GhaRulesetSourceType a owl:Class ;
+	rdfs:label "GhaRulesetSourceType" ;
+	rdfs:seeAlso <https://docs.github.com/en/rest/repos/rules> ;
+	owl:unionOf _:c14n5 ;
+	skos:definition "What can own a ruleset, as the REST field `source_type` names it." ;
+	skos:inScheme gha:github_actions_rules ;
+	linkml:permissible_values gha:GhaRulesetSourceType\#Enterprise , gha:GhaRulesetSourceType\#Organization , gha:GhaRulesetSourceType\#Repository .
+gha:GhaRulesetTarget\#branch a owl:Class ;
+	rdfs:label "branch" ;
+	rdfs:subClassOf gha:GhaRulesetTarget ;
+	skos:definition "Branches; GitHub's default." .
+gha:GhaRulesetTarget\#push a owl:Class ;
+	rdfs:label "push" ;
+	rdfs:subClassOf gha:GhaRulesetTarget ;
+	skos:definition "Pushes, by the files they change." .
+gha:GhaRulesetTarget\#tag a owl:Class ;
+	rdfs:label "tag" ;
+	rdfs:subClassOf gha:GhaRulesetTarget ;
+	skos:definition "Tags." .
+gha:GhaRulesetTarget a owl:Class ;
+	rdfs:label "GhaRulesetTarget" ;
+	rdfs:seeAlso <https://docs.github.com/en/rest/repos/rules> ;
+	owl:unionOf _:c14n163 ;
+	skos:definition "What a ruleset applies to, as the REST field `target` names it." ;
+	skos:inScheme gha:github_actions_rules ;
+	linkml:permissible_values gha:GhaRulesetTarget\#branch , gha:GhaRulesetTarget\#push , gha:GhaRulesetTarget\#tag .
+gha:GhaRunnerEnvironment\#github-hosted dcterms:title "GitHub-hosted" ;
+	a owl:Class ;
+	rdfs:label "github-hosted" ;
+	rdfs:subClassOf gha:GhaRunnerEnvironment ;
+	skos:definition "A runner that GitHub hosts." .
+gha:GhaRunnerEnvironment\#self-hosted dcterms:title "Self-hosted" ;
+	a owl:Class ;
+	rdfs:label "self-hosted" ;
+	rdfs:subClassOf gha:GhaRunnerEnvironment ;
+	skos:definition "A runner that the repository's owner hosts." .
+gha:GhaRunnerEnvironment a owl:Class ;
+	rdfs:label "GhaRunnerEnvironment" ;
+	rdfs:seeAlso <https://actions.github.io/buildtypes/workflow/v1> ;
+	owl:unionOf _:c14n145 ;
+	skos:definition "Who hosts the runner a job runs on, as GitHub's build type records it." ;
+	skos:inScheme gha:github_actions_workflow ;
+	linkml:permissible_values gha:GhaRunnerEnvironment\#github-hosted , gha:GhaRunnerEnvironment\#self-hosted .
+gha:GhaWorkflow a owl:Class ;
+	rdfs:label "GhaWorkflow" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> ;
+	rdfs:subClassOf _:c14n117 , _:c14n122 , _:c14n136 , _:c14n140 , _:c14n142 , _:c14n176 , _:c14n182 , _:c14n190 , _:c14n202 , _:c14n25 , _:c14n42 , _:c14n47 , _:c14n53 , _:c14n68 , _:c14n72 ;
+	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/workflow> ;
+	skos:definition "A workflow file in a repository's `.github/workflows` directory: the events that run it, the access its GITHUB_TOKEN gets, and its jobs." ;
+	skos:exactMatch gha:Workflow ;
+	skos:inScheme gha:github_actions_workflow ;
+	skos:note "SPDX 3.0.1's Build records one run of a build, such as a run of this workflow, so it is a related term and not a close one." , "The ref a run checks the file out at belongs to the run, and GitHub's build type records it in provenance as workflow.ref; it is not a fact of the file, so it is not modelled here." ;
+	skos:relatedMatch <https://spdx.org/rdf/3.0.1/terms/Build/Build> .
+gha:GhaWorkflowInput a owl:Class ;
+	rdfs:label "GhaWorkflowInput" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs> ;
+	rdfs:subClassOf gha:GhaInput , _:c14n83 , _:c14n84 , _:c14n96 ;
+	skos:definition "An input under a reusable workflow's `on.workflow_call.inputs` key." ;
+	skos:exactMatch gha:WorkflowInput ;
+	skos:inScheme gha:github_actions_workflow .
+gha:GhaWorkflowInputType\#boolean a owl:Class ;
+	rdfs:label "boolean" ;
+	rdfs:subClassOf gha:GhaWorkflowInputType ;
+	skos:definition "True or false." .
+gha:GhaWorkflowInputType\#number a owl:Class ;
+	rdfs:label "number" ;
+	rdfs:subClassOf gha:GhaWorkflowInputType ;
+	skos:definition "A number." .
+gha:GhaWorkflowInputType\#string a owl:Class ;
+	rdfs:label "string" ;
+	rdfs:subClassOf gha:GhaWorkflowInputType ;
+	skos:definition "A string." .
+gha:GhaWorkflowInputType a owl:Class ;
+	rdfs:label "GhaWorkflowInputType" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype> ;
+	owl:unionOf _:c14n187 ;
+	skos:definition "The types a reusable workflow's input may state." ;
+	skos:inScheme gha:github_actions_workflow ;
+	linkml:permissible_values gha:GhaWorkflowInputType\#boolean , gha:GhaWorkflowInputType\#number , gha:GhaWorkflowInputType\#string .
+gha:GhaWorkflowJob a owl:Class ;
+	rdfs:label "GhaWorkflowJob" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs> ;
+	rdfs:subClassOf _:c14n101 , _:c14n103 , _:c14n106 , _:c14n108 , _:c14n128 , _:c14n130 , _:c14n134 , _:c14n135 , _:c14n155 , _:c14n157 , _:c14n162 , _:c14n22 , _:c14n34 , _:c14n35 , _:c14n36 , _:c14n39 , _:c14n52 , _:c14n61 , _:c14n74 ;
+	skos:definition "A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow." ;
+	skos:exactMatch gha:WorkflowJob ;
+	skos:inScheme gha:github_actions_workflow .
+gha:GhaWorkflowOutput a owl:Class ;
+	rdfs:label "GhaWorkflowOutput" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_calloutputs> ;
+	rdfs:subClassOf gha:GhaOutput , _:c14n150 , _:c14n185 , _:c14n77 ;
+	skos:definition "An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs." ;
+	skos:exactMatch gha:WorkflowOutput ;
+	skos:inScheme gha:github_actions_workflow .
+gha:GhaWorkflowSecret a owl:Class ;
+	rdfs:label "GhaWorkflowSecret" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets> ;
+	rdfs:subClassOf gha:GhaRequiredMixin , _:c14n111 , _:c14n12 , _:c14n129 , _:c14n199 , _:c14n30 , _:c14n56 ;
+	skos:definition "A secret under a reusable workflow's `on.workflow_call.secrets` key, by name; its value is never recorded." ;
+	skos:exactMatch gha:WorkflowSecret ;
+	skos:inScheme gha:github_actions_workflow .
+gha:action_path a owl:DatatypeProperty ;
+	rdfs:label "action_path" ;
+	skos:definition "The metadata file's path from the repository root." ;
+	skos:inScheme gha:github_actions_action .
+gha:action_uri a owl:DatatypeProperty ;
+	rdfs:label "action_uri" ;
+	skos:definition "The action's address on its forge without a ref: `https://github.com/<owner>/<repo>`, followed by the directory's path when the action is not at the repository root. A step's `uses` names it as `<owner>/<repo>/<path>@<ref>`." ;
+	skos:inScheme gha:github_actions_action .
+gha:actions a owl:ObjectProperty ;
+	rdfs:label "actions" ;
+	skos:definition "The actions." ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+gha:actor_id a owl:DatatypeProperty ;
+	rdfs:label "actor_id" ;
+	skos:definition "The actor's numeric id; absent for an actor type GitHub takes no id for, such as DeployKey or OrganizationAdmin." ;
+	skos:inScheme gha:github_actions_rules .
+gha:actor_type a owl:DatatypeProperty ;
+	rdfs:label "actor_type" ;
+	skos:definition "The kind of actor, the REST field `actor_type`, such as `Team`, `RepositoryRole`, `Integration` or `OrganizationAdmin`." ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "A pattern rather than an enumeration, because GitHub adds actor types." .
+gha:bypass_actors a owl:ObjectProperty ;
+	rdfs:label "bypass_actors" ;
+	skos:definition "The actors who may bypass the ruleset." ;
+	skos:inScheme gha:github_actions_rules .
+gha:bypass_mode a owl:DatatypeProperty ;
+	rdfs:label "bypass_mode" ;
+	skos:definition "When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`." ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "A pattern rather than an enumeration, because GitHub adds bypass modes." .
+gha:calls a owl:DatatypeProperty ;
+	rdfs:label "calls" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses> ;
+	skos:definition "The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:check_context a owl:DatatypeProperty ;
+	rdfs:label "check_context" ;
+	skos:definition "The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own." ;
+	skos:inScheme gha:github_actions_rules .
+gha:check_uri a owl:DatatypeProperty ;
+	rdfs:label "check_uri" ;
+	skos:definition "An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place." ;
+	skos:inScheme gha:github_actions_rules .
+gha:default a owl:DatatypeProperty ;
+	rdfs:label "default" ;
+	skos:definition "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number." ;
+	skos:inScheme gha:github_actions_core .
+gha:deprecation_message a owl:DatatypeProperty ;
+	rdfs:label "deprecation_message" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage> ;
+	skos:definition "The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated." ;
+	skos:inScheme gha:github_actions_action .
+gha:description a owl:DatatypeProperty ;
+	rdfs:label "description" ;
+	skos:definition "What the input, output or secret is for, as the file describes it." ;
+	skos:inScheme gha:github_actions_core ;
+	skos:note "It means what LOKF's description means and carries the same IRI, so lokf adapt folds it into LOKF's slot and a knowledge bundle reads one description key." .
+gha:do_not_enforce_on_create a owl:DatatypeProperty ;
+	rdfs:label "do_not_enforce_on_create" ;
+	skos:definition "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:emitted_by a owl:ObjectProperty ;
+	rdfs:label "emitted_by" ;
+	skos:definition "The top-level workflow whose job reports the check." ;
+	skos:inScheme gha:github_actions_rules .
+gha:enforcement a owl:ObjectProperty ;
+	rdfs:label "enforcement" ;
+	skos:definition "Whether GitHub enforces the ruleset, the REST field `enforcement`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:input_id a owl:DatatypeProperty ;
+	rdfs:label "input_id" ;
+	skos:definition "The key a caller writes in its `with` map." ;
+	skos:inScheme gha:github_actions_core .
+gha:input_type a owl:ObjectProperty ;
+	rdfs:label "input_type" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype> ;
+	skos:definition "The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:inputs a owl:ObjectProperty ;
+	rdfs:label "inputs" ;
+	rdfs:range gha:GhaInput ;
+	skos:definition "The inputs that the reusable workflow or the action declares." ;
+	skos:inScheme gha:github_actions_core .
+gha:integration_id a owl:DatatypeProperty ;
+	rdfs:label "integration_id" ;
+	skos:definition "The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368." ;
+	skos:inScheme gha:github_actions_rules .
+gha:job_id a owl:DatatypeProperty ;
+	rdfs:label "job_id" ;
+	skos:definition "The job's key under `jobs`." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:job_name a owl:DatatypeProperty ;
+	rdfs:label "job_name" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname> ;
+	skos:definition "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:job_path a owl:DatatypeProperty ;
+	rdfs:label "job_path" ;
+	skos:definition "The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow." ;
+	skos:inScheme gha:github_actions_rules .
+gha:job_permissions a owl:DatatypeProperty ;
+	rdfs:label "job_permissions" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions> ;
+	skos:definition "The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:jobs a owl:ObjectProperty ;
+	rdfs:label "jobs" ;
+	skos:definition "The jobs under the file's `jobs` key." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:output_expression a owl:DatatypeProperty ;
+	rdfs:label "output_expression" ;
+	skos:definition "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step." ;
+	skos:inScheme gha:github_actions_core ;
+	skos:note "A slot rather than an attribute because GhaWorkflowOutput refines it." .
+gha:output_id a owl:DatatypeProperty ;
+	rdfs:label "output_id" ;
+	skos:definition "The key a caller reads the output by." ;
+	skos:inScheme gha:github_actions_core .
+gha:outputs a owl:ObjectProperty ;
+	rdfs:label "outputs" ;
+	rdfs:range gha:GhaOutput ;
+	skos:definition "The outputs that the reusable workflow or the action declares." ;
+	skos:inScheme gha:github_actions_core .
+gha:permissions a owl:DatatypeProperty ;
+	rdfs:label "permissions" ;
+	skos:definition "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:ref_name_exclude a owl:DatatypeProperty ;
+	rdfs:label "ref_name_exclude" ;
+	skos:definition "The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one." ;
+	skos:inScheme gha:github_actions_rules .
+gha:ref_name_include a owl:DatatypeProperty ;
+	rdfs:label "ref_name_include" ;
+	skos:definition "The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them." ;
+	skos:inScheme gha:github_actions_rules .
+gha:required a owl:DatatypeProperty ;
+	rdfs:label "required" ;
+	skos:definition "Whether a caller must supply a value." ;
+	skos:inScheme gha:github_actions_core ;
+	skos:note "An attribute rather than a slot: it carries LOKF's IRI for required, and lokf adapt keeps an attribute's name, where it would rename a slot that shares one with lokf.yaml." .
+gha:required_checks a owl:ObjectProperty ;
+	rdfs:label "required_checks" ;
+	skos:definition "The status checks the rulesets require." ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+gha:requires_check a owl:ObjectProperty ;
+	rdfs:label "requires_check" ;
+	skos:definition "The status checks the ruleset's required_status_checks rule requires, each a concept of its own." ;
+	skos:inScheme gha:github_actions_rules .
+gha:reusable_workflows a owl:ObjectProperty ;
+	rdfs:label "reusable_workflows" ;
+	skos:definition "The reusable workflows." ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+gha:rule_types a owl:DatatypeProperty ;
+	rdfs:label "rule_types" ;
+	skos:definition "The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`." ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "A pattern rather than an enumeration, because GitHub adds rule types." .
+gha:ruleset_id a owl:DatatypeProperty ;
+	rdfs:label "ruleset_id" ;
+	skos:definition "The ruleset's numeric `id` in the REST API." ;
+	skos:inScheme gha:github_actions_rules .
+gha:ruleset_source a owl:DatatypeProperty ;
+	rdfs:label "ruleset_source" ;
+	skos:definition "The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:ruleset_source_type a owl:ObjectProperty ;
+	rdfs:label "ruleset_source_type" ;
+	skos:definition "What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise." ;
+	skos:inScheme gha:github_actions_rules .
+gha:ruleset_target a owl:ObjectProperty ;
+	rdfs:label "ruleset_target" ;
+	skos:definition "What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own." ;
+	skos:inScheme gha:github_actions_rules .
+gha:ruleset_uri a owl:DatatypeProperty ;
+	rdfs:label "ruleset_uri" ;
+	skos:definition "The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:rulesets a owl:ObjectProperty ;
+	rdfs:label "rulesets" ;
+	skos:definition "The rulesets." ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+gha:runner_environment a owl:ObjectProperty ;
+	rdfs:label "runner_environment" ;
+	skos:definition "Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:runner_group a owl:DatatypeProperty ;
+	rdfs:label "runner_group" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group> ;
+	skos:definition "The runner group the job's `runs-on.group` names." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:runs_on a owl:DatatypeProperty ;
+	rdfs:label "runs_on" ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on> ;
+	skos:definition "The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:secret_id a owl:DatatypeProperty ;
+	rdfs:label "secret_id" ;
+	skos:definition "The key a caller passes the secret under." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:secrets a owl:ObjectProperty ;
+	rdfs:label "secrets" ;
+	skos:definition "The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:skip_conditions a owl:DatatypeProperty ;
+	rdfs:label "skip_conditions" ;
+	skos:definition "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:strict_policy a owl:DatatypeProperty ;
+	rdfs:label "strict_policy" ;
+	skos:definition "Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`." ;
+	skos:inScheme gha:github_actions_rules .
+gha:triggers a owl:DatatypeProperty ;
+	rdfs:label "triggers" ;
+	rdfs:range _:c14n148 ;
+	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows> ;
+	skos:definition "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`." ;
+	skos:inScheme gha:github_actions_workflow ;
+	skos:note "A slot rather than an attribute because GhaReusableWorkflow refines it; a pattern rather than an enumeration, because GitHub adds events." ;
+	skos:relatedMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/trigger> .
+gha:using a owl:ObjectProperty ;
+	rdfs:label "using" ;
+	skos:definition "The runtime that executes the action, its `runs.using` value." ;
+	skos:inScheme gha:github_actions_action .
+gha:workflow_path a owl:DatatypeProperty ;
+	rdfs:label "workflow_path" ;
+	rdfs:seeAlso <https://actions.github.io/buildtypes/workflow/v1> ;
+	skos:definition "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:workflow_repository a owl:DatatypeProperty ;
+	rdfs:label "workflow_repository" ;
+	rdfs:seeAlso <https://actions.github.io/buildtypes/workflow/v1> ;
+	skos:definition "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`." ;
+	skos:inScheme gha:github_actions_workflow .
+gha:workflow_uri a owl:DatatypeProperty ;
+	rdfs:label "workflow_uri" ;
+	skos:definition "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`." ;
+	skos:inScheme gha:github_actions_workflow ;
+	skos:note "GitHub's build type forms a reusable workflow's builder.id from this address, followed by `@` and the ref." .
+gha:workflows a owl:ObjectProperty ;
+	rdfs:label "workflows" ;
+	skos:definition "The workflows other than the reusable ones." ;
+	skos:inScheme <https://w3id.org/lmodel/github-actions> .
+_:c14n0 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:ruleset_source_type .
+_:c14n1 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:action_uri .
+_:c14n10 a owl:Restriction ;
+	owl:onProperty gha:triggers ;
+	owl:someValuesFrom _:c14n168 .
+_:c14n100 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRulesetEnforcement ;
+	owl:onProperty gha:enforcement .
+_:c14n101 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:runner_environment .
+_:c14n102 rdf:first gha:GhaActionRuntime\#composite ;
+	rdf:rest _:c14n184 .
+_:c14n103 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:runs_on .
+_:c14n104 rdf:first gha:GhaWorkflowOutput ;
+	rdf:rest rdf:nil .
+_:c14n105 rdf:first gha:GhaRulesetTarget\#push ;
+	rdf:rest rdf:nil .
+_:c14n106 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:runner_environment .
+_:c14n107 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRulesetSourceType ;
+	owl:onProperty gha:ruleset_source_type .
+_:c14n108 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:job_name .
+_:c14n109 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:ruleset_target .
+_:c14n11 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:check_uri .
+_:c14n110 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:ref_name_exclude .
+_:c14n111 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n112 xsd:pattern "^\\.github/workflows/[^/]+\\.ya?ml$" .
+_:c14n113 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:required_checks .
+_:c14n114 rdf:first gha:GhaRulesetSourceType\#Enterprise ;
+	rdf:rest rdf:nil .
+_:c14n115 xsd:pattern "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$" .
+_:c14n116 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:check_context .
+_:c14n117 a owl:Restriction ;
+	owl:allValuesFrom _:c14n240 ;
+	owl:onProperty gha:workflow_path .
+_:c14n118 a owl:Restriction ;
+	owl:allValuesFrom xsd:boolean ;
+	owl:onProperty gha:do_not_enforce_on_create .
+_:c14n119 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaReusableWorkflow ;
+	owl:onProperty gha:reusable_workflows .
+_:c14n12 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:secret_id .
+_:c14n120 rdf:first gha:GhaActionOutput ;
+	rdf:rest _:c14n104 .
+_:c14n121 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:integration_id .
+_:c14n122 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:workflow_repository .
+_:c14n123 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:secrets .
+_:c14n124 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaBypassActor ;
+	owl:onProperty gha:bypass_actors .
+_:c14n125 rdf:first "workflow_call" ;
+	rdf:rest rdf:nil .
+_:c14n126 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:triggers .
+_:c14n127 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:rule_types .
+_:c14n128 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:runner_group .
+_:c14n129 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:description .
+_:c14n13 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:ruleset_source .
+_:c14n130 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:job_id .
+_:c14n131 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:action_path .
+_:c14n132 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:description .
+_:c14n133 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaAction ;
+	owl:onProperty gha:actions .
+_:c14n134 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:job_permissions .
+_:c14n135 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:calls .
+_:c14n136 a owl:Restriction ;
+	owl:allValuesFrom _:c14n215 ;
+	owl:onProperty gha:triggers .
+_:c14n137 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:required .
+_:c14n138 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:do_not_enforce_on_create .
+_:c14n139 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n14 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:action_uri .
+_:c14n140 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:permissions .
+_:c14n141 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:ref_name_include .
+_:c14n142 a owl:Restriction ;
+	owl:allValuesFrom xsd:anyURI ;
+	owl:onProperty gha:workflow_uri .
+_:c14n143 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:emitted_by .
+_:c14n144 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:description .
+_:c14n145 rdf:first gha:GhaRunnerEnvironment\#github-hosted ;
+	rdf:rest _:c14n58 .
+_:c14n146 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:check_context .
+_:c14n147 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:ruleset_id .
+_:c14n148 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n217 .
+_:c14n149 a owl:Restriction ;
+	owl:allValuesFrom xsd:boolean ;
+	owl:onProperty gha:strict_policy .
+_:c14n15 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:ruleset_source_type .
+_:c14n150 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:output_expression .
+_:c14n151 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:output_expression .
+_:c14n152 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n153 rdf:first xsd:anyURI ;
+	rdf:rest _:c14n251 .
+_:c14n154 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:enforcement .
+_:c14n155 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:job_id .
+_:c14n156 xsd:pattern "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$" .
+_:c14n157 a owl:Restriction ;
+	owl:allValuesFrom _:c14n248 ;
+	owl:onProperty gha:calls .
+_:c14n158 a owl:Restriction ;
+	owl:onProperty gha:runs_on ;
+	owl:someValuesFrom xsd:string .
+_:c14n159 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:skip_conditions .
+_:c14n16 xsd:pattern "^(on|jobs)\\.\\S+$" .
+_:c14n160 rdf:first gha:GhaActionRuntime\#node24 ;
+	rdf:rest rdf:nil .
+_:c14n161 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:rulesets .
+_:c14n162 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:job_name .
+_:c14n163 rdf:first gha:GhaRulesetTarget\#branch ;
+	rdf:rest _:c14n183 .
+_:c14n164 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:description .
+_:c14n165 a owl:Restriction ;
+	owl:allValuesFrom _:c14n227 ;
+	owl:onProperty gha:integration_id .
+_:c14n166 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:outputs .
+_:c14n167 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaActionInput ;
+	owl:onProperty gha:inputs .
+_:c14n168 a rdfs:Datatype ;
+	owl:oneOf _:c14n125 .
+_:c14n169 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:description .
+_:c14n17 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:job_path .
+_:c14n170 rdf:first gha:GhaWorkflowInput ;
+	rdf:rest rdf:nil .
+_:c14n171 rdf:first gha:GhaRulesetEnforcement\#evaluate ;
+	rdf:rest _:c14n203 .
+_:c14n172 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:output_expression .
+_:c14n173 xsd:pattern "^[_a-zA-Z][a-zA-Z0-9_-]*$" .
+_:c14n174 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:enforcement .
+_:c14n175 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowOutput ;
+	owl:onProperty gha:outputs .
+_:c14n176 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:permissions .
+_:c14n177 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:description .
+_:c14n178 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:output_expression .
+_:c14n179 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:outputs .
+_:c14n18 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:ruleset_uri .
+_:c14n180 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:inputs .
+_:c14n181 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaActionRuntime ;
+	owl:onProperty gha:using .
+_:c14n182 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:workflow_repository .
+_:c14n183 rdf:first gha:GhaRulesetTarget\#tag ;
+	rdf:rest _:c14n105 .
+_:c14n184 rdf:first gha:GhaActionRuntime\#docker ;
+	rdf:rest _:c14n191 .
+_:c14n185 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:output_expression .
+_:c14n186 xsd:pattern "^[A-Z][A-Za-z]+$" .
+_:c14n187 rdf:first gha:GhaWorkflowInputType\#boolean ;
+	rdf:rest _:c14n65 .
+_:c14n188 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:check_uri .
+_:c14n189 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflow ;
+	owl:onProperty gha:emitted_by .
+_:c14n19 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:do_not_enforce_on_create .
+_:c14n190 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowJob ;
+	owl:onProperty gha:jobs .
+_:c14n191 rdf:first gha:GhaActionRuntime\#node20 ;
+	rdf:rest _:c14n160 .
+_:c14n192 rdf:first gha:GhaWorkflowInputType\#string ;
+	rdf:rest rdf:nil .
+_:c14n193 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:ruleset_source .
+_:c14n194 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:description .
+_:c14n195 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n196 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:inputs .
+_:c14n197 a owl:Restriction ;
+	owl:allValuesFrom xsd:integer ;
+	owl:onProperty gha:actor_id .
+_:c14n198 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:job_path .
+_:c14n199 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:description .
+_:c14n2 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:deprecation_message .
+_:c14n20 a owl:Restriction ;
+	owl:allValuesFrom _:c14n246 ;
+	owl:onProperty gha:actor_type .
+_:c14n200 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:using .
+_:c14n201 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:workflows .
+_:c14n202 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:workflow_uri .
+_:c14n203 rdf:first gha:GhaRulesetEnforcement\#disabled ;
+	rdf:rest rdf:nil .
+_:c14n204 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:ruleset_id .
+_:c14n205 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:ref_name_include .
+_:c14n206 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRequiredStatusCheck ;
+	owl:onProperty gha:required_checks .
+_:c14n207 xsd:pattern "^[a-z_]+$" .
+_:c14n208 rdf:first _:c14n207 ;
+	rdf:rest rdf:nil .
+_:c14n209 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n208 .
+_:c14n21 a owl:Restriction ;
+	owl:allValuesFrom xsd:anyURI ;
+	owl:onProperty gha:check_uri .
+_:c14n210 xsd:pattern "^[a-z_]+$" .
+_:c14n211 rdf:first _:c14n210 ;
+	rdf:rest rdf:nil .
+_:c14n212 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n211 .
+_:c14n213 xsd:pattern "^[a-z_]+$" .
+_:c14n214 rdf:first _:c14n213 ;
+	rdf:rest rdf:nil .
+_:c14n215 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n214 .
+_:c14n216 xsd:pattern "^[a-z_]+$" .
+_:c14n217 rdf:first _:c14n216 ;
+	rdf:rest rdf:nil .
+_:c14n218 a rdfs:Datatype ;
+	owl:onDatatype xsd:integer ;
+	owl:withRestrictions _:c14n222 .
+_:c14n219 rdf:first _:c14n218 ;
+	rdf:rest rdf:nil .
+_:c14n22 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRunnerEnvironment ;
+	owl:onProperty gha:runner_environment .
+_:c14n220 rdf:first xsd:integer ;
+	rdf:rest _:c14n219 .
+_:c14n221 a rdfs:Datatype ;
+	owl:intersectionOf _:c14n220 .
+_:c14n222 rdf:first _:c14n223 ;
+	rdf:rest rdf:nil .
+_:c14n223 xsd:minInclusive 1 .
+_:c14n224 a rdfs:Datatype ;
+	owl:onDatatype xsd:integer ;
+	owl:withRestrictions _:c14n228 .
+_:c14n225 rdf:first _:c14n224 ;
+	rdf:rest rdf:nil .
+_:c14n226 rdf:first xsd:integer ;
+	rdf:rest _:c14n225 .
+_:c14n227 a rdfs:Datatype ;
+	owl:intersectionOf _:c14n226 .
+_:c14n228 rdf:first _:c14n229 ;
+	rdf:rest rdf:nil .
+_:c14n229 xsd:minInclusive 1 .
+_:c14n23 a owl:Restriction ;
+	owl:allValuesFrom _:c14n242 ;
+	owl:onProperty gha:action_path .
+_:c14n230 rdf:first gha:GhaWorkflowJob ;
+	rdf:rest rdf:nil .
+_:c14n231 rdf:first _:c14n233 ;
+	rdf:rest _:c14n230 .
+_:c14n232 rdfs:subClassOf _:c14n158 ;
+	owl:intersectionOf _:c14n231 .
+_:c14n233 a owl:Restriction ;
+	owl:onProperty gha:calls ;
+	owl:someValuesFrom xsd:string .
+_:c14n234 rdf:first gha:GhaWorkflowJob ;
+	rdf:rest rdf:nil .
+_:c14n235 rdf:first _:c14n237 ;
+	rdf:rest _:c14n234 .
+_:c14n236 rdfs:subClassOf _:c14n50 ;
+	owl:intersectionOf _:c14n235 .
+_:c14n237 a owl:Restriction ;
+	owl:onProperty gha:calls ;
+	owl:someValuesFrom xsd:string .
+_:c14n238 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n239 .
+_:c14n239 rdf:first _:c14n16 ;
+	rdf:rest rdf:nil .
+_:c14n24 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:input_id .
+_:c14n240 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n241 .
+_:c14n241 rdf:first _:c14n112 ;
+	rdf:rest rdf:nil .
+_:c14n242 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n243 .
+_:c14n243 rdf:first _:c14n41 ;
+	rdf:rest rdf:nil .
+_:c14n244 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n245 .
+_:c14n245 rdf:first _:c14n76 ;
+	rdf:rest rdf:nil .
+_:c14n246 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n247 .
+_:c14n247 rdf:first _:c14n186 ;
+	rdf:rest rdf:nil .
+_:c14n248 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n249 .
+_:c14n249 rdf:first _:c14n115 ;
+	rdf:rest rdf:nil .
+_:c14n25 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:jobs .
+_:c14n250 a rdfs:Datatype ;
+	owl:intersectionOf _:c14n153 .
+_:c14n251 rdf:first _:c14n28 ;
+	rdf:rest rdf:nil .
+_:c14n252 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n253 .
+_:c14n253 rdf:first _:c14n173 ;
+	rdf:rest rdf:nil .
+_:c14n254 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n255 .
+_:c14n255 rdf:first _:c14n156 ;
+	rdf:rest rdf:nil .
+_:c14n256 rdf:first _:c14n67 ;
+	rdf:rest rdf:nil .
+_:c14n26 a owl:Restriction ;
+	owl:allValuesFrom xsd:anyURI ;
+	owl:onProperty gha:ruleset_uri .
+_:c14n27 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:integration_id .
+_:c14n28 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n256 .
+_:c14n29 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:default .
+_:c14n3 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:ruleset_target .
+_:c14n30 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:secret_id .
+_:c14n31 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRepositoryRuleset ;
+	owl:onProperty gha:rulesets .
+_:c14n32 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:using .
+_:c14n33 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:input_id .
+_:c14n34 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:job_permissions .
+_:c14n35 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:runs_on .
+_:c14n36 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:runner_group .
+_:c14n37 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:default .
+_:c14n38 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:actor_type .
+_:c14n39 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:job_name .
+_:c14n4 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:ruleset_uri .
+_:c14n40 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:strict_policy .
+_:c14n41 xsd:pattern "^(.+/)?action\\.ya?ml$" .
+_:c14n42 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:workflow_uri .
+_:c14n43 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:actor_id .
+_:c14n44 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:reusable_workflows .
+_:c14n45 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaActionOutput ;
+	owl:onProperty gha:outputs .
+_:c14n46 owl:unionOf _:c14n49 .
+_:c14n47 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:workflow_path .
+_:c14n48 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:bypass_actors .
+_:c14n49 rdf:first gha:GhaActionInput ;
+	rdf:rest _:c14n170 .
+_:c14n5 rdf:first gha:GhaRulesetSourceType\#Repository ;
+	rdf:rest _:c14n66 .
+_:c14n50 a owl:Restriction ;
+	owl:onProperty gha:runner_group ;
+	owl:someValuesFrom xsd:string .
+_:c14n51 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:output_id .
+_:c14n52 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:calls .
+_:c14n53 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:workflow_path .
+_:c14n54 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:ref_name_exclude .
+_:c14n55 rdf:first gha:GhaRulesetEnforcement\#active ;
+	rdf:rest _:c14n171 .
+_:c14n56 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:secret_id .
+_:c14n57 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:actions .
+_:c14n58 rdf:first gha:GhaRunnerEnvironment\#self-hosted ;
+	rdf:rest rdf:nil .
+_:c14n59 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:requires_check .
+_:c14n6 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRulesetTarget ;
+	owl:onProperty gha:ruleset_target .
+_:c14n60 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n61 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:runner_group .
+_:c14n62 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaRequiredStatusCheck ;
+	owl:onProperty gha:requires_check .
+_:c14n63 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:output_id .
+_:c14n64 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowSecret ;
+	owl:onProperty gha:secrets .
+_:c14n65 rdf:first gha:GhaWorkflowInputType\#number ;
+	rdf:rest _:c14n192 .
+_:c14n66 rdf:first gha:GhaRulesetSourceType\#Organization ;
+	rdf:rest _:c14n114 .
+_:c14n67 xsd:pattern "^https://[^/]+/[^/]+/[^/]+$" .
+_:c14n68 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:triggers .
+_:c14n69 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:strict_policy .
+_:c14n7 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:deprecation_message .
+_:c14n70 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:deprecation_message .
+_:c14n71 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:triggers .
+_:c14n72 a owl:Restriction ;
+	owl:allValuesFrom _:c14n250 ;
+	owl:onProperty gha:workflow_repository .
+_:c14n73 a owl:Restriction ;
+	owl:allValuesFrom _:c14n238 ;
+	owl:onProperty gha:skip_conditions .
+_:c14n74 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:job_id .
+_:c14n75 a owl:Restriction ;
+	owl:allValuesFrom _:c14n212 ;
+	owl:onProperty gha:rule_types .
+_:c14n76 xsd:pattern "\\S" .
+_:c14n77 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:output_expression .
+_:c14n78 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflow ;
+	owl:onProperty gha:workflows .
+_:c14n79 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:actor_type .
+_:c14n8 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:input_id .
+_:c14n80 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:output_id .
+_:c14n81 a owl:Restriction ;
+	owl:allValuesFrom _:c14n221 ;
+	owl:onProperty gha:ruleset_id .
+_:c14n82 a owl:Restriction ;
+	owl:allValuesFrom xsd:anyURI ;
+	owl:onProperty gha:action_uri .
+_:c14n83 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowInputType ;
+	owl:onProperty gha:input_type .
+_:c14n84 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:input_type .
+_:c14n85 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:action_path .
+_:c14n86 a owl:Restriction ;
+	owl:allValuesFrom _:c14n209 ;
+	owl:onProperty gha:bypass_mode .
+_:c14n87 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:bypass_mode .
+_:c14n88 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:required .
+_:c14n89 a owl:Restriction ;
+	owl:allValuesFrom _:c14n244 ;
+	owl:onProperty gha:check_context .
+_:c14n9 a owl:Restriction ;
+	owl:allValuesFrom xsd:boolean ;
+	owl:onProperty gha:required .
+_:c14n90 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:bypass_mode .
+_:c14n91 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n92 a owl:Restriction ;
+	owl:allValuesFrom xsd:string ;
+	owl:onProperty gha:default .
+_:c14n93 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:emitted_by .
+_:c14n94 owl:unionOf _:c14n120 .
+_:c14n95 a owl:Restriction ;
+	owl:minCardinality 0 ;
+	owl:onProperty gha:ruleset_source .
+_:c14n96 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:input_type .
+_:c14n97 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowInput ;
+	owl:onProperty gha:inputs .
+_:c14n98 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:description .
+_:c14n99 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:actor_id .
+

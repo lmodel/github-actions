@@ -1,0 +1,257 @@
+---
+id: https://w3id.org/lmodel/github-actions/github_actions_rules
+name: github_actions_rules
+title: GitHub repository rulesets and required status checks
+description: >-
+  Repository rulesets, the actors who may bypass them, and the status checks
+  a ruleset requires, each tied to the workflow whose job reports it.
+license: Apache-2.0
+see_also:
+  - https://docs.github.com/en/rest/repos/rules
+  - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets
+comments:
+  - >-
+    The fields follow the REST API at version 2026-03-10. None of that
+    version's breaking changes touches rulesets, rules or check runs, so they
+    read the same at 2022-11-28.
+
+default_prefix: gha
+default_range: string
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gha: https://w3id.org/lmodel/github-actions/
+
+imports:
+  - linkml:types
+  - ./github_actions_workflow
+
+classes:
+  GhaRepositoryRuleset:
+    class_uri: gha:RepositoryRuleset
+    description: >-
+      A ruleset: named rules that GitHub enforces on the branches, tags or
+      pushes of a repository, or of every repository in an organization or
+      enterprise that it targets.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+      - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
+    comments:
+      - >-
+        SLSA's Source track calls such rules technical controls on protected
+        named references, and asks that their meaning be documented and their
+        enforcement recorded in attestations; the slsa schema models that
+        evidence.
+      - >-
+        Of the rules' parameters, only those of required_status_checks are
+        modelled, as GhaRequiredStatusCheck; rule_types says which other rules
+        the ruleset holds.
+    attributes:
+      ruleset_uri:
+        identifier: true
+        description: >-
+          The ruleset's page, the REST response's `_links.html.href`, such as
+          `https://github.com/<owner>/<repo>/rules/<id>`.
+        range: uri
+      ruleset_id:
+        description: The ruleset's numeric `id` in the REST API.
+        range: integer
+        minimum_value: 1
+      ruleset_source_type:
+        description: >-
+          What owns the ruleset, the REST field `source_type`: a repository, an
+          organization or an enterprise.
+        range: GhaRulesetSourceType
+      ruleset_source:
+        description: >-
+          The name of the repository, organization or enterprise that owns the
+          ruleset, the REST field `source`, such as `<owner>/<repo>`.
+      ruleset_target:
+        description: >-
+          What the ruleset applies to, the REST field `target`. Named
+          ruleset_target because LOKF defines a target slot of its own.
+        range: GhaRulesetTarget
+        required: true
+      enforcement:
+        description: Whether GitHub enforces the ruleset, the REST field `enforcement`.
+        range: GhaRulesetEnforcement
+        required: true
+      ref_name_include:
+        description: >-
+          The refs the ruleset applies to, from `conditions.ref_name.include`:
+          names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or
+          `~ALL`. A ref must match one of them.
+        multivalued: true
+      ref_name_exclude:
+        description: >-
+          The refs the ruleset leaves out, from `conditions.ref_name.exclude`,
+          even when they match an included one.
+        multivalued: true
+      bypass_actors:
+        description: The actors who may bypass the ruleset.
+        range: GhaBypassActor
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      rule_types:
+        description: >-
+          The `type` of each rule the ruleset holds, such as `deletion`,
+          `non_fast_forward`, `pull_request` or `required_status_checks`.
+        multivalued: true
+        pattern: "^[a-z_]+$"
+        comments:
+          - A pattern rather than an enumeration, because GitHub adds rule types.
+      requires_check:
+        description: >-
+          The status checks the ruleset's required_status_checks rule
+          requires, each a concept of its own.
+        range: GhaRequiredStatusCheck
+        multivalued: true
+
+  GhaBypassActor:
+    class_uri: gha:BypassActor
+    description: An actor who may bypass a ruleset, and when.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+    attributes:
+      actor_id:
+        description: >-
+          The actor's numeric id; absent for an actor type GitHub takes no id
+          for, such as DeployKey or OrganizationAdmin.
+        range: integer
+      actor_type:
+        description: >-
+          The kind of actor, the REST field `actor_type`, such as `Team`,
+          `RepositoryRole`, `Integration` or `OrganizationAdmin`.
+        required: true
+        pattern: "^[A-Z][A-Za-z]+$"
+        comments:
+          - A pattern rather than an enumeration, because GitHub adds actor types.
+      bypass_mode:
+        description: >-
+          When the actor may bypass, the REST field `bypass_mode`, such as
+          `always`, `pull_request` or `exempt`; GitHub's default is `always`.
+        pattern: "^[a-z_]+$"
+        comments:
+          - A pattern rather than an enumeration, because GitHub adds bypass modes.
+
+  GhaRequiredStatusCheck:
+    class_uri: gha:RequiredStatusCheck
+    description: >-
+      A status check that a ruleset requires to pass before a change reaches a
+      ref it targets, named by the context a check run must report.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+      - https://docs.github.com/en/rest/checks/runs
+      - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
+      - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks
+    related_mappings:
+      - https://in-toto.io/attestation/test-result/v0.1
+    comments:
+      - >-
+        GitHub Actions reports each job as a check run named after the job:
+        its name, or its id when it has none. A job of a called workflow is
+        named after the calling job and the called job, joined by a slash with
+        a space on each side, as the otterdog documentation states
+        (https://otterdog.readthedocs.io/en/latest/reference/organization/repository/status-check/).
+        A matrix job's check name adds its matrix values in parentheses.
+      - >-
+        A job that a path filter or an `if` skips reports success and does not
+        block a merge, even when its check is required; skip_conditions
+        records what can skip it, so a reader can see the hole.
+      - >-
+        SLSA's Source track lets an organization carry such a control into a
+        Source Verification Summary Attestation as an ORG_SOURCE_ property,
+        whose meaning the organization defines; slsa-framework's source-tool
+        emits one as GH_REQUIRED_CHECK_ followed by the check's name.
+      - >-
+        in-toto's Test Result predicate is the shape of an attestation of what
+        the check found, so it is a related term and not a close one.
+    attributes:
+      check_uri:
+        identifier: true
+        description: >-
+          An identifier for the requirement. GitHub gives a required check no
+          address of its own; in a knowledge bundle the concept's `id` takes
+          its place.
+        range: uri
+      check_context:
+        description: >-
+          The context a check run must report, the rule's
+          `required_status_checks[].context`. Named check_context because LOKF
+          defines a context slot of its own.
+        required: true
+        pattern: "\\S"
+      integration_id:
+        description: >-
+          The GitHub App the check must come from, the rule's
+          `integration_id`; GitHub Actions is app 15368.
+        range: integer
+        minimum_value: 1
+      strict_policy:
+        description: >-
+          Whether a pull request must be tested against the latest code of the
+          branch it targets, the rule's `strict_required_status_checks_policy`.
+        range: boolean
+      do_not_enforce_on_create:
+        description: >-
+          Whether a branch may be created although the check would otherwise
+          stop it, the rule's `do_not_enforce_on_create`.
+        range: boolean
+      job_path:
+        description: >-
+          The ids of the jobs from the top-level workflow's job to the job that
+          reports the check: one id for a job of the workflow itself, the
+          calling job's id first for a job of a called workflow.
+        range: gha_identifier
+        multivalued: true
+        list_elements_ordered: true
+      skip_conditions:
+        description: >-
+          What in the workflow can skip the job that reports the check, each
+          written as its key's path in the file, such as
+          `on.pull_request.paths` or `jobs.test.if`.
+        multivalued: true
+        pattern: "^(on|jobs)\\.\\S+$"
+      emitted_by:
+        description: The top-level workflow whose job reports the check.
+        range: GhaWorkflow
+
+enums:
+  GhaRulesetSourceType:
+    description: What can own a ruleset, as the REST field `source_type` names it.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+    permissible_values:
+      Repository:
+        description: A repository's own ruleset.
+      Organization:
+        description: An organization's ruleset, applied to the repositories it targets.
+      Enterprise:
+        description: An enterprise's ruleset, applied to the repositories it targets.
+
+  GhaRulesetTarget:
+    description: What a ruleset applies to, as the REST field `target` names it.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+    permissible_values:
+      branch:
+        description: Branches; GitHub's default.
+      tag:
+        description: Tags.
+      push:
+        description: Pushes, by the files they change.
+
+  GhaRulesetEnforcement:
+    description: Whether GitHub enforces a ruleset, as the REST field `enforcement` names it.
+    see_also:
+      - https://docs.github.com/en/rest/repos/rules
+    permissible_values:
+      active:
+        description: Enforced.
+      evaluate:
+        description: >-
+          Evaluated and reported but not enforced, so administrators can test
+          its rules; only on GitHub Enterprise.
+      disabled:
+        description: Neither enforced nor evaluated.

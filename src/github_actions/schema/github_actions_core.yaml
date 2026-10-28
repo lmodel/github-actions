@@ -1,0 +1,118 @@
+---
+id: https://w3id.org/lmodel/github-actions/github_actions_core
+name: github_actions_core
+title: GitHub Actions core
+description: >-
+  What the workflow and action modules share: the identifier form GitHub
+  accepts for a job, an input, an output or a secret, and the inputs and
+  outputs that a reusable workflow and an action both declare.
+license: Apache-2.0
+see_also:
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs
+
+default_prefix: gha
+default_range: string
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gha: https://w3id.org/lmodel/github-actions/
+  xsd: http://www.w3.org/2001/XMLSchema#
+  schema: http://schema.org/
+
+imports:
+  - linkml:types
+
+types:
+  gha_identifier:
+    typeof: string
+    base: str
+    uri: xsd:string
+    description: >-
+      A key GitHub accepts for a job, an input, an output or a secret: a letter
+      or an underscore, then letters, digits, hyphens or underscores.
+    pattern: "^[_a-zA-Z][a-zA-Z0-9_-]*$"
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_id
+
+slots:
+  description:
+    description: What the input, output or secret is for, as the file describes it.
+    slot_uri: schema:description
+    comments:
+      - >-
+        It means what LOKF's description means and carries the same IRI, so
+        lokf adapt folds it into LOKF's slot and a knowledge bundle reads one
+        description key.
+
+  inputs:
+    description: The inputs that the reusable workflow or the action declares.
+    range: GhaInput
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+
+  outputs:
+    description: The outputs that the reusable workflow or the action declares.
+    range: GhaOutput
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+
+  output_expression:
+    description: >-
+      The expression that sets the output, the file's `value` key, such as one
+      that reads an output of a job or a step.
+    slot_uri: gha:output_expression
+    comments:
+      - A slot rather than an attribute because GhaWorkflowOutput refines it.
+
+classes:
+  GhaRequiredMixin:
+    mixin: true
+    description: The field that says whether a caller must supply a value.
+    attributes:
+      required:
+        description: Whether a caller must supply a value.
+        range: boolean
+        slot_uri: schema:valueRequired
+        comments:
+          - >-
+            An attribute rather than a slot: it carries LOKF's IRI for
+            required, and lokf adapt keeps an attribute's name, where it would
+            rename a slot that shares one with lokf.yaml.
+
+  GhaInput:
+    abstract: true
+    class_uri: gha:Input
+    description: >-
+      An input that a reusable workflow or an action declares, under the key a
+      caller writes in its `with` map.
+    mixins:
+      - GhaRequiredMixin
+    slots:
+      - description
+    attributes:
+      input_id:
+        description: The key a caller writes in its `with` map.
+        range: gha_identifier
+        required: true
+      default:
+        description: >-
+          The value used when a caller supplies none, written as a string even
+          where the input's type is a boolean or a number.
+
+  GhaOutput:
+    abstract: true
+    class_uri: gha:Output
+    description: >-
+      An output that a reusable workflow or an action declares for the job or
+      step that calls it to read.
+    slots:
+      - description
+      - output_expression
+    attributes:
+      output_id:
+        description: The key a caller reads the output by.
+        range: gha_identifier
+        required: true
