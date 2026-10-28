@@ -2,11 +2,9 @@
 
 *This file is a checklist, not a design log. Each rule is a line or two that links to where its reasoning lives: a code comment, a workflow header, or a linked page. `lint-and-docs.yaml` holds the file to a word budget so it stays that way.*
 
-Thanks for your interest in improving this LinkML schema for GitHub Actions.
-
 ## What this project is
 
-A LinkML schema for what a GitHub Actions workflow file, an action's metadata file and a repository ruleset state: triggers, permissions, jobs and runners, inputs, outputs and secrets, and the status checks a ruleset requires. A knowledge bundle types its concepts with it, and a script checks those concepts against the files.
+A LinkML schema for what a GitHub Actions workflow file, an action's metadata file and a repository ruleset state, so a knowledge bundle can type its concepts with it.
 
 | Path | Holds |
 | --- | --- |
@@ -42,9 +40,9 @@ npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes  
 ## Before opening a pull request
 
 - **Edit the schema, then regenerate.** Edit `src/github_actions/schema/`, run `just gen-project`, `just gen-doc`, `just gen-merged` and `just lokf-adapt`, and commit the output; `project/`, `src/github_actions/datamodel/`, `docs/schema/` and `.lokf/github-actions.yaml` are generated.
-- **Name the page a description renders.** A class, slot or enum value says what GitHub's documentation or SchemaStore's schema says, in your own words; give the page's address in `see_also` and the pull request. [AI_COVENANT.md](AI_COVENANT.md) says why.
+- **Name the page a description renders.** Say what GitHub's documentation or SchemaStore's schema says, in your own words, and give the page in `see_also` and the pull request; [AI_COVENANT.md](AI_COVENANT.md) says why.
 - **Leave `src/github_actions/schema/schemastore/` as upstream wrote it.** Replace both files from one SchemaStore commit instead and move the pin in `scripts/check_upstream_release.py` and the schema header; [NOTICE](NOTICE) records the commit, and `upstream-watch.yaml` checks it.
-- **Keep the names apart from LOKF's and slsa's.** A host imports this schema's adapt copy beside `lokf.yaml` and slsa's, so a shared name must mean the same and carry the same IRI; `tests/test_schema_rules.py` checks.
+- **Keep names apart from LOKF's and slsa's**: a host imports all three copies, so a shared name carries the same IRI. `tests/test_schema_rules.py` checks.
 - **Run the tests**: `just test` (schema generation, `pytest`, and the examples under `tests/data/`). Example data goes in `tests/data/valid/` and `tests/data/invalid/`, named `ClassName-###.yaml`; each constraint has an invalid example.
 - **Follow the schema's conventions**: UpperCamelCase classes and enums, snake_case slots, GitHub's own strings as permissible values (`.linkmllint.yaml` says why), attributes unless two classes share a field, a short description on every element. `just lint` checks.
 - **Run the pre-commit hooks** on what you staged (`uvx pre-commit run`): ruff, yamllint, codespell, typos and the `uv.lock` check.
@@ -75,7 +73,6 @@ Use the [issue tracker](https://github.com/lmodel/github-actions/issues) for pro
 - On merge, [`semantic-release.yml`](.github/workflows/semantic-release.yml) retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release. No file is bumped. It then dispatches `.github/workflows/knowledge-release.yaml` for the tag once `KNOWLEDGE_RELEASE_ENABLED` is `true`, which attaches the schema copy and the bundle.
 - That step runs behind the `release` GitHub Environment; configure required reviewers on it in Settings → Environments, or every qualifying merge is released unattended.
 - Below 1.0.0: `v0.1.0` is the first release and the baseline semantic-release counts from; both release jobs refuse to run without a `v*` tag, as semantic-release would otherwise start at 1.0.0. `.releaserc.json` maps `breaking: true` to `minor`; reaching 1.0.0 means removing that rule in its own PR.
-- PyPI publishing is off: the template's `gh_action_pypi` answer is `false`. The package name is `github-actions-linkml` if a consumer ever needs it.
 - A branch rule requiring pull requests, status checks or signed commits would reject the release job's own push to `main`; leave them off. [SECURITY.md](SECURITY.md) says what holds `main` instead, and the shared design is on [KTL's releasing page](https://github.com/noelmcloughlin/knowledge-trust-ladder/blob/main/docs/releasing.md).
 
 ## License
