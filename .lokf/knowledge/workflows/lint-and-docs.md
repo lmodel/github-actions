@@ -51,6 +51,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: b4742604d1fb81d991b7b46bc3cc09d6d863ba92
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # Lint & docs (lint-and-docs.yaml)

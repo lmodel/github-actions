@@ -14,3 +14,4 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 - **A copy of SchemaStore's `github-workflow.json` and `github-action.json` at a pinned commit, and a weekly upstream watch.** The watch opens an issue when SchemaStore changes either file or GitHub releases a newer REST API version.
 - **An example for each class and a counter-example for each constraint**, all held to the validator by `tests/test_data.py`.
 - **The repository's own KTL knowledge bundle and its sidecar automation**, from the KTL v0.58.0 templates with the lokf floor at 0.9.0; the librarian's skills pin, which those templates leave at v0.57.0, moves at the first weekly sync.
+- **`scripts/derive.py` derives the concepts' facts and the check names from a repository's workflow and action files**, reports unpinned `uses`, `secrets: inherit` and top-level write access, and with `--check` fails on drift from a bundle.

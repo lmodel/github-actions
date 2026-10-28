@@ -24,6 +24,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 67d51bcffa835417e6f4785bb2d9a6945a15d95f
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # github-actions documentation site

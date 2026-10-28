@@ -46,7 +46,7 @@ sources:
     title: the item on the skills pin
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-28T20:03:46Z"
   revision: 6f80b089fc284228e011ec51ab45e26d333f68f0
 status: draft
 ---
@@ -65,12 +65,8 @@ status: draft
 
 The agent command comes from repository settings. `AGENT_CLI` names it, and `AGENT_API_KEY_ENV` names the variable its credential goes in: `COPILOT_GITHUB_TOKEN` for Copilot CLI, or `ANTHROPIC_API_KEY` for Claude Code. Either `AGENT_USE_JOB_TOKEN` set to `true` or the `AGENT_API_KEY` secret supplies the credential. `KNOWLEDGE_RETRIEVAL`, when `true`, scores on each run that changes the bundle whether the index leads the agent to the concept behind each question readers asked, at the cost of one more agent call. A scheduled week with nothing waiting for the librarian runs no agent, except in a month's first seven days.
 
-`CHANGELOG.md` says that the sidecar automation comes from the KTL v0.58.0 templates.[^changelog.md] CONTRIBUTING.md says that the skills pin moves with the sidecar copies. [AI covenant](../policies/ai-covenant.md) sets the rules that the agent's changes follow.
+`CHANGELOG.md` says that the sidecar automation comes from the KTL v0.58.0 templates, and that the librarian's skills pin, which those templates leave at v0.57.0, moves at the first weekly sync, which [Knowledge sync](knowledge-sync.md) runs.[^changelog.md] CONTRIBUTING.md says that the skills pin moves with the sidecar copies. [AI covenant](../policies/ai-covenant.md) sets the rules that the agent's changes follow.
 
 [^knowledge-librarian.yaml]: .github/workflows/knowledge-librarian.yaml, the header comment, the on key, the three jobs and the comment above the agent step
 [^notice]: NOTICE, the Knowledge bundle section
 [^changelog.md]: CHANGELOG.md, the last item under Added
-
-## Open questions
-
-- 2026-10-28, process:ktl-librarian: CHANGELOG.md says that the sidecar automation comes from the KTL v0.58.0 templates, and CONTRIBUTING.md says that the skills pin moves with the sidecar copies, but knowledge-librarian.yaml sets TRUST_LADDER_SKILLS_REF to v0.57.0. Which release should the scheduled librarian install?

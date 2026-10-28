@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/test-data
 genre: reference
 title: Test data and schema tests
-description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator, beside the tests in tests/test_schema_rules.py that compare the schema with the SchemaStore copy and its names with LOKF's and slsa's."
+description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy and its names with LOKF's and slsa's, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/."
 resource: tests/data
 about:
   - https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
@@ -19,9 +19,14 @@ sources:
   - id: test_schema_rules.py
     resource: tests/test_schema_rules.py
     title: the seven tests and the neighbour comment
+  - id: test_derive.py
+    resource: tests/test_derive.py
+    title: the eleven tests and the fixture path
   - id: justfile
     resource: justfile
     title: the test recipe and its three parts
+  - resource: tests/derive
+    title: the fixture repository
   - resource: tests/neighbours/slsa.yaml
     title: the header lokf adapt wrote
   - resource: CONTRIBUTING.md
@@ -30,14 +35,14 @@ sources:
     title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 4c6d307b6b74004e1acabb092ae1ffb14c49c214
+  at: "2026-10-28T20:03:46Z"
+  revision: a86d8591547d1112e880fd60e399749a70698be0
 status: draft
 ---
 
 # Test data and schema tests
 
-`tests/data/README.md` sorts the example data into `valid/`, for data that conforms to the schema, `invalid/`, for data that must fail validation, and `problem/`, for data the current schema does not yet handle correctly.[^data-readme.md] A file name has the form `classname-###.yaml`: the part before the first hyphen is the name of a class in the schema, and `###` is a number or other characters a file name allows. CONTRIBUTING.md asks for an invalid example for each constraint.
+`tests/data/README.md` sorts the example data into `valid/`, for data that conforms to the schema, `invalid/`, for data that must fail validation, and `problem/`, for data the current schema does not yet handle correctly.[^data-readme.md] A file name has the form `ClassName-###.yaml`: the part before the first hyphen is the name of a class as the schema writes it, and `###` is a number or other characters a file name allows. CONTRIBUTING.md asks for an invalid example for each constraint.
 
 ## The examples
 
@@ -61,6 +66,10 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 
 `tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it comes from slsa's branch `chore/lokf-0-9-0` as commit `80716f3` left it, which releases as slsa 0.7.0, and that it is to be replaced with that release's schema asset once that is published.
 
+## tests/test_derive.py
+
+`tests/test_derive.py` holds the eleven tests of `scripts/derive.py`, which run the script against the fixture repository in `tests/derive/repo/`: four workflow files and two action files that show each of its rules.[^test_derive.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
+
 ## How they run
 
 `just test` runs three recipes.[^justfile] `_test-schema` generates the project into `tmp/`. `_test-python` regenerates the Python models and runs pytest. `_test-examples` runs `linkml-run-examples` over `tests/data/valid/` and `tests/data/invalid/` and writes what it converts into `examples/output/`, which git ignores. [Build and test](../workflows/main.md) runs `just test` on every pull request.
@@ -69,3 +78,4 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 [^test_data.py]: tests/test_data.py, the three test functions
 [^test_schema_rules.py]: tests/test_schema_rules.py, the seven test functions and the comment above COPY
 [^justfile]: justfile, the `test`, `_test-schema`, `_test-python` and `_test-examples` recipes
+[^test_derive.py]: tests/test_derive.py, the docstring and the fixture path

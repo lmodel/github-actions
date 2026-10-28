@@ -29,6 +29,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: b7ea64b8925de0c87fca46c5be56f440e45a7c82
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # Move the upstream pins

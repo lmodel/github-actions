@@ -24,6 +24,9 @@ generated:
   by: process:ktl-librarian
   at: "2026-10-28T19:53:06Z"
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # GitHub workflow syntax

@@ -30,8 +30,8 @@ sources:
     title: the check, notes and promote commands
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 9e5861ab5d13ea0b34600f4339557226b1dddc15
+  at: "2026-10-28T20:03:46Z"
+  revision: a86d8591547d1112e880fd60e399749a70698be0
 status: draft
 ---
 
@@ -49,7 +49,7 @@ CONTRIBUTING.md's Releasing section and the [Semantic release](../workflows/sema
 
 1. Write the change under `## [Unreleased]` in `CHANGELOG.md` as you go. The release refuses an empty section, through `node .github/scripts/changelog-release.mjs check`.
 2. Type the commit with Conventional Commits for what the change is. Only `feat:`, `fix:`, `security:` and a breaking `!` cut a release, and other types leave their entries for the next release that does. Give a pull request that would release a releasing type in its title too, since a squash merge takes its subject from the title.
-3. Merge to `main`. semantic-release retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release with the section's text as its notes. It then dispatches [Knowledge Release](../workflows/knowledge-release.md) for the tag, once the repository variable `KNOWLEDGE_RELEASE_ENABLED` is `true`.
+3. Merge to `main`. semantic-release retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release with the section's text as its notes. Once the repository variable `KNOWLEDGE_RELEASE_ENABLED` is `true`, it then dispatches [Knowledge Release](../workflows/knowledge-release.md) for the tag, which attaches the schema copy and the bundle when the bundle changed. Run that workflow by hand with `force` when only the schema changed.
 
 ## Staying below 1.0.0
 

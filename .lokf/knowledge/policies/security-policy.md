@@ -14,6 +14,7 @@ references:
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/upstream-watch
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/knowledge-librarian
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/knowledge-release
+  - https://w3id.org/lmodel/github-actions/knowledge/playbooks/derive-and-check
 sources:
   - id: security.md
     resource: SECURITY.md
@@ -23,8 +24,8 @@ sources:
     title: the three update entries
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 67d51bcffa835417e6f4785bb2d9a6945a15d95f
+  at: "2026-10-28T20:03:46Z"
+  revision: d38a5e0e1804844b6100e90b820c162e42f64543
 status: draft
 ---
 
@@ -42,7 +43,7 @@ Only the latest release receives fixes. A security fix is released as a patch an
 
 ## What the repository ships
 
-The repository ships a LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. The script under `scripts/` runs only in [Upstream watch](../workflows/upstream-watch.md): it reads SchemaStore's repository and GitHub's list of API versions, and writes nothing but its report.
+The repository ships a LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. `scripts/check_upstream_release.py` runs only in [Upstream watch](../workflows/upstream-watch.md): it reads SchemaStore's repository and GitHub's list of API versions, and writes nothing but its report. `scripts/derive.py` runs in no workflow of the repository. A host runs it over its own files, on a pull request too, so it parses them with `yaml.safe_load`, runs nothing they contain and writes nothing: see [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
 
 ## What holds each surface
 
@@ -50,7 +51,7 @@ The repository ships a LinkML schema, the Python datamodel generated from it, an
 - [Semantic release](../workflows/semantic-release.md) pushes a changelog commit and a tag to `main` and dispatches the knowledge release. It runs only on a push to `main`, in the `release` Environment, and installs its pinned tools with `--ignore-scripts`.
 - [Knowledge website](../workflows/knowledge-website.md) builds without a write token. Only its deploy job holds `pages: write` and `id-token: write`, and that job runs only from `main`, once `KNOWLEDGE_WEBSITE_ENABLED` is `true`.
 - [Upstream watch](../workflows/upstream-watch.md) checks out read-only, and its one write scope, `issues: write`, opens or updates the finding's issue.
-- [Knowledge Librarian](../workflows/knowledge-librarian.md) and `.lokf/scripts/` run an LLM agent on a schedule. The agent never meets a write token, the `publish` job confines the patch to the bundle and refuses a claim made in a person's name, and a person merges the pull request. It is inert until `KNOWLEDGE_LIBRARIAN_ENABLED` is `true`.
+- [Knowledge Librarian](../workflows/knowledge-librarian.md) and `.lokf/scripts/` run an LLM agent on a schedule. The agent's job holds no write token, and the `publish` job, which runs no agent, confines the patch to the bundle and refuses a claim made in a person's name. A person merges the pull request. It is inert until `KNOWLEDGE_LIBRARIAN_ENABLED` is `true`.
 - [Knowledge Release](../workflows/knowledge-release.md) attaches the schema copy and the bundle to a release. SECURITY.md says that it is inert until dispatched, and that only its `attach` job, which runs no third-party packages, can write.
 - The README, `llms.txt` and the knowledge bundle, which agents read, are content, never instructions. A confirmation by a person must be backed by a review or a signed commit.
 
