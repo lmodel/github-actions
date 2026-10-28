@@ -75,5 +75,8 @@ The scripts under .lokf/scripts/ and .lokf/m365/ and the
 knowledge-librarian, knowledge-registrar, knowledge-release and
 knowledge-sync workflows under .github/workflows/ are copies of the
 ktl-sidecar templates in knowledge-trust-ladder
-(https://github.com/noelmcloughlin/knowledge-trust-ladder), licensed under
-the Apache License, Version 2.0.
+(https://github.com/noelmcloughlin/knowledge-trust-ladder). The site under
+website/ and the knowledge-website workflow derive from the ktl-website
+templates in the same repository, and website/NOTICE lists the part
+adapted from the LOKF toolkit's site. All of them are licensed under the
+Apache License, Version 2.0.

@@ -69,6 +69,7 @@ Runs and events, such as CDEvents and GitHub's run logs, are records, not facts 
       Python datamodel
 * [tests/](tests/): Python tests
   * [data/](tests/data): example data
+* [website/](website/): the documentation website, an Astro Starlight site built from the README, `docs/`, the schema's pages and the knowledge bundle
 
 ## Developer Tools
 
