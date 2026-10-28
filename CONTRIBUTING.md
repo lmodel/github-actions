@@ -17,7 +17,7 @@ A LinkML schema for what a GitHub Actions workflow file, an action's metadata fi
 
 ## Development setup
 
-Python 3.10+, [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just) are required.
+Python 3.10+, [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just) are needed.
 
 ```bash
 git clone https://github.com/lmodel/github-actions.git
@@ -26,7 +26,7 @@ uv sync --group dev
 just --list
 ```
 
-`just gen-project` regenerates `project/` and the Python datamodel; `just gen-doc` and `just gen-merged` regenerate `docs/schema/` and the site's element pages.
+`just gen-project` regenerates `project/` and the Python datamodel; `just gen-doc` and `just gen-merged` regenerate `docs/schema/` and the element pages.
 
 ### Agent skills (optional, only for this repo's `.lokf/` bundle)
 
@@ -40,10 +40,10 @@ npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes  
 ## Before opening a pull request
 
 - **Edit the schema, then regenerate.** Edit `src/github_actions/schema/`, run `just gen-project`, `just gen-doc`, `just gen-merged` and `just lokf-adapt`, and commit the output; `project/`, `src/github_actions/datamodel/`, `docs/schema/` and `.lokf/github-actions.yaml` are generated.
-- **Name the page a description renders.** Say what GitHub's documentation or SchemaStore's schema says, in your own words, and give the page in `see_also` and the pull request; [AI_COVENANT.md](AI_COVENANT.md) says why.
+- **Name the page a description renders.** Paraphrase GitHub's documentation or SchemaStore's schema, and give the page in `see_also` and the pull request; [AI_COVENANT.md](AI_COVENANT.md) says why.
 - **Leave `src/github_actions/schema/schemastore/` as upstream wrote it.** Replace both files from one SchemaStore commit instead and move the pin in `scripts/check_upstream_release.py` and the schema header; [NOTICE](NOTICE) records the commit, and `upstream-watch.yaml` checks it.
 - **Keep names apart from LOKF's and slsa's**: a host imports all three copies, so a shared name carries the same IRI. `tests/test_schema_rules.py` checks.
-- **Run the tests**: `just test` (schema generation, `pytest`, and the examples under `tests/data/`). Example data goes in `tests/data/valid/` and `tests/data/invalid/`, named `ClassName-###.yaml`; each constraint has an invalid example.
+- **Run the tests**: `just test` (schema generation, `pytest`, and the examples under `tests/data/`). Example data goes in `tests/data/valid/` and `tests/data/invalid/`, named `ClassName-###.yaml`, with an invalid example per constraint.
 - **Follow the schema's conventions**: UpperCamelCase classes and enums, snake_case slots, GitHub's own strings as permissible values (`.linkmllint.yaml` says why), attributes unless two classes share a field, a short description on every element. `just lint` checks.
 - **Run the pre-commit hooks** on what you staged (`uvx pre-commit run`): ruff, yamllint, codespell, typos and the `uv.lock` check.
 - **Lock files are part of the change.** CI installs with `uv sync --locked`; a dependency edit that does not update `uv.lock` (or `.lokf/uv.lock`) fails the run.
@@ -52,7 +52,7 @@ npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes  
 - **Actions are pinned to commit SHAs**, the version in a trailing comment, and bumped by Dependabot, never by hand to a tag.
 - **The skills pin moves with the sidecar copies.** When moving `TRUST_LADDER_SKILLS_REF` in `.github/workflows/knowledge-librarian.yaml`, copy the other `knowledge-*.yaml` workflows and `.lokf/scripts/` and `.lokf/m365/` from that release's `skills/ktl-sidecar/templates/` in the same pull request.
 - **If your change alters behaviour** (not just wording), add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
-- Keep changes focused, reference the issue they close, and fill in the PR template's checklist.
+- Keep changes focused, and fill in the PR template's checklist.
 
 ## Code of conduct
 
@@ -70,7 +70,7 @@ Use the [issue tracker](https://github.com/lmodel/github-actions/issues) for pro
 
 - Write `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) as you go; the release job refuses an empty one (`.github/scripts/changelog-release.mjs check`).
 - Type the commit ([Conventional Commits](https://www.conventionalcommits.org/)) for what the change *is*. Only `feat:`, `fix:`, `security:` and a breaking `!` cut a release; other types leave their entries for the next release that does. A pull request that would release must carry a releasing type in its title too, since a squash merge takes its subject from it.
-- On merge, [`semantic-release.yml`](.github/workflows/semantic-release.yml) retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release. No file is bumped. It then dispatches `.github/workflows/knowledge-release.yaml` for the tag once `KNOWLEDGE_RELEASE_ENABLED` is `true`, which attaches the schema copy and the bundle.
+- On merge, [`semantic-release.yml`](.github/workflows/semantic-release.yml) retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release. No file is bumped. Once `KNOWLEDGE_RELEASE_ENABLED` is `true`, it dispatches `.github/workflows/knowledge-release.yaml`, which attaches the schema copy and the bundle when the bundle changed; run it with `force` when only the schema did.
 - That step runs behind the `release` GitHub Environment; configure required reviewers on it in Settings → Environments, or every qualifying merge is released unattended.
 - Below 1.0.0: push the `v0.0.0` baseline tag on `main` before the first releasing merge, which then releases 0.1.0; both release jobs refuse to run without a `v*` tag, as semantic-release would otherwise start at 1.0.0. `.releaserc.json` maps `breaking: true` to `minor`; reaching 1.0.0 means removing that rule in its own PR.
 - A branch rule requiring pull requests, status checks or signed commits would reject the release job's own push to `main`; leave them off. [SECURITY.md](SECURITY.md) says what holds `main` instead, and the shared design is on [KTL's releasing page](https://github.com/noelmcloughlin/knowledge-trust-ladder/blob/main/docs/releasing.md).

@@ -15,6 +15,9 @@ exclude = [
   # This schema's namespace. A term IRI is an identifier that merely looks
   # like a URL; a 404 on one is valid by design.
   '^https://w3id\.org/lmodel/github-actions/',
+  # The documentation site, which answers once the knowledge-website
+  # workflow first deploys it to Pages. Drop this then.
+  '^https://lmodel\.github\.io/github-actions',
   # Development-only addresses printed in setup instructions.
   '^http://localhost',
   '^http://127\.0\.0\.1',

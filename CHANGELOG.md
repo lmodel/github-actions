@@ -10,7 +10,7 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 - **A LinkML schema of GitHub Actions workflows, reusable workflows, actions, repository rulesets and required status checks.** Five classes a knowledge concept can take as its `type`, with jobs, inputs, outputs, secrets and bypass actors inlined, rendered from GitHub's documentation as read on 2026-10-28 and the REST API at version 2026-03-10.
 - **`emitted_by` ties a required status check to the workflow whose job reports it**, and `job_path` and `skip_conditions` record how the check is named and what can skip it.
-- **`.lokf/github-actions.yaml`, the schema's `lokf adapt` copy, which a release attaches as `schema-<tag>-github-actions.yaml`.** It shares no element name with `lokf.yaml` or slsa's copy, and a test holds it to that.
+- **`.lokf/github-actions.yaml`, the schema's `lokf adapt` copy, which the knowledge release attaches beside the bundle as `schema-<tag>-github-actions.yaml`.** It shares no element name with `lokf.yaml` or slsa's copy, and a test holds it to that.
 - **A copy of SchemaStore's `github-workflow.json` and `github-action.json` at a pinned commit, and a weekly upstream watch.** The watch opens an issue when SchemaStore changes either file or GitHub releases a newer REST API version.
 - **An example for each class and a counter-example for each constraint**, all held to the validator by `tests/test_data.py`.
-- **The repository's own KTL knowledge bundle and its sidecar automation**, from the KTL v0.58.0 templates with the lokf floor at 0.9.0.
+- **The repository's own KTL knowledge bundle and its sidecar automation**, from the KTL v0.58.0 templates with the lokf floor at 0.9.0; the librarian's skills pin, which those templates leave at v0.57.0, moves at the first weekly sync.

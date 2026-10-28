@@ -4,9 +4,9 @@ name: Semantic release
 # `main` and promotes CHANGELOG.md's "## [Unreleased]" section into a dated
 # heading via .github/scripts/changelog-release.mjs, then tags the commit and
 # publishes a GitHub Release built from that same text, then dispatches the
-# knowledge release, which attaches the schema's adapt copy and the bundle,
-# once KNOWLEDGE_RELEASE_ENABLED is `true`. No file carries the version, so
-# CHANGELOG.md is the only file this job commits.
+# knowledge release, which attaches the schema's adapt copy and the bundle
+# when the bundle has changed, once KNOWLEDGE_RELEASE_ENABLED is `true`. No
+# file carries the version, so CHANGELOG.md is the only file this job commits.
 #
 # The schema stays below 1.0.0 until its shape settles. Two things keep it
 # there. The `v0.0.0` baseline tag stops semantic-release defaulting a

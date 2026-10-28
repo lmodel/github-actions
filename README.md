@@ -77,7 +77,7 @@ Several pre-defined command-recipes are available using [just](https://github.co
 
 ## Knowledge Trust Ladder (KTL)
 
-`.lokf/` holds this project's [KTL](https://w3id.org/ktl/) knowledge bundle. Its domain schema is `.lokf/github-actions.yaml`, a copy that `lokf adapt` wrote from `src/github_actions/schema/github_actions.yaml`, and each release attaches the same copy as `schema-<tag>-github-actions.yaml`. Edit the source, never the copy.
+`.lokf/` holds this project's [KTL](https://w3id.org/ktl/) knowledge bundle. Its domain schema is `.lokf/github-actions.yaml`, a copy that `lokf adapt` wrote from `src/github_actions/schema/github_actions.yaml`. `knowledge-release.yaml` attaches the same copy to a release as `schema-<tag>-github-actions.yaml`, beside the bundle, when the bundle has changed since the last release that carries one; for a release that changes only the schema, run it by hand with `force`. Edit the source, never the copy.
 
 `just lokf-adapt` rewrites the copy and `just lokf-adapt-check` says when it is stale; `project.justfile` says which classes the copy roots on `Concept`. A concept may name any of them, or a subclass, as its `type`. Obsidian users of the KTL Registrar and KTL Curator plugins should add them to the *Known LOKF types* setting:
 
