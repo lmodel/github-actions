@@ -1,0 +1,11 @@
+# linkml-lint reads this file from the directory `just lint` runs in.
+# The recommended rules apply, with one change: standard_naming reports at
+# warning level, which `just lint` (errors only) does not fail on. The
+# permissible values are GitHub's own strings, written as GitHub writes them
+# (`node20`, `github-hosted`, `Repository`), so that a script compares a
+# concept with a workflow file or a REST response without translating; no one
+# case convention holds for all of them.
+extends: recommended
+rules:
+  standard_naming:
+    level: warning

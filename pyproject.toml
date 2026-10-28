@@ -3,13 +3,15 @@ requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
 [project]
-name = "github_actions"
-description = "Github Actions - LinkML Schema"
+# Named like lmodel/slsa's slsa-linkml, so the PyPI name says what it holds;
+# the import package stays github_actions. PyPI publishing is off.
+name = "github-actions-linkml"
+description = "GitHub Actions workflows, actions and repository rulesets (LinkML)"
 authors = [
   {name = "Noel McLoughlin", email = "noel.mcloughlin@gmail.com"},
 ]
 license = "Apache-2.0"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "NOTICE"]
 readme = "README.md"
 requires-python = ">=3.10"
 dynamic = ["version"]
@@ -27,6 +29,9 @@ dev = [
     "jupyter>=1.0.0",
     "mknotebooks>= 0.8.0",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/github_actions"]
 
 # See https://hatch.pypa.io/latest/config/build/#file-selection for how to
 # explicitly include files other than default into the build distributions.
@@ -61,6 +66,11 @@ skip = [
   "project/*",
   "src/github_actions/datamodel/github_actions_pydantic.py",
   "src/github_actions/datamodel/github_actions.py",
+  # SchemaStore's schemas, copied as published, and files copied in by the
+  # KTL sidecar sync or written by npm, not by hand.
+  "src/github_actions/schema/schemastore/*",
+  ".lokf/scripts/*",
+  "website/package-lock.json",
 ]
 
 # Reminder: words have to be lowercased for the ignore-words-list
@@ -79,4 +89,7 @@ extend-exclude = [
   "project/*",
   "src/github_actions/datamodel/github_actions_pydantic.py",
   "src/github_actions/datamodel/github_actions.py",
+  "src/github_actions/schema/schemastore/*",
+  ".lokf/scripts/*",
+  "website/package-lock.json",
 ]

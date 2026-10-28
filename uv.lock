@@ -931,7 +931,7 @@ wheels = [
 ]
 
 [[package]]
-name = "github-actions"
+name = "github-actions-linkml"
 source = { editable = "." }
 dependencies = [
     { name = "linkml-runtime" },
