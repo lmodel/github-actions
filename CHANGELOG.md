@@ -6,6 +6,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-28
+
 ### Added
 
 - **A LinkML schema of GitHub Actions workflows, reusable workflows, actions, repository rulesets and required status checks.** Five classes a knowledge concept can take as its `type`, with jobs, inputs, outputs, secrets and bypass actors inlined, rendered from GitHub's documentation as read on 2026-10-28 and the REST API at version 2026-03-10.
