@@ -6,6 +6,10 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Fixed
+
+- **`GhaRequiredStatusCheck` names in-toto's Test Result predicate as `in_toto:test-result/v0.1`, under a new `in_toto:` prefix.** A `lokf convert --schema` over the adapt copy no longer warns that the address has no namespace, and a test holds every mapping in the copy to a bound prefix.
+
 ## [0.1.0] - 2026-10-28
 
 ### Added

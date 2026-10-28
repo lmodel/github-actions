@@ -2423,7 +2423,7 @@
         "gha:RequiredStatusCheck"
       ],
       "related_mappings": [
-        "https://in-toto.io/attestation/test-result/v0.1"
+        "in_toto:test-result/v0.1"
       ],
       "slots": [
         "ghaRequiredStatusCheck__check_uri",
@@ -2498,7 +2498,7 @@
   ],
   "metamodel_version": "1.12.0",
   "source_file": "github_actions.yaml",
-  "source_file_date": "2026-10-28T19:06:23",
+  "source_file_date": "2026-10-28T21:52:17",
   "source_file_size": 3147,
   "@type": "SchemaDefinition",
   "@context": [

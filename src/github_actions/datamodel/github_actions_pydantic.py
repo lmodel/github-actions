@@ -756,7 +756,7 @@ class GhaRequiredStatusCheck(ConfiguredBaseModel):
                       'of what the check found, so it is a related term and not a '
                       'close one.'],
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_rules',
-         'related_mappings': ['https://in-toto.io/attestation/test-result/v0.1'],
+         'related_mappings': ['in_toto:test-result/v0.1'],
          'see_also': ['https://docs.github.com/en/rest/repos/rules',
                       'https://docs.github.com/en/rest/checks/runs',
                       'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks',
