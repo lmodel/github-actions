@@ -14,6 +14,24 @@ by GitHub, Inc. GitHub's documentation is licensed under the Creative
 Commons Attribution 4.0 International license (CC BY 4.0):
 https://github.com/github/docs/blob/main/LICENSE
 
+SchemaStore's GitHub Actions schemas, by JSON Schema Store
+-----------------------------------------------------------
+
+src/github_actions/schema/schemastore/ holds a copy of two files from
+JSON Schema Store, retrieved from
+https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json
+
+  github-workflow.json  the schema of a GitHub Actions workflow file
+  github-action.json    the schema of an action's metadata file
+
+beside SchemaStore's own LICENSE and NOTICE, copied from the root of the
+same commit. Every file is identical to its counterpart there, and
+scripts/check_upstream_release.py checks that it stays so. The files are
+licensed under the Apache License, Version 2.0, and carry this notice:
+
+  JSON Schema Store
+  Copyright 2015-Current Mads Kristensen and Contributors
+
 linkml-project-copier
 ---------------------
 

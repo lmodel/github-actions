@@ -1,5 +1,9 @@
 ---
 # https://pre-commit.com/
+# SchemaStore's files are kept byte for byte as published, so that
+# scripts/check_upstream_release.py can match them by git object hash; no
+# hook may rewrite them.
+exclude: ^src/github_actions/schema/schemastore/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
