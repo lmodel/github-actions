@@ -1,0 +1,3 @@
+ruleset_uri: https://github.com/example-org/service/rules/42
+ruleset_target: commit
+enforcement: active

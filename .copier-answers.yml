@@ -10,7 +10,7 @@ gh_action_docs_preview: false
 gh_action_pypi: false
 github_org: lmodel
 license: Apache-2.0
-project_description: Github Actions - LinkML Schema
+project_description: GitHub Actions workflows, actions and repository rulesets (LinkML)
 project_name: github-actions
 project_slug: github_actions
 

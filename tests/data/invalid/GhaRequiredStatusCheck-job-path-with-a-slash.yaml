@@ -1,0 +1,5 @@
+# The job path lists job ids, not the check name it makes.
+check_uri: https://example.org/knowledge/service/checks/test-unit
+check_context: test / unit
+job_path:
+  - test / unit

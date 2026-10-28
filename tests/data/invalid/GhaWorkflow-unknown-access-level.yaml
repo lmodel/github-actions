@@ -1,0 +1,9 @@
+# A scope takes read, write or none.
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [push]
+permissions:
+  - "contents: admin"
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]

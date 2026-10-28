@@ -1,0 +1,956 @@
+{
+    "$defs": {
+        "GhaAction": {
+            "additionalProperties": false,
+            "description": "An action: a directory whose `action.yml` or `action.yaml` file names its inputs, its outputs and the runtime that executes it. A workflow step runs it with `uses`.",
+            "properties": {
+                "action_path": {
+                    "description": "The metadata file's path from the repository root.",
+                    "pattern": "^(.+/)?action\\.ya?ml$",
+                    "type": "string"
+                },
+                "action_uri": {
+                    "description": "The action's address on its forge without a ref: `https://github.com/<owner>/<repo>`, followed by the directory's path when the action is not at the repository root. A step's `uses` names it as `<owner>/<repo>/<path>@<ref>`.",
+                    "format": "uri",
+                    "type": "string"
+                },
+                "inputs": {
+                    "description": "The inputs under the metadata file's `inputs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaActionInput"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "outputs": {
+                    "description": "The outputs under the metadata file's `outputs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaActionOutput"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "using": {
+                    "$ref": "#/$defs/GhaActionRuntime",
+                    "description": "The runtime that executes the action, its `runs.using` value."
+                }
+            },
+            "required": [
+                "action_uri",
+                "action_path",
+                "using"
+            ],
+            "title": "GhaAction",
+            "type": "object"
+        },
+        "GhaActionInput": {
+            "additionalProperties": false,
+            "description": "An input under an action's `inputs` key.",
+            "properties": {
+                "default": {
+                    "description": "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "deprecation_message": {
+                    "description": "The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": "string"
+                },
+                "input_id": {
+                    "description": "The key a caller writes in its `with` map.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Whether a caller must supply a value.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "description",
+                "input_id"
+            ],
+            "title": "GhaActionInput",
+            "type": "object"
+        },
+        "GhaActionOutput": {
+            "additionalProperties": false,
+            "description": "An output under an action's `outputs` key.",
+            "properties": {
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": "string"
+                },
+                "output_expression": {
+                    "description": "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "output_id": {
+                    "description": "The key a caller reads the output by.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "output_id"
+            ],
+            "title": "GhaActionOutput",
+            "type": "object"
+        },
+        "GhaActionRuntime": {
+            "description": "The runtimes an action's `runs.using` may name.",
+            "enum": [
+                "composite",
+                "docker",
+                "node20",
+                "node24"
+            ],
+            "title": "GhaActionRuntime",
+            "type": "string"
+        },
+        "GhaBypassActor": {
+            "additionalProperties": false,
+            "description": "An actor who may bypass a ruleset, and when.",
+            "properties": {
+                "actor_id": {
+                    "description": "The actor's numeric id; absent for an actor type GitHub takes no id for, such as DeployKey or OrganizationAdmin.",
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "actor_type": {
+                    "description": "The kind of actor, the REST field `actor_type`, such as `Team`, `RepositoryRole`, `Integration` or `OrganizationAdmin`.",
+                    "pattern": "^[A-Z][A-Za-z]+$",
+                    "type": "string"
+                },
+                "bypass_mode": {
+                    "description": "When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`.",
+                    "pattern": "^[a-z_]+$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "actor_type"
+            ],
+            "title": "GhaBypassActor",
+            "type": "object"
+        },
+        "GhaDocument": {
+            "additionalProperties": false,
+            "description": "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories.",
+            "properties": {
+                "actions": {
+                    "description": "The actions.",
+                    "items": {
+                        "$ref": "#/$defs/GhaAction"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "required_checks": {
+                    "description": "The status checks the rulesets require.",
+                    "items": {
+                        "$ref": "#/$defs/GhaRequiredStatusCheck"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "reusable_workflows": {
+                    "description": "The reusable workflows.",
+                    "items": {
+                        "$ref": "#/$defs/GhaReusableWorkflow"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "rulesets": {
+                    "description": "The rulesets.",
+                    "items": {
+                        "$ref": "#/$defs/GhaRepositoryRuleset"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "workflows": {
+                    "description": "The workflows other than the reusable ones.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflow"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "title": "GhaDocument",
+            "type": "object"
+        },
+        "GhaInput": {
+            "additionalProperties": false,
+            "description": "An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map.",
+            "properties": {
+                "default": {
+                    "description": "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "input_id": {
+                    "description": "The key a caller writes in its `with` map.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                },
+                "required": {
+                    "description": "Whether a caller must supply a value.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "input_id"
+            ],
+            "title": "GhaInput",
+            "type": "object"
+        },
+        "GhaOutput": {
+            "additionalProperties": false,
+            "description": "An output that a reusable workflow or an action declares for the job or step that calls it to read.",
+            "properties": {
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "output_expression": {
+                    "description": "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "output_id": {
+                    "description": "The key a caller reads the output by.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "output_id"
+            ],
+            "title": "GhaOutput",
+            "type": "object"
+        },
+        "GhaRepositoryRuleset": {
+            "additionalProperties": false,
+            "description": "A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets.",
+            "properties": {
+                "bypass_actors": {
+                    "description": "The actors who may bypass the ruleset.",
+                    "items": {
+                        "$ref": "#/$defs/GhaBypassActor"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "enforcement": {
+                    "$ref": "#/$defs/GhaRulesetEnforcement",
+                    "description": "Whether GitHub enforces the ruleset, the REST field `enforcement`."
+                },
+                "ref_name_exclude": {
+                    "description": "The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "ref_name_include": {
+                    "description": "The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "requires_check": {
+                    "description": "The status checks the ruleset's required_status_checks rule requires, each a concept of its own.",
+                    "items": {
+                        "format": "uri",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "rule_types": {
+                    "description": "The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.",
+                    "items": {
+                        "pattern": "^[a-z_]+$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "ruleset_id": {
+                    "description": "The ruleset's numeric `id` in the REST API.",
+                    "minimum": 1,
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "ruleset_source": {
+                    "description": "The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "ruleset_source_type": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/GhaRulesetSourceType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise."
+                },
+                "ruleset_target": {
+                    "$ref": "#/$defs/GhaRulesetTarget",
+                    "description": "What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own."
+                },
+                "ruleset_uri": {
+                    "description": "The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "ruleset_uri",
+                "ruleset_target",
+                "enforcement"
+            ],
+            "title": "GhaRepositoryRuleset",
+            "type": "object"
+        },
+        "GhaRequiredMixin": {
+            "additionalProperties": false,
+            "description": "The field that says whether a caller must supply a value.",
+            "properties": {
+                "required": {
+                    "description": "Whether a caller must supply a value.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "title": "GhaRequiredMixin",
+            "type": "object"
+        },
+        "GhaRequiredStatusCheck": {
+            "additionalProperties": false,
+            "description": "A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.",
+            "properties": {
+                "check_context": {
+                    "description": "The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.",
+                    "pattern": "\\S",
+                    "type": "string"
+                },
+                "check_uri": {
+                    "description": "An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.",
+                    "format": "uri",
+                    "type": "string"
+                },
+                "do_not_enforce_on_create": {
+                    "description": "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "emitted_by": {
+                    "description": "The top-level workflow whose job reports the check.",
+                    "format": "uri",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "integration_id": {
+                    "description": "The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.",
+                    "minimum": 1,
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "job_path": {
+                    "description": "The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.",
+                    "items": {
+                        "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "skip_conditions": {
+                    "description": "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.",
+                    "items": {
+                        "pattern": "^(on|jobs)\\.\\S+$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "strict_policy": {
+                    "description": "Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "check_uri",
+                "check_context"
+            ],
+            "title": "GhaRequiredStatusCheck",
+            "type": "object"
+        },
+        "GhaReusableWorkflow": {
+            "additionalProperties": false,
+            "description": "A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read.",
+            "properties": {
+                "inputs": {
+                    "description": "The inputs under the file's `on.workflow_call.inputs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflowInput"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "jobs": {
+                    "description": "The jobs under the file's `jobs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflowJob"
+                    },
+                    "type": "array"
+                },
+                "outputs": {
+                    "description": "The outputs under the file's `on.workflow_call.outputs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflowOutput"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "permissions": {
+                    "description": "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.",
+                    "items": {
+                        "pattern": "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "secrets": {
+                    "description": "The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflowSecret"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "triggers": {
+                    "contains": {
+                        "const": "workflow_call"
+                    },
+                    "description": "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.",
+                    "items": {
+                        "pattern": "^[a-z_]+$",
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "workflow_path": {
+                    "description": "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.",
+                    "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$",
+                    "type": "string"
+                },
+                "workflow_repository": {
+                    "description": "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.",
+                    "format": "uri",
+                    "pattern": "^https://[^/]+/[^/]+/[^/]+$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "workflow_uri": {
+                    "description": "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "triggers",
+                "workflow_uri",
+                "workflow_path",
+                "jobs"
+            ],
+            "title": "GhaReusableWorkflow",
+            "type": "object"
+        },
+        "GhaRulesetEnforcement": {
+            "description": "Whether GitHub enforces a ruleset, as the REST field `enforcement` names it.",
+            "enum": [
+                "active",
+                "evaluate",
+                "disabled"
+            ],
+            "title": "GhaRulesetEnforcement",
+            "type": "string"
+        },
+        "GhaRulesetSourceType": {
+            "description": "What can own a ruleset, as the REST field `source_type` names it.",
+            "enum": [
+                "Repository",
+                "Organization",
+                "Enterprise"
+            ],
+            "title": "GhaRulesetSourceType",
+            "type": "string"
+        },
+        "GhaRulesetTarget": {
+            "description": "What a ruleset applies to, as the REST field `target` names it.",
+            "enum": [
+                "branch",
+                "tag",
+                "push"
+            ],
+            "title": "GhaRulesetTarget",
+            "type": "string"
+        },
+        "GhaRunnerEnvironment": {
+            "description": "Who hosts the runner a job runs on, as GitHub's build type records it.",
+            "enum": [
+                "github-hosted",
+                "self-hosted"
+            ],
+            "title": "GhaRunnerEnvironment",
+            "type": "string"
+        },
+        "GhaWorkflow": {
+            "additionalProperties": false,
+            "description": "A workflow file in a repository's `.github/workflows` directory: the events that run it, the access its GITHUB_TOKEN gets, and its jobs.",
+            "properties": {
+                "jobs": {
+                    "description": "The jobs under the file's `jobs` key.",
+                    "items": {
+                        "$ref": "#/$defs/GhaWorkflowJob"
+                    },
+                    "type": "array"
+                },
+                "permissions": {
+                    "description": "The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.",
+                    "items": {
+                        "pattern": "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "triggers": {
+                    "description": "The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.",
+                    "items": {
+                        "pattern": "^[a-z_]+$",
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "workflow_path": {
+                    "description": "The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.",
+                    "pattern": "^\\.github/workflows/[^/]+\\.ya?ml$",
+                    "type": "string"
+                },
+                "workflow_repository": {
+                    "description": "The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.",
+                    "format": "uri",
+                    "pattern": "^https://[^/]+/[^/]+/[^/]+$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "workflow_uri": {
+                    "description": "The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "triggers",
+                "workflow_uri",
+                "workflow_path",
+                "jobs"
+            ],
+            "title": "GhaWorkflow",
+            "type": "object"
+        },
+        "GhaWorkflowInput": {
+            "additionalProperties": false,
+            "description": "An input under a reusable workflow's `on.workflow_call.inputs` key.",
+            "properties": {
+                "default": {
+                    "description": "The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "input_id": {
+                    "description": "The key a caller writes in its `with` map.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                },
+                "input_type": {
+                    "$ref": "#/$defs/GhaWorkflowInputType",
+                    "description": "The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept."
+                },
+                "required": {
+                    "description": "Whether a caller must supply a value.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "input_type",
+                "input_id"
+            ],
+            "title": "GhaWorkflowInput",
+            "type": "object"
+        },
+        "GhaWorkflowInputType": {
+            "description": "The types a reusable workflow's input may state.",
+            "enum": [
+                "boolean",
+                "number",
+                "string"
+            ],
+            "title": "GhaWorkflowInputType",
+            "type": "string"
+        },
+        "GhaWorkflowJob": {
+            "additionalProperties": false,
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "calls": {}
+                        },
+                        "required": [
+                            "calls"
+                        ]
+                    },
+                    "then": {
+                        "not": {
+                            "required": [
+                                "runs_on"
+                            ]
+                        },
+                        "properties": {
+                            "runs_on": {
+                                "items": {},
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "calls": {}
+                        },
+                        "required": [
+                            "calls"
+                        ]
+                    },
+                    "then": {
+                        "not": {
+                            "required": [
+                                "runner_group"
+                            ]
+                        },
+                        "properties": {
+                            "runner_group": {}
+                        }
+                    }
+                }
+            ],
+            "description": "A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow.",
+            "properties": {
+                "calls": {
+                    "description": "The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.",
+                    "pattern": "^(.+\\/)+(.+)\\.(ya?ml)(@.+)?$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "job_id": {
+                    "description": "The job's key under `jobs`.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                },
+                "job_name": {
+                    "description": "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "job_permissions": {
+                    "description": "The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.",
+                    "items": {
+                        "pattern": "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "runner_environment": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/GhaRunnerEnvironment"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run."
+                },
+                "runner_group": {
+                    "description": "The runner group the job's `runs-on.group` names.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "runs_on": {
+                    "description": "The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "job_id"
+            ],
+            "title": "GhaWorkflowJob",
+            "type": "object"
+        },
+        "GhaWorkflowOutput": {
+            "additionalProperties": false,
+            "description": "An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs.",
+            "properties": {
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "output_expression": {
+                    "description": "The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.",
+                    "type": "string"
+                },
+                "output_id": {
+                    "description": "The key a caller reads the output by.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "output_expression",
+                "output_id"
+            ],
+            "title": "GhaWorkflowOutput",
+            "type": "object"
+        },
+        "GhaWorkflowSecret": {
+            "additionalProperties": false,
+            "description": "A secret under a reusable workflow's `on.workflow_call.secrets` key, by name; its value is never recorded.",
+            "properties": {
+                "description": {
+                    "description": "What the input, output or secret is for, as the file describes it.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "required": {
+                    "description": "Whether a caller must supply a value.",
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "secret_id": {
+                    "description": "The key a caller passes the secret under.",
+                    "pattern": "^[_a-zA-Z][a-zA-Z0-9_-]*$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "secret_id"
+            ],
+            "title": "GhaWorkflowSecret",
+            "type": "object"
+        }
+    },
+    "$id": "https://w3id.org/lmodel/github-actions",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "additionalProperties": false,
+    "description": "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories.",
+    "metamodel_version": "1.12.0",
+    "properties": {
+        "actions": {
+            "description": "The actions.",
+            "items": {
+                "$ref": "#/$defs/GhaAction"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "required_checks": {
+            "description": "The status checks the rulesets require.",
+            "items": {
+                "$ref": "#/$defs/GhaRequiredStatusCheck"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "reusable_workflows": {
+            "description": "The reusable workflows.",
+            "items": {
+                "$ref": "#/$defs/GhaReusableWorkflow"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "rulesets": {
+            "description": "The rulesets.",
+            "items": {
+                "$ref": "#/$defs/GhaRepositoryRuleset"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "workflows": {
+            "description": "The workflows other than the reusable ones.",
+            "items": {
+                "$ref": "#/$defs/GhaWorkflow"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        }
+    },
+    "title": "github_actions",
+    "type": "object",
+    "version": "2026-10-28"
+}

@@ -1,0 +1,9 @@
+# A grant is written as the scope, a colon, a space and the level.
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [push]
+permissions:
+  - "contents:read"
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]

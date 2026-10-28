@@ -1,0 +1,87 @@
+---
+id: https://w3id.org/lmodel/github-actions
+name: github_actions
+title: GitHub Actions workflows, actions and repository rulesets
+description: >-
+  A LinkML model of what GitHub Actions files and repository rulesets state:
+  workflows and their jobs, reusable workflows with their inputs, outputs and
+  secrets, actions with their runtimes, and the rulesets and required status
+  checks that tie a workflow's jobs to the refs a ruleset protects.
+version: "2026-10-28"
+source: https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json
+license: Apache-2.0
+see_also:
+  - https://lmodel.github.io/github-actions
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
+  - https://docs.github.com/en/rest/repos/rules
+  - https://docs.github.com/en/rest/checks/runs
+  - https://actions.github.io/buildtypes/workflow/v1
+annotations:
+  schemastore_commit: f7c2f3bcb512651bd980ed6896639ea8ded9ddf0
+  rest_api_version: "2026-03-10"
+  docs_read: "2026-10-28"
+comments:
+  - >-
+    GitHub's documentation is versionless, so the version is the date its pages
+    were read. With the SchemaStore commit in source and the REST API version in
+    the annotations, it says which state of GitHub the model renders;
+    scripts/check_upstream_release.py reads the same three pins and reports when
+    one moves. The release tags are the schema's own versions.
+  - >-
+    github_actions_core imports only the LinkML types, the workflow and action
+    modules import the core, the rules module imports the workflow module, and
+    this file adds only the document root, so an importer can take one module.
+
+default_prefix: gha
+default_range: string
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gha: https://w3id.org/lmodel/github-actions/
+
+imports:
+  - linkml:types
+  - ./github_actions_core
+  - ./github_actions_workflow
+  - ./github_actions_action
+  - ./github_actions_rules
+
+classes:
+  GhaDocument:
+    tree_root: true
+    class_uri: gha:Document
+    description: >-
+      A document that holds the workflows, actions, rulesets and required
+      status checks of one or more repositories.
+    attributes:
+      workflows:
+        description: The workflows other than the reusable ones.
+        range: GhaWorkflow
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      reusable_workflows:
+        description: The reusable workflows.
+        range: GhaReusableWorkflow
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      actions:
+        description: The actions.
+        range: GhaAction
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      rulesets:
+        description: The rulesets.
+        range: GhaRepositoryRuleset
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      required_checks:
+        description: The status checks the rulesets require.
+        range: GhaRequiredStatusCheck
+        multivalued: true
+        inlined: true
+        inlined_as_list: true

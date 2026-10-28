@@ -50,7 +50,7 @@ _default: _status
     @{{ if _wsl2_check == "ERROR" { "echo 'WSL2 detected: run export JUST_TEMPDIR=/tmp'" } else { "" } }}
     @just --list
 
-# WSL2 status check - warns but does not abort (safe to use in _status/_default)
+# WSL2 status check: warns but does not abort (safe to use in _status/_default)
 [private]
 _wsl2_status_check:
     @if [ -n "${WSL_INTEROP:-}" ] && [ -z "${JUST_TEMPDIR:-}" ]; then \
@@ -59,7 +59,7 @@ _wsl2_status_check:
       echo "Fix: run 'export JUST_TEMPDIR=/tmp'"; \
     fi
 
-# WSL2 compatibility check - fails early with helpful message
+# WSL2 compatibility check: fails early with a helpful message
 [private]
 _wsl2_compat_check:
     @if [ -n "${WSL_INTEROP:-}" ] && [ -z "${JUST_TEMPDIR:-}" ]; then \
@@ -115,10 +115,10 @@ deploy: site
 [group('model development')]
 test: _test-schema _test-python _test-examples
 
-# Run linting
+# Run linting, errors only (CI runs the same command)
 [group('model development')]
 lint:
-  uv run linkml-lint {{source_schema_dir}}
+  uv run linkml-lint --ignore-warnings {{source_schema_dir}}
 
 # Generate md documentation for the schema and add artifacts
 [group('model development')]
@@ -159,7 +159,7 @@ gen-project:
 
 # Hidden command to adjust the directory layout on upgrading a project
 # created with linkml-project-copier v0.1.x to v0.2.0 or newer.
-# Use with care! - It may not work for customized projects.
+# Use with care: it may not work for customized projects.
 _post_upgrade_v020: _wsl2_compat_check && _post_upgrade_v020py
   mv docs/*.md docs/elements
 
@@ -291,5 +291,5 @@ import "project.justfile"
 #set allow-duplicate-recipes
 
 # Overriding recipes from the root justfile by adding a recipe with the same
-# name in an imported file is not possible until a known issue in just is fixed,
-# https://github.com/casey/just/issues/2540 - So we need to override them here.
+# name in an imported file is not possible until a known issue in just is fixed
+# (https://github.com/casey/just/issues/2540), so this file overrides them.

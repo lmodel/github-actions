@@ -1,0 +1,36 @@
+# A reusable workflow with an input of each type, an output read from a job
+# and a secret named but never valued.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/python-tests.yml
+workflow_path: .github/workflows/python-tests.yml
+workflow_repository: https://github.com/example-org/ci-workflows
+triggers:
+  - workflow_call
+permissions:
+  - "{}"
+inputs:
+  - input_id: python-version
+    description: The Python version to test on.
+    input_type: string
+    default: "3.13"
+  - input_id: coverage
+    input_type: boolean
+    default: "false"
+  - input_id: shards
+    input_type: number
+    required: true
+outputs:
+  - output_id: report-url
+    description: Where the test report was uploaded.
+    output_expression: "${{ jobs.unit.outputs.report-url }}"
+secrets:
+  - secret_id: CODECOV_TOKEN
+    required: false
+jobs:
+  - job_id: unit
+    job_name: unit
+    runs_on:
+      - ubuntu-latest
+    runner_environment: github-hosted
+    job_permissions:
+      - "contents: read"
+      - "id-token: write"

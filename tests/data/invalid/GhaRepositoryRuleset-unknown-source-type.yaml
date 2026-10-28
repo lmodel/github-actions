@@ -1,0 +1,5 @@
+# The REST API writes the owner's kind capitalised: Repository, Organization or Enterprise.
+ruleset_uri: https://github.com/example-org/service/rules/42
+ruleset_source_type: repository
+ruleset_target: branch
+enforcement: active

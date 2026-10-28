@@ -1,0 +1,10 @@
+# The types are boolean, number and string.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/tests.yml
+workflow_path: .github/workflows/tests.yml
+triggers: [workflow_call]
+inputs:
+  - input_id: shards
+    input_type: integer
+jobs:
+  - job_id: unit
+    runs_on: [ubuntu-latest]

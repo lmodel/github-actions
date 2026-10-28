@@ -1,0 +1,34 @@
+# A reusable workflow with an input of each type, an output and a secret,
+# and a job that calls a further reusable workflow.
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: The Python version to test on.
+        type: string
+        default: "3.13"
+      coverage:
+        type: boolean
+        default: false
+      shards:
+        type: number
+        required: true
+    outputs:
+      report-url:
+        description: Where the test report was uploaded.
+        value: ${{ jobs.pytest.outputs.report-url }}
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+permissions: {}
+jobs:
+  pytest:
+    name: pytest
+    if: inputs.shards > 0
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-python@v6
+  lint:
+    uses: ./.github/workflows/lint.yaml

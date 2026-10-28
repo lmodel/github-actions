@@ -1,0 +1,39 @@
+# One repository's workflows, its reusable workflow, an action, its ruleset
+# and the check the ruleset requires, which names the workflow that reports
+# it.
+workflows:
+  - workflow_uri: https://github.com/example-org/service/.github/workflows/pull-request.yml
+    workflow_path: .github/workflows/pull-request.yml
+    triggers:
+      - pull_request
+    jobs:
+      - job_id: test
+        calls: ./.github/workflows/tests.yml
+reusable_workflows:
+  - workflow_uri: https://github.com/example-org/service/.github/workflows/tests.yml
+    workflow_path: .github/workflows/tests.yml
+    triggers:
+      - workflow_call
+    jobs:
+      - job_id: unit
+        runs_on:
+          - ubuntu-latest
+actions:
+  - action_uri: https://github.com/example-org/service/.github/actions/setup
+    action_path: .github/actions/setup/action.yml
+    using: composite
+rulesets:
+  - ruleset_uri: https://github.com/example-org/service/rules/7
+    ruleset_target: branch
+    enforcement: evaluate
+    rule_types:
+      - required_status_checks
+    requires_check:
+      - https://example.org/knowledge/service/checks/test-unit
+required_checks:
+  - check_uri: https://example.org/knowledge/service/checks/test-unit
+    check_context: test / unit
+    job_path:
+      - test
+      - unit
+    emitted_by: https://github.com/example-org/service/.github/workflows/pull-request.yml

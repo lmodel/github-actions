@@ -1,0 +1,5 @@
+ruleset_uri: https://github.com/example-org/service/rules/42
+ruleset_target: branch
+enforcement: active
+bypass_actors:
+  - actor_id: 3

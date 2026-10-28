@@ -1,0 +1,10 @@
+# An input id holds letters, digits, hyphens and underscores only.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/tests.yml
+workflow_path: .github/workflows/tests.yml
+triggers: [workflow_call]
+inputs:
+  - input_id: python.version
+    input_type: string
+jobs:
+  - job_id: unit
+    runs_on: [ubuntu-latest]

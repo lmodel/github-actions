@@ -1,0 +1,8 @@
+# A JavaScript action at the repository root; its output is written while it
+# runs, so it has no expression.
+action_uri: https://github.com/example-org/label-checker
+action_path: action.yaml
+using: node24
+outputs:
+  - output_id: labels
+    description: The labels the pull request carries.

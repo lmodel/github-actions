@@ -1,0 +1,62 @@
+# A top-level workflow with a job of each naming rule.
+name: Pull request
+on:
+  pull_request:
+    paths:
+      - "src/**"
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+  docs:
+    name: Build the docs
+    if: github.event_name == 'pull_request'
+    runs-on: [self-hosted, linux]
+    steps:
+      - run: make docs
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.13"]
+        exclude:
+          - os: windows-latest
+            python: "3.10"
+        include:
+          - os: ubuntu-latest
+            python: "3.14"
+    runs-on:
+      group: ci-runners
+      labels: [linux, x64]
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - run: pytest
+  named-matrix:
+    name: Python ${{ matrix.python }}
+    strategy:
+      matrix:
+        python: ["3.12", "3.13"]
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest
+  from-expression:
+    strategy:
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest
+  unit:
+    uses: ./.github/workflows/tests.yml
+    with:
+      python-version: "3.13"
+  scan:
+    name: Security scan
+    uses: example-org/ci-workflows/.github/workflows/scan.yml@main
+    secrets: inherit

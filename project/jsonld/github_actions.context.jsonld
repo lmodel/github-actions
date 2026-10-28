@@ -1,0 +1,266 @@
+{
+   "@context": {
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "cdx": "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/",
+      "gha": "https://w3id.org/lmodel/github-actions/",
+      "linkml": "https://w3id.org/linkml/",
+      "schema": "http://schema.org/",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "spdx_build": "https://spdx.org/rdf/3.0.1/terms/Build/",
+      "@vocab": "https://w3id.org/lmodel/github-actions/",
+      "description": {
+         "@id": "schema:description"
+      },
+      "action_path": {
+         "@id": "action_path"
+      },
+      "action_uri": "@id",
+      "using": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "using"
+      },
+      "deprecation_message": {
+         "@id": "deprecation_message"
+      },
+      "actor_id": {
+         "@type": "xsd:integer",
+         "@id": "actor_id"
+      },
+      "actor_type": {
+         "@id": "actor_type"
+      },
+      "bypass_mode": {
+         "@id": "bypass_mode"
+      },
+      "actions": {
+         "@type": "@id",
+         "@id": "actions"
+      },
+      "required_checks": {
+         "@type": "@id",
+         "@id": "required_checks"
+      },
+      "reusable_workflows": {
+         "@type": "@id",
+         "@id": "reusable_workflows"
+      },
+      "rulesets": {
+         "@type": "@id",
+         "@id": "rulesets"
+      },
+      "workflows": {
+         "@type": "@id",
+         "@id": "workflows"
+      },
+      "default": {
+         "@id": "default"
+      },
+      "input_id": {
+         "@id": "input_id"
+      },
+      "output_id": {
+         "@id": "output_id"
+      },
+      "bypass_actors": {
+         "@type": "@id",
+         "@id": "bypass_actors"
+      },
+      "enforcement": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "enforcement"
+      },
+      "ref_name_exclude": {
+         "@id": "ref_name_exclude"
+      },
+      "ref_name_include": {
+         "@id": "ref_name_include"
+      },
+      "requires_check": {
+         "@type": "@id",
+         "@id": "requires_check"
+      },
+      "rule_types": {
+         "@id": "rule_types"
+      },
+      "ruleset_id": {
+         "@type": "xsd:integer",
+         "@id": "ruleset_id"
+      },
+      "ruleset_source": {
+         "@id": "ruleset_source"
+      },
+      "ruleset_source_type": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "ruleset_source_type"
+      },
+      "ruleset_target": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "ruleset_target"
+      },
+      "ruleset_uri": "@id",
+      "required": {
+         "@type": "xsd:boolean",
+         "@id": "schema:valueRequired"
+      },
+      "check_context": {
+         "@id": "check_context"
+      },
+      "check_uri": "@id",
+      "do_not_enforce_on_create": {
+         "@type": "xsd:boolean",
+         "@id": "do_not_enforce_on_create"
+      },
+      "emitted_by": {
+         "@type": "@id",
+         "@id": "emitted_by"
+      },
+      "integration_id": {
+         "@type": "xsd:integer",
+         "@id": "integration_id"
+      },
+      "job_path": {
+         "@id": "job_path"
+      },
+      "skip_conditions": {
+         "@id": "skip_conditions"
+      },
+      "strict_policy": {
+         "@type": "xsd:boolean",
+         "@id": "strict_policy"
+      },
+      "secrets": {
+         "@type": "@id",
+         "@id": "secrets"
+      },
+      "jobs": {
+         "@type": "@id",
+         "@id": "jobs"
+      },
+      "permissions": {
+         "@id": "permissions"
+      },
+      "workflow_path": {
+         "@id": "workflow_path"
+      },
+      "workflow_repository": {
+         "@type": "xsd:anyURI",
+         "@id": "workflow_repository"
+      },
+      "workflow_uri": "@id",
+      "input_type": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "input_type"
+      },
+      "calls": {
+         "@id": "calls"
+      },
+      "job_id": {
+         "@id": "job_id"
+      },
+      "job_name": {
+         "@id": "job_name"
+      },
+      "job_permissions": {
+         "@id": "job_permissions"
+      },
+      "runner_environment": {
+         "@context": {
+            "text": "skos:notation",
+            "description": "skos:prefLabel",
+            "meaning": "@id"
+         },
+         "@id": "runner_environment"
+      },
+      "runner_group": {
+         "@id": "runner_group"
+      },
+      "runs_on": {
+         "@id": "runs_on"
+      },
+      "secret_id": {
+         "@id": "secret_id"
+      },
+      "inputs": {
+         "@type": "@id",
+         "@id": "inputs"
+      },
+      "output_expression": {
+         "@id": "output_expression"
+      },
+      "outputs": {
+         "@type": "@id",
+         "@id": "outputs"
+      },
+      "triggers": {
+         "@id": "triggers"
+      },
+      "GhaAction": {
+         "@id": "Action"
+      },
+      "GhaActionInput": {
+         "@id": "ActionInput"
+      },
+      "GhaActionOutput": {
+         "@id": "ActionOutput"
+      },
+      "GhaBypassActor": {
+         "@id": "BypassActor"
+      },
+      "GhaDocument": {
+         "@id": "Document"
+      },
+      "GhaInput": {
+         "@id": "Input"
+      },
+      "GhaOutput": {
+         "@id": "Output"
+      },
+      "GhaRepositoryRuleset": {
+         "@id": "RepositoryRuleset"
+      },
+      "GhaRequiredMixin": {
+         "@id": "GhaRequiredMixin"
+      },
+      "GhaRequiredStatusCheck": {
+         "@id": "RequiredStatusCheck"
+      },
+      "GhaReusableWorkflow": {
+         "@id": "ReusableWorkflow"
+      },
+      "GhaWorkflow": {
+         "@id": "Workflow"
+      },
+      "GhaWorkflowInput": {
+         "@id": "WorkflowInput"
+      },
+      "GhaWorkflowJob": {
+         "@id": "WorkflowJob"
+      },
+      "GhaWorkflowOutput": {
+         "@id": "WorkflowOutput"
+      },
+      "GhaWorkflowSecret": {
+         "@id": "WorkflowSecret"
+      }
+   }
+}

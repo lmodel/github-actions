@@ -1,0 +1,9 @@
+# A reusable workflow's input must state its type.
+workflow_uri: https://github.com/example-org/ci-workflows/.github/workflows/tests.yml
+workflow_path: .github/workflows/tests.yml
+triggers: [workflow_call]
+inputs:
+  - input_id: python-version
+jobs:
+  - job_id: unit
+    runs_on: [ubuntu-latest]

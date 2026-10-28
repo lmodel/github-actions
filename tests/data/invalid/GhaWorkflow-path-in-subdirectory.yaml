@@ -1,0 +1,7 @@
+# GitHub reads no subdirectory of .github/workflows.
+workflow_uri: https://github.com/example-org/service/.github/workflows/ci/build.yml
+workflow_path: .github/workflows/ci/build.yml
+triggers: [push]
+jobs:
+  - job_id: build
+    runs_on: [ubuntu-latest]

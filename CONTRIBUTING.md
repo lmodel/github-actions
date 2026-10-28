@@ -1,121 +1,80 @@
 # Contributing to github-actions
 
-:+1: First of all: Thank you for taking the time to contribute!
+*This file is a checklist, not a design log. Each rule is a line or two that links to where its reasoning lives: a code comment, a workflow header, or a linked page. `lint-and-docs.yaml` holds the file to a word budget so it stays that way.*
 
-The following is a set of guidelines for contributing to
-github-actions. These guidelines are not strict rules.
-Use your best judgment, and feel free to propose changes to this document
-in a pull request.
+## What this project is
 
-## Table Of Contents
+A LinkML schema for what a GitHub Actions workflow file, an action's metadata file and a repository ruleset state, so a knowledge bundle can type its concepts with it.
 
-* [Code of Conduct](#code-of-conduct)
-* [Guidelines for Contributions and Requests](#contributions)
-  * [Reporting issues and making requests](#reporting-issues)
-  * [Questions and Discussion](#questions-and-discussion)
-  * [Adding new elements yourself](#adding-elements)
-* [Best Practices](#best-practices)
-  * [How to write a great issue](#great-issues)
-  * [How to create a great pull/merge request](#great-pulls)
+| Path | Holds |
+| --- | --- |
+| `src/github_actions/schema/*.yaml` | The LinkML schema and its modules. Edit these. |
+| `src/github_actions/schema/schemastore/` | SchemaStore's workflow and action JSON Schemas at the pinned commit. Never edit. |
+| `src/github_actions/datamodel/`, `project/`, `docs/schema/` | Artefacts generated from the schema. |
+| `docs/` | The documentation site's pages. |
+| `tests/`, `tests/data/` | Python tests; valid and invalid example data. |
+| `.lokf/knowledge/` | This repository's knowledge bundle. |
 
-<a id="code-of-conduct"></a>
+## Development setup
 
-## Code of Conduct
+You need Python 3.10+, [uv](https://docs.astral.sh/uv/) and [just](https://github.com/casey/just).
 
-The github-actions team strives to create a
-welcoming environment for editors, users and other contributors.
-Please carefully read our [Code of Conduct](CODE_OF_CONDUCT.md).
+```bash
+git clone https://github.com/lmodel/github-actions.git
+cd github-actions
+uv sync --group dev
+just --list
+```
 
-<a id="contributions"></a>
+`just gen-project` regenerates `project/` and the Python datamodel; `just gen-doc` and `just gen-merged` regenerate `docs/schema/` and the element pages.
 
-## Guidelines for Contributions and Requests
+### Agent skills (optional, only for this repo's `.lokf/` bundle)
 
-<a id="reporting-issues"></a>
+The bundle is maintained with the Knowledge Trust Ladder (KTL) skills, **installed, never committed**; CI installs the librarian skill at run time, pinned to a release. Nothing in the schema depends on them. [The install page](https://w3id.org/ktl/docs/install/) lists every route; with npm:
 
-### Reporting problems and suggesting changes to with the data model
+```bash
+npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-librarian --yes   # derive concepts
+npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes     # confirm them as a person
+```
 
-Please use our [Issue Tracker][issues] for any of the following:
+## Before opening a pull request
 
-- Reporting problems
-- Requesting new schema elements
+- **Edit the schema, then regenerate.** Edit `src/github_actions/schema/`, run `just gen-project`, `just gen-doc`, `just gen-merged` and `just lokf-adapt`, and commit the output; `project/`, `src/github_actions/datamodel/`, `docs/schema/` and `.lokf/github-actions.yaml` are generated.
+- **Name the page a description renders.** Paraphrase GitHub's documentation or SchemaStore's schema, and give the page in `see_also` and the pull request; [AI_COVENANT.md](AI_COVENANT.md) says why.
+- **Leave `src/github_actions/schema/schemastore/` as upstream wrote it.** Replace both files from one SchemaStore commit instead and move the pin in `scripts/check_upstream_release.py` and the schema header; [NOTICE](NOTICE) records the commit, and `upstream-watch.yaml` checks it.
+- **Keep names apart from LOKF's and slsa's**: a host imports all three copies, so a shared name carries the same IRI. `tests/test_schema_rules.py` checks.
+- **Run the tests**: `just test` (schema generation, `pytest`, and the examples under `tests/data/`). Example data goes in `tests/data/valid/` and `tests/data/invalid/`, named `ClassName-###.yaml`, with an invalid example per constraint.
+- **Follow the schema's conventions**: UpperCamelCase classes and enums, snake_case slots, GitHub's own strings as permissible values (`.linkmllint.yaml` says why), attributes unless two classes share a field, a short description on every element. `just lint` checks.
+- **Run the pre-commit hooks** on what you staged (`uvx pre-commit run`): ruff, yamllint, codespell, typos and the `uv.lock` check.
+- **Lock files are part of the change.** CI installs with `uv sync --locked`; a dependency edit that does not update `uv.lock` (or `.lokf/uv.lock`) fails the run.
+- **Knowledge-bundle changes**: `cd .lokf && just lokf-validate` must pass, and `knowledge-registrar.yaml` runs on any `.lokf/**` change.
+- **`lint-and-docs.yaml` is easy to trip locally**: ShellCheck, actionlint, markdownlint against `.markdownlint-cli2.jsonc`, link-checking against `lychee.toml`, and codespell over every `*.md`.
+- **Actions are pinned to commit SHAs**, the version in a trailing comment, and bumped by Dependabot, never by hand to a tag.
+- **The skills pin moves with the sidecar copies.** When moving `TRUST_LADDER_SKILLS_REF` in `.github/workflows/knowledge-librarian.yaml`, copy the other `knowledge-*.yaml` workflows and `.lokf/scripts/` and `.lokf/m365/` from that release's `skills/ktl-sidecar/templates/` in the same pull request.
+- **If your change alters behaviour** (not just wording), add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
+- Keep changes focused, and fill in the pull request template's checklist.
 
-<a id="questions-and-discussions"></a>
+## Code of conduct
 
-### Questions and Discussions
+Participation here is covered by the [Contributor Covenant](CODE_OF_CONDUCT.md).
 
-Please use our [Discussions forum][discussions] to ask general questions or contribute to discussions.
+## Using AI tools
 
-<a id="adding-elements"></a>
+AI assistance is welcome; [AI_COVENANT.md](AI_COVENANT.md) sets the rules, for people and the scheduled `knowledge-librarian` agent alike. You are the author of what you submit, and a claim about what GitHub does must be checked against its documentation.
 
-### Adding new elements yourself
+## Reporting issues
 
-Please submit a [Pull Request][pulls] to submit a new term for consideration.
+Use the [issue tracker](https://github.com/lmodel/github-actions/issues) for problems with the schema and requests for new elements. A problem with SchemaStore's schemas belongs [upstream](https://github.com/SchemaStore/schemastore/issues).
 
-<a id="best-practices"></a>
+## Releasing (maintainers)
 
-## Best Practices
+- Write `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md) as you go; the release job refuses an empty one (`.github/scripts/changelog-release.mjs check`).
+- Type the commit ([Conventional Commits](https://www.conventionalcommits.org/)) for what the change *is*. Only `feat:`, `fix:`, `security:` and a breaking `!` start a release; other types leave their entries for the next release that does. A pull request that would release must carry a releasing type in its title too, since a squash merge takes its subject from it.
+- On merge, [`semantic-release.yml`](.github/workflows/semantic-release.yml) retitles the section to `## [X.Y.Z] - YYYY-MM-DD`, commits `CHANGELOG.md`, tags `vX.Y.Z` and publishes the GitHub Release. No file is bumped. Once `KNOWLEDGE_RELEASE_ENABLED` is `true`, it dispatches `.github/workflows/knowledge-release.yaml`, which attaches the schema copy and the bundle when the bundle changed; run it with `force` when only the schema did.
+- That step runs behind the `release` GitHub Environment; configure required reviewers on it in Settings → Environments, or every qualifying merge is released unattended.
+- Below 1.0.0: push the `v0.0.0` baseline tag on `main` before the first releasing merge, which then releases 0.1.0; both release jobs refuse to run without a `v*` tag, as semantic-release would otherwise start at 1.0.0. `.releaserc.json` maps `breaking: true` to `minor`; reaching 1.0.0 means removing that rule in a pull request of its own.
+- A branch rule requiring pull requests, status checks or signed commits would reject the release job's own push to `main`; leave them off. [SECURITY.md](SECURITY.md) says what holds `main` instead, and the shared design is on [KTL's releasing page](https://github.com/noelmcloughlin/knowledge-trust-ladder/blob/main/docs/releasing.md).
 
-<a id="great-issues"></a>
+## License
 
-### GitHub Best Practice
-
-- Creating and curating issues
-    - Read ["About Issues"][[about-issues]]
-    - Issues should be focused and actionable
-    - Complex issues should be broken down into simpler issues where possible
-- Pull Requests
-    - Read ["About Pull Requests"][about-pulls]
-    - Read [GitHub Pull Requests: 10 Tips to Know](https://blog.mergify.com/github-pull-requests-10-tips-to-know/)
-    - Pull Requests (PRs) should be atomic and aim to close a single issue
-    - Long running PRs should be avoided where possible
-    - PRs should reference issues following standard conventions (e.g. “fixes #123”)
-    - Schema developers should always be working on a single issue at any one time
-    - Never work on the main branch, always work on an issue/feature branch
-    - Core developers can work on branches off origin rather than forks
-    - Always create a PR on a branch to maximize transparency of what you are doing
-    - PRs should be reviewed and merged in a timely fashion by the github-actions technical leads
-    - PRs that do not pass GitHub actions should never be merged
-    - In the case of git conflicts, the contributor should try and resolve the conflict
-    - If a PR fails a GitHub action check, the contributor should try and resolve the issue in a timely fashion
-
-### Understanding LinkML
-
-Core developers should read the material on the [LinkML site](https://linkml.io/linkml), in particular:
-
-- [Overview](https://linkml.io/linkml/intro/overview.html)
-- [Tutorial](https://linkml.io/linkml/intro/tutorial.html)
-- [Schemas](https://linkml.io/linkml/schemas/index.html)
-- [FAQ](https://linkml.io/linkml/faq/index.html)
-
-### Modeling Best Practice
-
-- Follow Naming conventions
-    - Standard LinkML naming conventions should be followed (UpperCamelCase for classes and enums, snake_case for slots)
-    - Know how to use the LinkML linter to check style and conventions
-    - The names for classes should be nouns or noun-phrases: Person, GenomeAnnotation, Address, Sample
-    - Spell out abbreviations and short forms, except where this goes against convention (e.g. do not spell out DNA)
-    - Elements that are imported from outside (e.g. schema.org) need not follow the same naming conventions
-    - Multivalued slots should be named as plurals
-- Document model elements
-    - All model elements should have documentation (descriptions) and other textual annotations (e.g. comments, notes)
-    - Textual annotations on classes, slots and enumerations should be written with minimal jargon, clear grammar and no misspellings
-- Include examples and counter-examples (intentionally invalid examples)
-    - Rationale: these serve as documentation and unit tests
-    - These will be used by the automated test suite
-    - All elements of the schema must be illustrated with valid and invalid data examples in src/data. New schema elements will not be merged into the main branch until examples are provided
-    - Invalid example data files should be invalid for one single reason, which should be reflected in the filename. It should be possible to render the invalid example files valid by addressing that single fault.
-- Use enums for categorical values
-    - Rationale: Open-ended string ranges encourage multiple values to represent the same entity, like “water”, “H2O” and “HOH”
-    - Any slot whose values could be constrained to a finite set should use an Enum
-    - Non-categorical values, e.g. descriptive fields like `name` or `description` fall outside of this.
-- Reuse
-    - Existing scheme elements should be reused where appropriate, rather than making duplicative elements
-    - More specific classes can be created by refinining classes using inheritance (`is_a`)
-
-[about-branches]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
-[about-issues]: https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues
-[about-pulls]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests
-[issues]: https://github.com/lmodel/github-actions/issues/
-[pulls]: https://github.com/lmodel/github-actions/pulls/
-
-We recommend also reading [GitHub Pull Requests: 10 Tips to Know](https://blog.mergify.com/github-pull-requests-10-tips-to-know/)
+By contributing, you agree that your contributions are licensed under the [Apache License 2.0](LICENSE). The SchemaStore copy is third-party work under its own notice; [NOTICE](NOTICE) lists it, so update it when you add something new from elsewhere.

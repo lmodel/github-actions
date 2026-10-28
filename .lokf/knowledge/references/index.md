@@ -1,0 +1,6 @@
+# References
+
+* [GitHub workflow syntax](workflow-syntax.md) - GitHub's workflow syntax page for GitHub Actions, with its companion page on reusable workflows: the source of GhaWorkflow, GhaWorkflowJob, GhaReusableWorkflow and the gha_permission type, versionless, read on 2026-10-28 and cited, never copied, under CC BY 4.0.
+* [GitHub metadata syntax](metadata-syntax.md) - GitHub's metadata syntax page for an action's action.yml or action.yaml: the source of GhaAction, its inputs and outputs and the runtimes runs.using may name (composite, docker, node20, node24), versionless, read on 2026-10-28 and cited, never copied, under CC BY 4.0.
+* [GitHub REST API rules and check runs](rest-api-rules.md) - The GitHub REST API's rules and check runs pages at API version 2026-03-10: the source of GhaRepositoryRuleset, GhaBypassActor and GhaRequiredStatusCheck, whose fields are named after REST fields such as `source_type`, `enforcement` and `required_status_checks[].context`.
+* [GitHub Actions build type](github-build-type.md) - GitHub's build type for SLSA provenance of a GitHub Actions workflow run (actions.github.io/buildtypes/workflow/v1): the schema writes workflow_path, workflow_repository and runner_environment as it does, and takes from it that a reusable workflow that signs provenance is the build's builder.

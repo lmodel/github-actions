@@ -1,0 +1,82 @@
+GitHub Actions LinkML Schema (github-actions)
+Copyright 2026 Noel McLoughlin
+
+The code in this repository is licensed under the Apache License,
+Version 2.0 (see LICENSE). Some of the content it carries is third-party
+work under its own terms, listed below.
+
+src/github_actions/schema/*.yaml, src/github_actions/datamodel/ and
+project/ model what GitHub's documentation says a workflow file, an
+action's metadata file and a repository ruleset state. They are this
+project's rendering, written in its own words with each page cited by
+address; they are not GitHub's, and their use does not imply endorsement
+by GitHub, Inc. GitHub's documentation is licensed under the Creative
+Commons Attribution 4.0 International license (CC BY 4.0):
+https://github.com/github/docs/blob/main/LICENSE
+
+SchemaStore's GitHub Actions schemas, by JSON Schema Store
+-----------------------------------------------------------
+
+src/github_actions/schema/schemastore/ holds a copy of two files from
+JSON Schema Store, retrieved from
+https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json
+
+  github-workflow.json  the schema of a GitHub Actions workflow file
+  github-action.json    the schema of an action's metadata file
+
+beside SchemaStore's own LICENSE and NOTICE, copied from the root of the
+same commit. Every file is identical to its counterpart there, and
+scripts/check_upstream_release.py checks that it stays so. The files are
+licensed under the Apache License, Version 2.0, and carry this notice:
+
+  JSON Schema Store
+  Copyright 2015-Current Mads Kristensen and Contributors
+
+linkml-project-copier
+---------------------
+
+This project was generated from linkml-project-copier
+(https://github.com/linkml/linkml-project-copier), and its justfile,
+configuration and documentation scaffolding derive from that template:
+
+  The MIT License (MIT)
+  Copyright (c) 2025 David Linke
+
+  Permission is hereby granted, free of charge, to any person obtaining a
+  copy of this software and associated documentation files (the
+  "Software"), to deal in the Software without restriction, including
+  without limitation the rights to use, copy, modify, merge, publish,
+  distribute, sublicense, and/or sell copies of the Software, and to permit
+  persons to whom the Software is furnished to do so, subject to the
+  following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+  NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+  USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Knowledge bundle
+----------------
+
+This product maintains its documentation as a Linked Open Knowledge Format
+(LOKF) bundle under .lokf/: https://lokf.nolan-nichols.com/specification/
+
+LOKF is a semantic profile of the Open Knowledge Format (OKF) specification
+by Google Cloud Platform:
+https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md
+
+The scripts under .lokf/scripts/ and .lokf/m365/ and the
+knowledge-librarian, knowledge-registrar, knowledge-release and
+knowledge-sync workflows under .github/workflows/ are copies of the
+ktl-sidecar templates in knowledge-trust-ladder
+(https://github.com/noelmcloughlin/knowledge-trust-ladder). The site under
+website/ and the knowledge-website workflow derive from the ktl-website
+templates in the same repository, and website/NOTICE lists the part
+adapted from the LOKF toolkit's site. All of them are licensed under the
+Apache License, Version 2.0.

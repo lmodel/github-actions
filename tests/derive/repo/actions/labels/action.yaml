@@ -1,0 +1,8 @@
+name: Labels
+description: A JavaScript action whose output is written while it runs.
+outputs:
+  labels:
+    description: The labels the pull request carries.
+runs:
+  using: node24
+  main: dist/index.js

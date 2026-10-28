@@ -1,0 +1,4 @@
+# GitHub's metadata syntax lists node20 and node24, not node16.
+action_uri: https://github.com/example-org/label-checker
+action_path: action.yml
+using: node16

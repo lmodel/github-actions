@@ -1,0 +1,126 @@
+---
+id: https://w3id.org/lmodel/github-actions/github_actions_action
+name: github_actions_action
+title: GitHub Actions actions
+description: >-
+  Actions: the metadata file that names an action's inputs, its outputs and
+  the runtime that executes it.
+license: Apache-2.0
+see_also:
+  - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
+
+default_prefix: gha
+default_range: string
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gha: https://w3id.org/lmodel/github-actions/
+  cdx: "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/"
+
+imports:
+  - linkml:types
+  - ./github_actions_core
+
+classes:
+  GhaAction:
+    class_uri: gha:Action
+    description: >-
+      An action: a directory whose `action.yml` or `action.yaml` file names
+      its inputs, its outputs and the runtime that executes it. A workflow
+      step runs it with `uses`.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
+    close_mappings:
+      - cdx:task
+    comments:
+      - >-
+        SLSA counts the actions a build runs among its steps, which the tenant
+        defines; an action is never a build's trust boundary, as a reusable
+        workflow that signs provenance is.
+      - >-
+        The metadata file's name and description are the concept's title and
+        description in a knowledge bundle, so the class adds neither.
+    slots:
+      - inputs
+      - outputs
+    slot_usage:
+      inputs:
+        description: The inputs under the metadata file's `inputs` key.
+        range: GhaActionInput
+      outputs:
+        description: The outputs under the metadata file's `outputs` key.
+        range: GhaActionOutput
+    attributes:
+      action_uri:
+        identifier: true
+        description: >-
+          The action's address on its forge without a ref:
+          `https://github.com/<owner>/<repo>`, followed by the directory's path
+          when the action is not at the repository root. A step's `uses` names
+          it as `<owner>/<repo>/<path>@<ref>`.
+        range: uri
+      action_path:
+        description: The metadata file's path from the repository root.
+        required: true
+        pattern: "^(.+/)?action\\.ya?ml$"
+      using:
+        description: The runtime that executes the action, its `runs.using` value.
+        range: GhaActionRuntime
+        required: true
+
+  GhaActionInput:
+    is_a: GhaInput
+    class_uri: gha:ActionInput
+    description: An input under an action's `inputs` key.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs
+    slot_usage:
+      description:
+        required: true
+    attributes:
+      deprecation_message:
+        description: >-
+          The message GitHub shows a workflow that still passes the input, the
+          file's `deprecationMessage`; present only when the input is
+          deprecated.
+        see_also:
+          - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage
+
+  GhaActionOutput:
+    is_a: GhaOutput
+    class_uri: gha:ActionOutput
+    description: An output under an action's `outputs` key.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-docker-container-and-javascript-actions
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#outputs-for-composite-actions
+    comments:
+      - >-
+        Only a composite action sets an output from an expression; a Docker or
+        JavaScript action writes its outputs while it runs, so its outputs have
+        no output_expression.
+    slot_usage:
+      description:
+        required: true
+
+enums:
+  GhaActionRuntime:
+    description: The runtimes an action's `runs.using` may name.
+    see_also:
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-composite-actions
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions
+      - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-docker-container-actions
+    comments:
+      - >-
+        SchemaStore's schema at the pinned commit also accepts node12 and
+        node16, which GitHub's metadata syntax page no longer lists;
+        tests/test_schema_rules.py checks that those two are the only
+        difference.
+    permissible_values:
+      composite:
+        description: Steps that run in the calling job, as a workflow's steps do.
+      docker:
+        description: A Docker container.
+      node20:
+        description: JavaScript, run by Node.js 20.
+      node24:
+        description: JavaScript, run by Node.js 24.

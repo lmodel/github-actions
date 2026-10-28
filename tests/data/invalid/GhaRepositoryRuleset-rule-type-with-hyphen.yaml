@@ -1,0 +1,6 @@
+# A rule type is written as the REST API writes it, with underscores.
+ruleset_uri: https://github.com/example-org/service/rules/42
+ruleset_target: branch
+enforcement: active
+rule_types:
+  - required-status-checks

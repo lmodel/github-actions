@@ -1,0 +1,4 @@
+ruleset_uri: https://github.com/example-org/service/rules/0
+ruleset_id: 0
+ruleset_target: branch
+enforcement: active

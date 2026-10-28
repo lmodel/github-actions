@@ -1,0 +1,7 @@
+# A job calls a workflow file; an action is a step's uses, not a job's.
+workflow_uri: https://github.com/example-org/service/.github/workflows/build.yml
+workflow_path: .github/workflows/build.yml
+triggers: [push]
+jobs:
+  - job_id: checkout
+    calls: actions/checkout@v4

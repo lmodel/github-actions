@@ -1,0 +1,6 @@
+# An action's output must be described.
+action_uri: https://github.com/example-org/ci-workflows/actions/setup
+action_path: actions/setup/action.yml
+using: composite
+outputs:
+  - output_id: python-path

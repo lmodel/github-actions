@@ -1,0 +1,15 @@
+action_uri: https://github.com/example-org/ci-workflows/actions/setup-python
+action_path: actions/setup-python/action.yml
+using: composite
+inputs:
+  - input_id: python-version
+    description: The Python version to install.
+    required: true
+  - input_id: cache
+    description: Whether to cache the dependencies.
+    default: "true"
+    deprecation_message: The cache is always on; this input is ignored.
+outputs:
+  - output_id: python-path
+    description: The path of the installed interpreter.
+    output_expression: "${{ steps.setup.outputs.python-path }}"
