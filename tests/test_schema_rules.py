@@ -118,9 +118,8 @@ def test_key_and_uses_patterns_are_schemastores():
 
 
 # What a host imports beside this schema's adapt copy: LOKF's schema, pinned
-# by the sidecar, and lmodel/slsa's adapt copy, from slsa's branch
-# chore/lokf-0-9-0, as 80716f3 left it, which releases as slsa 0.7.0. Replace the slsa
-# file with that release's schema asset once it is published.
+# by the sidecar, and lmodel/slsa's adapt copy, the schema-v0.7.0-slsa.yaml
+# asset of slsa's v0.7.0 release, checked against its .sha256 and attestation.
 COPY = ROOT / ".lokf" / "github-actions.yaml"
 NEIGHBOURS = (ROOT / ".lokf" / "lokf.yaml", ROOT / "tests" / "neighbours" / "slsa.yaml")
 ELEMENT_KINDS = ("classes", "enums", "types", "subsets")
@@ -168,3 +167,39 @@ def test_names_apart_from_lokf_and_slsa():
                 slots[name],
                 their_slots[name],
             )
+
+
+MAPPING_KEYS = (
+    "mappings",
+    "exact_mappings",
+    "close_mappings",
+    "related_mappings",
+    "narrow_mappings",
+    "broad_mappings",
+)
+
+
+def _mappings(node):
+    """Every mapping value anywhere in a parsed schema file."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key in MAPPING_KEYS:
+                yield from value
+            else:
+                yield from _mappings(value)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _mappings(item)
+
+
+def test_mappings_use_a_bound_prefix():
+    """Every mapping in the copy is a CURIE whose prefix the copy binds. A full
+    address that no prefix covers makes every `lokf convert --schema` over the
+    copy warn that it has no namespace."""
+    doc = yaml.safe_load(COPY.read_text())
+    prefixes = doc.get("prefixes") or {}
+    mappings = list(_mappings(doc))
+    assert mappings
+    for mapping in mappings:
+        prefix, sep, _ = mapping.partition(":")
+        assert sep and prefix in prefixes, mapping
