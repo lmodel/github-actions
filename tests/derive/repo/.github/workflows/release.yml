@@ -1,0 +1,10 @@
+# Write access at the top level reaches every job.
+on:
+  release:
+    types: [published]
+permissions: write-all
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://ghcr.io/example-org/publish@sha256:0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c4b5a69788796a5b4c3d2e1f0

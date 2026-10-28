@@ -54,13 +54,24 @@ The schema names three vocabularies so a reader can cross to them; none of them 
 
 Runs and events, such as CDEvents and GitHub's run logs, are records, not facts of a file. GUAC is a graph that gathers SBOMs, provenance and scores: a consumer of models like this one, not a vocabulary to borrow from. SCITT and RATS define how evidence travels and what the word means, and need no class here.
 
+## Deriving the facts from a repository
+
+`scripts/derive.py` reads a repository's workflow files and action metadata files, with `yaml.safe_load` and nothing else, and prints the frontmatter of the concept that describes each. It also prints the name of each check run a top-level workflow's jobs report, which is the `check_context` a ruleset requires, with the job path and what can skip the job. And it reports what the OpenSSF Baseline and Scorecard call out: write access at a workflow's top level, a caller that passes `secrets: inherit`, and a `uses` not pinned to a commit. With `--check` and a bundle, it exits 1 on drift between the files and the concepts, or on a required check that no job of its `emitted_by` workflow reports.
+
+```bash
+uv run scripts/derive.py --root ../host-repository
+uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge
+```
+
+Its only dependency is PyYAML, named in its PEP 723 header, so `uv run` needs no project. A host copies the script at a pinned release of this repository and records the version beside it. The fixtures under [tests/derive/](tests/derive/) show each rule.
+
 ## Repository Structure
 
 * [docs/](docs/): the documentation pages the website shows
   * [elements/](docs/elements/): generated schema documentation
 * [examples/](examples/): examples of using the schema
 * [project/](project/): project files (these files are auto-generated, do not edit)
-* [scripts/](scripts/): the upstream watch
+* [scripts/](scripts/): the upstream watch and the derivation script
 * [src/](src/): source files (edit these)
   * [github_actions](src/github_actions)
     * [schema/](src/github_actions/schema): the LinkML schema, `github_actions.yaml` and

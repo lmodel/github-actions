@@ -12,7 +12,7 @@ Use GitHub's [private vulnerability reporting](https://github.com/lmodel/github-
 
 ## What this repository ships
 
-A LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. The script under `scripts/` runs only in `upstream-watch.yaml`: it reads SchemaStore's repository and GitHub's API version list and writes nothing but its report. A schema is data: loading one from an untrusted source with any LinkML tool is that tool's risk, not this repository's.
+A LinkML schema, the Python datamodel generated from it, and the schema's `lokf adapt` copy as a release asset. Nothing is published to PyPI. `scripts/check_upstream_release.py` runs only in `upstream-watch.yaml`: it reads SchemaStore's repository and GitHub's API version list and writes nothing but its report. `scripts/derive.py` runs in no workflow here; a host runs it over its own files, on a pull request too, so it parses them with `yaml.safe_load`, runs nothing they contain and writes nothing. A schema is data: loading one from an untrusted source with any LinkML tool is that tool's risk, not this repository's.
 
 ## What executes here
 
