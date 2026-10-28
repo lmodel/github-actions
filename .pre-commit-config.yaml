@@ -1,9 +1,20 @@
 ---
 # https://pre-commit.com/
-# SchemaStore's files are kept byte for byte as published, so that
-# scripts/check_upstream_release.py can match them by git object hash; no
-# hook may rewrite them.
-exclude: ^src/github_actions/schema/schemastore/
+# No hook may rewrite a file this repository does not write by hand:
+# SchemaStore's files, kept byte for byte so scripts/check_upstream_release.py
+# can match them by git object hash; what the LinkML generators and
+# `lokf adapt` write, which the next run would rewrite back; and the KTL
+# sidecar's scripts, which the weekly sync replaces.
+exclude: >-
+  (?x)^(
+    src/github_actions/schema/schemastore/|
+    src/github_actions/datamodel/|
+    project/|
+    docs/schema/|
+    \.lokf/(scripts|m365)/|
+    \.lokf/(lokf|github-actions)\.yaml$|
+    tests/neighbours/
+  )
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

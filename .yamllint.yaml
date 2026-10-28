@@ -8,6 +8,11 @@ ignore:
   - .copier-answers.yml
   # Ignore schema files that may not conform due to imports.
   - docs/schema/*.yaml
+  # LOKF's schema and the adapt copies, which `lokf adapt` writes with its own
+  # list indentation; just lokf-adapt-check holds them to the source.
+  - .lokf/lokf.yaml
+  - .lokf/github-actions.yaml
+  - tests/neighbours/*.yaml
 
 rules:
   document-start: disable  # Don't check if document has a start marker (---).
