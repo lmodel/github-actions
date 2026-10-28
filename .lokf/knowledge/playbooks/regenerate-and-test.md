@@ -35,6 +35,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 9e5861ab5d13ea0b34600f4339557226b1dddc15
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # Regenerate and test the schema

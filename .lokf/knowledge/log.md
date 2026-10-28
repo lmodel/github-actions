@@ -2,6 +2,17 @@
 
 ## 2026-10-28
 
+* **Added**: Derive and check concepts from workflow files, from `scripts/derive.py`, its tests and the README's section on it, which d38a5e0 added.
+* **Changed**: the test data concept gives the naming rule as `ClassName-###.yaml`, as `tests/data/README.md` has since a86d859, and names `tests/test_derive.py` and its fixtures, which d38a5e0 added.
+* **Changed**: the security policy names both scripts under `scripts/`, says that `scripts/derive.py` runs in no workflow here, and words the librarian's row as `SECURITY.md` has since a86d859 and d38a5e0.
+* **Changed**: the schema concept says when the knowledge release attaches the adapt copy, as the README's Knowledge Trust Ladder (KTL) section has since a86d859.
+* **Changed**: the knowledge release concept says that the README and CONTRIBUTING.md now agree with the workflow on when the schema copy is attached, since a86d859.
+* **Resolved**: README.md and CONTRIBUTING.md say since a86d859 that the knowledge release attaches the schema copy when the bundle has changed, and that a run with `force` attaches it otherwise.
+* **Changed**: the librarian workflow concept says that the skills pin stays at v0.57.0 until the first weekly sync moves it, as `CHANGELOG.md` has since a86d859.
+* **Resolved**: CHANGELOG.md says since a86d859 that the v0.58.0 templates leave the skills pin at v0.57.0 and that the first weekly sync moves it.
+* **Changed**: the release playbook says when the knowledge release attaches the schema copy, and to run it with `force` when only the schema changed, as CONTRIBUTING.md's Releasing section has since a86d859.
+* **Changed**: the required status check term adds the details of the naming rule that `scripts/derive.py` states, from d38a5e0.
+* **Changed**: the source map adds `scripts/derive.py`, its fixtures and tests, and the README's section on it, and names the derivation check as a way to re-check the workflow concepts.
 * **Added**: github-actions LinkML schema, from `src/github_actions/schema/github_actions.yaml`.
 * **Added**: SchemaStore copy, from `src/github_actions/schema/schemastore`.
 * **Added**: Generated artefacts, from `project`.

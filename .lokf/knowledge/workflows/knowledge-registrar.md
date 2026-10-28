@@ -46,6 +46,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 6f80b089fc284228e011ec51ab45e26d333f68f0
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # Knowledge Registrar (knowledge-registrar.yaml)

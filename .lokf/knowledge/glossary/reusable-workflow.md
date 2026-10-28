@@ -22,6 +22,9 @@ generated:
   at: "2026-10-28T19:53:06Z"
   revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T20:03:46Z"
 ---
 
 # Reusable workflow

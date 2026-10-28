@@ -45,7 +45,7 @@ sources:
     title: the schema line
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-28T20:03:46Z"
   revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
 status: draft
 ---
@@ -89,7 +89,7 @@ A LOKF domain schema is a LinkML schema that imports LOKF's own `lokf.yaml` and 
 
 `project.justfile` passes four roots to `lokf adapt`: `GhaWorkflow`, `GhaAction`, `GhaRepositoryRuleset` and `GhaRequiredStatusCheck`. It says that `GhaReusableWorkflow` follows `GhaWorkflow`, and that the recipes run the `lokf` that the sidecar's floor pins, 0.9.0 or later, unless `LOKF_CMD` names another.[^project.justfile] The copy's notes say that `lokf adapt` re-rooted the four classes on `lokf:Concept`, dropped `workflow_uri`, `action_uri`, `ruleset_uri` and `check_uri` for LOKF's own `id`, and folded `description` into LOKF's.[^github-actions.yaml] So a concept may name any of the five classes as its `type`, and writes `id` in place of the class's own identifier. The concepts under `workflows/` in this bundle are typed `GhaWorkflow`.
 
-The README lists the five classes for Obsidian users of the KTL Registrar and KTL Curator plugins to add to the *Known LOKF types* setting. It also says that each release attaches the same copy as `schema-<tag>-github-actions.yaml`. [Knowledge Release](../workflows/knowledge-release.md) says when that workflow packs it.
+The README lists the five classes for Obsidian users of the KTL Registrar and KTL Curator plugins to add to the *Known LOKF types* setting. It also says that `knowledge-release.yaml` attaches the same copy to a release as `schema-<tag>-github-actions.yaml`, beside the bundle, when the bundle has changed since the last release that carries one, and that a release that changes only the schema needs a run by hand with `force`. See [Knowledge Release](../workflows/knowledge-release.md).
 
 [Element names and the shared namespace](../explanations/element-names.md) says why no class, enum or type shares a name with `lokf.yaml` or slsa's copy, and which keys are renamed. The merged copies in `docs/schema/`, the Python models, `project/` and the adapt copy are generated from these files: see [Generated artefacts](generated-artefacts.md).
 

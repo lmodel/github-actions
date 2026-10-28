@@ -20,9 +20,12 @@ sources:
   - id: contributing.md
     resource: CONTRIBUTING.md
     title: the last item of Releasing (maintainers)
+  - id: derive.py
+    resource: scripts/derive.py
+    title: the docstring's statement of the naming rule
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-28T20:03:46Z"
   revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
 status: draft
 ---
@@ -41,6 +44,8 @@ The class's comments state the rule:
 
 The comment says that the otterdog documentation states the rule for a called job, and the README adds that none of GitHub's pages states it.[^readme.md] `job_path` records the job ids from the top-level workflow's job to the job that reports the check, with the calling job's id first for a job of a called workflow.
 
+`scripts/derive.py` applies the rule to a repository's workflow files.[^derive.py] Its docstring adds that a matrix job's values are joined by a comma and a space, that a `name` which reads the matrix context takes the values in its own place, and that the check names of a job that calls a workflow in another repository are reported as unresolved. See [Derive and check concepts from workflow files](../playbooks/derive-and-check.md).
+
 ## What else the class records
 
 - `integration_id` names the GitHub App the check must come from; GitHub Actions is app 15368.
@@ -57,3 +62,4 @@ CONTRIBUTING.md asks maintainers to leave off any branch rule that requires stat
 [^github_actions_rules.yaml]: src/github_actions/schema/github_actions_rules.yaml, GhaRequiredStatusCheck
 [^readme.md]: README.md, the otterdog item of the Influences section
 [^contributing.md]: CONTRIBUTING.md, the last item of Releasing (maintainers)
+[^derive.py]: scripts/derive.py, the docstring
