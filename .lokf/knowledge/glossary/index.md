@@ -1,0 +1,6 @@
+# Glossary
+
+* [Required status check](required-status-check.md) - A status check that a ruleset requires to pass before a change reaches a ref it targets; its name is the context a check run reports, which GitHub Actions takes from the job's name or id, as caller / called for a job of a called workflow. The schema models it as GhaRequiredStatusCheck.
+* [Repository ruleset](repository-ruleset.md) - A ruleset: named rules GitHub enforces on the branches, tags or pushes of a repository, organization or enterprise, with a target, an enforcement (active, evaluate or disabled), ref conditions, bypass actors and rule types. The schema models it as GhaRepositoryRuleset.
+* [Reusable workflow](reusable-workflow.md) - A workflow that other workflows call as a job because its on key names workflow_call, declaring the inputs, outputs and secrets its callers pass and read; the schema models it as GhaReusableWorkflow, and a calling job names it in uses with no runs-on or runner group.
+* [GITHUB_TOKEN permission](token-permission.md) - One grant of access to a workflow's GITHUB_TOKEN, such as contents: read, or the shorthand read-all, write-all or {}; the schema's gha_permission type, used by a workflow's permissions and a job's job_permissions, and what this repository's workflows grant.

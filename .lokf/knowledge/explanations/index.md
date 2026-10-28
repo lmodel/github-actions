@@ -1,0 +1,4 @@
+# Explanations
+
+* [Element names and the shared namespace](element-names.md) - Why the github-actions schema names its elements as it does: the Gha prefix, snake_case slots after GitHub's keys, GitHub's own strings as permissible values, and no class, enum or type name shared with LOKF's lokf.yaml or slsa's adapt copy, because a host merges the three into one namespace; input_type, ruleset_target and check_context are the renamed keys.
+* [Scope, influences and mappings](scope-and-influences.md) - What the github-actions schema renders and leaves out, and why: GitHub's documentation as its source with no single specification behind it, the designs that shaped it (SLSA, the OpenSSF Baseline and Scorecard, otterdog, LOKF and KTL, lmodel/slsa), its close and related mappings to CycloneDX 1.7, SPDX 3.0.1 and in-toto, and the runs, steps and evidence it does not model.
