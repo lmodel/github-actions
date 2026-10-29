@@ -6,6 +6,15 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Added
+
+- **`derive.py --rulesets` compares the ruleset and required check concepts with the rulesets GitHub returns, and `--check-runs` compares the required checks with what one commit recorded.** `scripts/github_export.py` prints both from the REST API, as Markdown that a host's ingest can mirror.
+- **`derive.py --check` counts as drift a skip condition that a required check's body does not name.** It no longer looks for a workflow behind a check that another app reports.
+
+### Fixed
+
+- **A path filter or a calling job's `if` leaves a required check pending, which blocks the merge; only the reporting job's own `if` lets it pass.** derive.py's findings and the `GhaRequiredStatusCheck` comment said that every skip reported success.
+
 ## [0.1.2] - 2026-10-29
 
 ### Security
