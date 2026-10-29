@@ -157,13 +157,12 @@ classes:
         (https://otterdog.readthedocs.io/en/latest/reference/organization/repository/status-check/).
         A matrix job's check name adds its matrix values in parentheses.
       - >-
-        A job that its own `if` skips reports success, so its required check
-        passes without running. A path filter skips the whole run, and a
-        calling job's `if` skips the call, which GitHub reports under the
-        caller's name alone; either way no check run carries the check's name,
-        so the required check stays pending and blocks the merge.
-        skip_conditions records what can skip the job, so a reader can see
-        both.
+        A job skipped by its own `if`, or because a job it needs failed or was
+        skipped, reports success, so its required check passes without
+        running. A path filter skips the whole run, and a calling job's `if`
+        or `needs` skips the call, which GitHub records under the caller's
+        name alone, so the required check stays pending and blocks the merge.
+        skip_conditions records each of these.
       - >-
         SLSA's Source track lets an organization carry such a control into a
         Source Verification Summary Attestation as an ORG_SOURCE_ property,

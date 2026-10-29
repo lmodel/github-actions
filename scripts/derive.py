@@ -33,21 +33,23 @@ the frontmatter of each ruleset's concept and the facts of each status check
 the rulesets require.
 
 With ``--check BUNDLE``, it compares the facts with the concepts in a
-knowledge bundle, and exits 1 on drift. Drift is a file with no concept, a
-concept whose file is gone, a fact the two disagree on, a required check that
-no job of the workflow its ``emitted_by`` names reports, or a skip condition
-that a required check's body does not name. A check that an app other than
-GitHub Actions reports is not matched to a job. With ``--rulesets``, drift is
-also a ruleset or a required check with no concept, a concept no ruleset
-holds or requires any more, and a fact the two disagree on. With
-``--check-runs FILE``, the output of ``github_export.py check-runs`` for one
-commit, drift is also a required check that no check run or status on that
-commit matched.
+knowledge bundle, and exits 1 on drift:
 
-A required check is a finding when a job-level ``if`` can skip its job, since
-a skipped job reports success and the check passes without running. It is
-also a finding when a path filter can skip its workflow, since a skipped
-workflow reports nothing and the check stays pending, which blocks the merge.
+- a file with no concept, or a concept whose file is gone;
+- a fact the file and the concept disagree on;
+- a required check that no job of its ``emitted_by`` workflow reports, unless
+  another app reports it;
+- a skip condition that a required check's body does not name;
+- with ``--rulesets``, a ruleset or a required check with no concept, a
+  concept no ruleset holds or requires, or a fact the two disagree on;
+- with ``--check-runs FILE``, which ``github_export.py check-runs`` printed
+  for one commit, a required check that no check run or status matched.
+
+Each skip condition of a required check is a finding. A job skipped by its
+own ``if``, or because a job it ``needs`` failed or was skipped, reports
+success, so the check passes without running; ``if: always()`` never skips.
+A path filter skips the run, and a calling job's ``if`` or ``needs`` skips
+the call, so no check run carries the name and the check stays pending.
 ``--strict`` makes findings fail too.
 
 The files are read as data and never run, and the script calls no network,
@@ -79,6 +81,10 @@ SKIPPED_DIRS = {".git", "node_modules", ".venv", "venv", "__pycache__"}
 MAX_DEPTH = 10
 # The events whose filters can skip a whole workflow run.
 FILTER_KEYS = ("paths", "paths-ignore")
+# An `if` that never skips its job.
+ALWAYS = re.compile(r"^\s*(\$\{\{\s*)?always\(\s*\)(\s*\}\})?\s*$")
+# A status function that runs a job whatever its `needs` concluded.
+STATUS_FUNCTION = re.compile(r"\b(always|failure|cancelled)\(\s*\)")
 # The app GitHub Actions reports its check runs as.
 ACTIONS_APP_ID = 15368
 
@@ -316,7 +322,12 @@ def _local_workflow(uses: str) -> str | None:
 
 
 def _job_skips(job_id: str, job: dict) -> list[str]:
-    return [f"jobs.{job_id}.if"] if "if" in job else []
+    """What can skip a job: its own `if`, and a job it needs that failed or was skipped."""
+    condition = str(job.get("if", ""))
+    skips = [f"jobs.{job_id}.if"] if "if" in job and not ALWAYS.match(condition) else []
+    if job.get("needs") and not STATUS_FUNCTION.search(condition):
+        skips.append(f"jobs.{job_id}.needs")
+    return skips
 
 
 def checks_of(path: str, workflows: dict[str, dict]) -> list[dict]:
@@ -379,9 +390,9 @@ def checks_of(path: str, workflows: dict[str, dict]) -> list[dict]:
                 record = {"check_context": name, "job_path": job_path}
                 _put(record, "skip_conditions", skips + conditions)
                 # A skipped job reports success under its own name. A path
-                # filter skips the whole run, and a calling job's `if` skips
-                # the call, which GitHub reports under the caller's name alone,
-                # so in both cases no check run carries this name.
+                # filter skips the whole run, and a calling job's `if` or
+                # `needs` skips the call, which GitHub reports under the
+                # caller's name alone, so no check run carries this name.
                 _put(record, "leaves_pending", skips + inherited)
                 checks.append(record)
 

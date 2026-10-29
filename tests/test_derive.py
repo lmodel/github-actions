@@ -126,6 +126,12 @@ def test_check_names(derived):
     ]
     assert _contexts(derived, ".github/workflows/release.yml") == ["publish"]
     assert _contexts(derived, ".github/workflows/labels.yml") == ["label / ruff"]
+    assert _contexts(derived, ".github/workflows/gate.yml") == [
+        "build",
+        "test",
+        "style / ruff",
+        "gate",
+    ]
     assert ".github/workflows/tests.yml" not in derived["checks"]
 
 
@@ -178,6 +184,36 @@ def test_conditions_that_leave_a_check_pending(derived):
     assert checks["label / ruff"]["skip_conditions"] == ["jobs.label.if"]
     assert checks["label / ruff"]["leaves_pending"] == ["jobs.label.if"]
     assert "leaves_pending" not in derived["checks"][".github/workflows/release.yml"][0]
+
+
+def test_needs_and_always(derived):
+    """A job it needs can skip a job or a call; `if: always()` skips nothing."""
+    checks = {
+        c["check_context"]: c for c in derived["checks"][".github/workflows/gate.yml"]
+    }
+    assert "skip_conditions" not in checks["build"]
+    assert checks["test"]["skip_conditions"] == ["jobs.test.needs"]
+    assert "leaves_pending" not in checks["test"]
+    assert checks["style / ruff"]["skip_conditions"] == ["jobs.style.needs"]
+    assert checks["style / ruff"]["leaves_pending"] == ["jobs.style.needs"]
+    assert "skip_conditions" not in checks["gate"]
+
+
+@pytest.mark.parametrize(
+    ("job", "skips"),
+    [
+        ({"if": "always()"}, []),
+        ({"if": "${{ always() }}", "needs": "a"}, []),
+        ({"if": "always() && github.actor != 'bot'"}, ["jobs.j.if"]),
+        ({"if": "${{ !cancelled() }}", "needs": ["a"]}, ["jobs.j.if"]),
+        ({"if": "failure()", "needs": "a"}, ["jobs.j.if"]),
+        ({"if": "success()", "needs": "a"}, ["jobs.j.if", "jobs.j.needs"]),
+        ({"needs": []}, []),
+    ],
+)
+def test_job_skips(job, skips):
+    """Only an `if` that is `always()` alone never skips; a status function frees a job from its needs."""
+    assert derive._job_skips("j", job) == skips
 
 
 def test_findings(derived):
