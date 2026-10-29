@@ -13,7 +13,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ### Fixed
 
-- **A path filter or a calling job's `if` leaves a required check pending, which blocks the merge; only the reporting job's own `if` lets it pass.** derive.py's findings and the `GhaRequiredStatusCheck` comment said that every skip reported success.
+- **A path filter, or a calling job's `if` or `needs`, leaves a required check pending, which blocks the merge.** derive.py's findings and the `GhaRequiredStatusCheck` comment said that every skip reported success.
+- **derive.py counts a job's `needs` as a skip condition, and no longer counts `if: always()`.** A failed or skipped dependency skips the job, so its check passes without running.
 
 ## [0.1.2] - 2026-10-29
 

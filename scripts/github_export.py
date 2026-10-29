@@ -5,13 +5,12 @@
 # ///
 """Print what GitHub records about a repository's rulesets or a commit's checks.
 
-derive.py reads files and calls no network. This script is the one that asks
-GitHub's REST API, so that what a ruleset requires and what a commit reported
-can be compared with a knowledge bundle too. Each command makes a few
-read-only calls at the API version the rulesets module follows, and prints
-Markdown: a heading, a sentence that says what the text holds, and the JSON
-in a fenced block, with its keys sorted so that the same answer prints the
-same text.
+derive.py reads files and calls no network, so this script asks GitHub's
+REST API what a ruleset requires and what a commit reported. Each command
+makes a few read-only calls at the API version the rulesets module follows.
+It prints Markdown: a heading, a sentence that says what the text holds, and
+the JSON in a fenced block, its keys sorted so that the same answer prints
+the same text.
 
 - ``rulesets`` prints each ruleset of the repository as the REST API returns
   it, and the rules in effect on the default branch. A host's ingest runs it
@@ -25,12 +24,15 @@ same text.
 
 A public repository needs no token, at a lower rate limit. Otherwise the
 token is the first of KNOWLEDGE_INGEST_GITHUB_TOKEN, GH_TOKEN and GITHUB_TOKEN
-that is set, and it goes to the API's address only, never to an address a
-redirect names. The address is ``--api-url``, or GITHUB_API_URL, or
-https://api.github.com, so GitHub Enterprise Server works too. The repository
-is ``--repository``, or the one the origin remote names. GitHub returns a
-ruleset's bypass actors only to a token that can edit the ruleset, so without
-one the field is missing, and derive.py leaves it out of the comparison.
+that is set. It goes to the API's address only, never to an address a
+redirect names. GitHub returns a ruleset's bypass actors only to a token that
+can edit the ruleset, so without one the field is missing, and derive.py
+leaves it out of the comparison.
+
+The address is ``--api-url``, or GITHUB_API_URL, or https://api.github.com.
+The ingest passes a command only the variables its ``auth`` block names, so
+an entry for GitHub Enterprise Server puts ``--api-url`` in its args. The
+repository is ``--repository``, or the one the origin remote names.
 
 It needs Python 3.10 and nothing else, so the ingest can run it as a tracked
 command with whatever ``python3`` the job has. Usage::

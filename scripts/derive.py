@@ -3,7 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyyaml>=6"]
 # ///
-"""Derive the facts github_actions describes from a repository's own files.
+"""Derive the facts github_actions describes from a repository's files.
 
 Reads the workflow files under ``.github/workflows/`` and every ``action.yml``
 or ``action.yaml`` of a repository, with ``yaml.safe_load``. For each, it
