@@ -18,7 +18,7 @@ A [LOKF](https://lokf.nolan-nichols.com) knowledge base for github-actions. Ever
 
 # Services
 
-* [github-actions documentation site](services/documentation-site.md) - The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions once the repository is published and KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
+* [github-actions documentation site](services/documentation-site.md) - The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions when KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
 
 # Datasets
 

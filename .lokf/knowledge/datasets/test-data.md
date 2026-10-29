@@ -30,10 +30,12 @@ sources:
   - resource: tests/neighbours/slsa.yaml
     title: the header lokf adapt wrote
   - resource: CONTRIBUTING.md
+    title: the rule on example data
+  - resource: examples/README.md
+    title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T22:46:12Z"
-  revision: 58a052654bf903ca9ab8b634d8a06a2523c482db
+  at: "2026-10-29T01:12:19Z"
 status: draft
 verified:
   - by: process:ktl-librarian

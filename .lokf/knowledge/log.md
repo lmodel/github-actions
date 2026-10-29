@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026-10-29
+
+* **Changed**: Derive and check concepts from workflow files says that `CHANGELOG.md` lists the script under 0.1.0, since that release promoted the section.
+* **Changed**: github-actions documentation site drops the conditions that held before the repository was public and 0.1.0 was released, and names the log's Atom feed that `website/README.md` lists.
+* **Changed**: Test data and schema tests gets back the two sources the last patch dropped: CONTRIBUTING.md's rule on example data and `examples/README.md`, which says that `examples/output/` is ignored.
+
 ## 2026-10-28
 
 * **Changed**: Scope, influences and mappings now says that the rules module declares the `in_toto:` prefix and names the Test Result predicate by a CURIE, as cd7488c made it.

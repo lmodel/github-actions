@@ -30,7 +30,8 @@ sources:
     title: the fixture repository
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T21:21:37Z"
+  at: "2026-10-29T01:12:19Z"
+  revision: 8ec02d94004392285d419058b78e894d0d0d7802
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -39,7 +40,7 @@ verified:
 
 # Derive and check concepts from workflow files
 
-`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load`. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the unreleased additions.[^changelog.md]
+`scripts/derive.py` derives the facts that the github-actions schema describes from a repository's files.[^derive.py] It reads the workflow files under `.github/workflows/` and every `action.yml` or `action.yaml` in the repository, with `yaml.safe_load`. It never runs what the files contain and writes nothing, so it is safe on files that a pull request changed. `CHANGELOG.md` lists it among the additions of 0.1.0.[^changelog.md]
 
 ## Run it
 
