@@ -6,6 +6,10 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Fixed
+
+- **Three concepts pin #7's squash commit, which `main` holds, so the knowledge release attaches its assets again.** Each pinned a pull request commit that the squash merge left out, which stopped v0.2.0's knowledge release.
+
 ## [0.2.0] - 2026-10-29
 
 ### Added
