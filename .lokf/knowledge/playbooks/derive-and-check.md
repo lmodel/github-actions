@@ -25,7 +25,7 @@ sources:
     title: the What this repository releases section
   - id: test_derive.py
     resource: tests/test_derive.py
-    title: the twenty-one tests
+    title: the twenty-four tests
   - id: test_github_export.py
     resource: tests/test_github_export.py
     title: the tests of the export script
@@ -36,7 +36,8 @@ sources:
     title: the fixture repository and the two export files
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:18:12Z"
+  at: "2026-10-29T16:44:32Z"
+  revision: 887239f06895b693305dd93c1714c6b792f6c100
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -97,7 +98,7 @@ The script names a check by the rule in [Required status check](../glossary/requ
 - a job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side;
 - a matrix job's name adds its matrix values in parentheses, joined by a comma and a space, and a `name` that reads the matrix context takes the values in its own place instead.
 
-A path filter under an event (`paths` or `paths-ignore`) and a job's `if` are recorded as skip conditions, and a called job's check carries its caller's `if` too. They differ in what they do to a required check. A job that its own `if` skips reports success, so the check passes without running. A path filter skips the whole run, and a calling job's `if` skips the call, which GitHub reports under the caller's name alone. In both cases no check run carries the check's name, so the check stays pending and blocks the merge.
+A path filter under an event (`paths` or `paths-ignore`), a job's `if` and a job's `needs` are recorded as skip conditions, and a called job's check carries its caller's `if` and `needs` too. An `if` that is `always()` alone is not one, and a job whose `if` calls `always()`, `failure()` or `cancelled()` does not wait on its `needs`. The conditions differ in what they do to a required check. A job skipped by its own `if`, or because a job it needs failed or was skipped, reports success, so the check passes without running. A path filter skips the whole run, and a calling job's `if` or `needs` skips the call, which GitHub records under the caller's name alone. No check run then carries the check's name, so the check stays pending and blocks the merge.
 
 A job whose matrix an expression sets, and a job that calls a workflow in another repository, are reported as unresolved, because the script reads only the repository it is given. It stops following calls at ten levels, which a comment calls GitHub's limit on how deep workflows can call one another.
 
@@ -133,15 +134,15 @@ SECURITY.md says that neither script runs in a workflow of this repository.[^sec
 
 ## Its tests
 
-`tests/test_derive.py` runs derive.py against a fixture repository in `tests/derive/repo/`, and against `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what github_export.py prints.[^test_derive.py] The fixture repository holds five workflow files, `labels.yml`, `lint.yaml`, `pull-request.yml`, `release.yml` and `tests.yml`, and two action files, `.github/actions/setup/action.yml` and `actions/labels/action.yaml`. Its twenty-one tests cover:
+`tests/test_derive.py` runs derive.py against a fixture repository in `tests/derive/repo/`, and against `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what github_export.py prints.[^test_derive.py] The fixture repository holds six workflow files, `gate.yml`, `labels.yml`, `lint.yaml`, `pull-request.yml`, `release.yml` and `tests.yml`, and two action files, `.github/actions/setup/action.yml` and `actions/labels/action.yaml`. Its twenty-four tests cover:
 
 - a reusable workflow's inputs, outputs and secrets, each form of `runs-on`, and an action's deprecated input;
-- the check names at every depth, the unresolved checks, the skip conditions, and those that leave a check pending;
+- the check names at every depth, the unresolved checks, the skip conditions, those that leave a check pending, and what `needs` and `if: always()` do;
 - the findings;
 - that every record the script prints validates against the schema for the class it names, rulesets and required checks included;
 - that `--check` passes a matching bundle and reports each kind of drift, including an unexplained skip condition;
 - that a check another app reports, and a check of a job in another repository's workflow, are findings and not drift;
-- each form that `--rulesets` reads, and what `--rulesets` and `--check-runs` find.
+- each form that `--rulesets` reads, a file it cannot read, and what `--rulesets` and `--check-runs` find.
 
 `tests/test_github_export.py` replaces the REST API with fixed answers.[^test_github_export.py] Its tests cover the pinned API version, paging, both commands, the Markdown that derive.py reads back, where the token goes, and the arguments the script refuses. The README says that the fixtures show each rule. `just test` runs these tests with the other pytest tests.
 
@@ -150,5 +151,5 @@ SECURITY.md says that neither script runs in a workflow of this repository.[^sec
 [^changelog.md]: CHANGELOG.md, the Unreleased section
 [^readme.md]: README.md, the Deriving the facts from a repository section
 [^security.md]: SECURITY.md, the What this repository releases section
-[^test_derive.py]: tests/test_derive.py, the twenty-one test functions
+[^test_derive.py]: tests/test_derive.py, the twenty-four test functions
 [^test_github_export.py]: tests/test_github_export.py, the test functions

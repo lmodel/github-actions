@@ -25,7 +25,8 @@ sources:
     title: the docstring's statement of the naming rule
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:18:12Z"
+  at: "2026-10-29T16:44:32Z"
+  revision: 887239f06895b693305dd93c1714c6b792f6c100
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -59,7 +60,7 @@ See [Derive and check concepts from workflow files](../playbooks/derive-and-chec
 - `integration_id` names the GitHub App the check must come from; GitHub Actions is app 15368.
 - `strict_policy` says whether a pull request must be tested against the latest code of the branch it targets.
 - `do_not_enforce_on_create` says whether a branch may be created although the check would otherwise stop it.
-- `skip_conditions` records what in the workflow can skip the job, as key paths such as `on.pull_request.paths` or `jobs.test.if`. A comment says that a job its own `if` skips reports success, so its required check passes without running. A path filter skips the whole run, and a calling job's `if` skips the call, which GitHub reports under the caller's name alone. Either way no check run carries the check's name, so the check stays pending and blocks the merge.
+- `skip_conditions` records what in the workflow can skip the job, as key paths such as `on.pull_request.paths` or `jobs.test.if`. A comment says that a job skipped by its own `if`, or because a job it needs failed or was skipped, reports success, so its required check passes without running. A path filter skips the whole run, and a calling job's `if` or `needs` skips the call, which GitHub records under the caller's name alone, so the check stays pending and blocks the merge.
 
 The comments relate the class to two outside vocabularies. SLSA's Source track lets an organization carry such a control into a Source Verification Summary Attestation as an `ORG_SOURCE_` property, and slsa-framework's source-tool emits one as `GH_REQUIRED_CHECK_` followed by the check's name. in-toto's Test Result predicate is the shape of an attestation of what the check found.
 

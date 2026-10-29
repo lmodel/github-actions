@@ -21,7 +21,7 @@ sources:
     title: the eight tests and the neighbour comment
   - id: test_derive.py
     resource: tests/test_derive.py
-    title: the twenty-one tests and the fixture path
+    title: the twenty-four tests and the fixture path
   - id: test_github_export.py
     resource: tests/test_github_export.py
     title: the docstring
@@ -38,7 +38,8 @@ sources:
     title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:18:56Z"
+  at: "2026-10-29T16:44:32Z"
+  revision: 887239f06895b693305dd93c1714c6b792f6c100
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -74,7 +75,7 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 
 ## tests/test_derive.py
 
-`tests/test_derive.py` holds the twenty-one tests of `scripts/derive.py`, which run the script against the fixture repository in `tests/derive/repo/`: five workflow files and two action files that show each of its rules.[^test_derive.py] They also read `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what `scripts/github_export.py` prints. `tests/test_github_export.py` runs that script against fixed answers in place of the REST API.[^test_github_export.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
+`tests/test_derive.py` holds the twenty-four tests of `scripts/derive.py`, which run the script against the fixture repository in `tests/derive/repo/`: six workflow files and two action files that show each of its rules.[^test_derive.py] They also read `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what `scripts/github_export.py` prints. `tests/test_github_export.py` runs that script against fixed answers in place of the REST API.[^test_github_export.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
 
 ## How they run
 
