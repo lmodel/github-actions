@@ -2,6 +2,12 @@
 
 ## 2026-10-29
 
+* **Prose**: reworded 2 concept bodies in plain English. No fact, link, number or frontmatter changed.
+* **Changed**: Derive and check concepts from workflow files, Test data and Required status check say that a job's `needs` is a skip condition and `if: always()` is not, and count twenty-four derive.py tests.
+* **Changed**: Knowledge sources map adds `scripts/github_export.py` and its tests to the derive.py row.
+* **Changed**: Test data counts twenty-one derive.py tests and adds the export script's tests and the two export files.
+* **Changed**: Required status check says which skips let a required check pass and which leave it pending, as the schema's comment now does.
+* **Changed**: Derive and check concepts from workflow files covers github_export.py, --rulesets, --check-runs, the skip-condition rule and checks another app reports.
 * **Prose**: reworded 5 concept bodies in plain English. No fact, link, number or frontmatter changed.
 * **Changed**: Derive and check concepts from workflow files says that `CHANGELOG.md` lists the script under 0.1.0, since that release promoted the section.
 * **Changed**: github-actions documentation site drops the conditions that held before the repository was public and 0.1.0 was released, and names the log's Atom feed that `website/README.md` lists.

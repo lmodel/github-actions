@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/test-data
 genre: reference
 title: Test data and schema tests
-description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy, the adapt copy's names with LOKF's and slsa's, and the copy's mappings with its prefixes, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/."
+description: "Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy, the adapt copy's names with LOKF's and slsa's, and the copy's mappings with its prefixes, tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/, and tests/test_github_export.py runs scripts/github_export.py against fixed answers."
 resource: tests/data
 about:
   - https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
@@ -21,12 +21,15 @@ sources:
     title: the eight tests and the neighbour comment
   - id: test_derive.py
     resource: tests/test_derive.py
-    title: the eleven tests and the fixture path
+    title: the twenty-four tests and the fixture path
+  - id: test_github_export.py
+    resource: tests/test_github_export.py
+    title: the docstring
   - id: justfile
     resource: justfile
     title: the test recipe and its three parts
   - resource: tests/derive
-    title: the fixture repository
+    title: the fixture repository and the two export files
   - resource: tests/neighbours/slsa.yaml
     title: the header lokf adapt wrote
   - resource: CONTRIBUTING.md
@@ -35,7 +38,8 @@ sources:
     title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T01:12:19Z"
+  at: "2026-10-29T16:44:32Z"
+  revision: 887239f06895b693305dd93c1714c6b792f6c100
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -71,7 +75,7 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 
 ## tests/test_derive.py
 
-`tests/test_derive.py` holds the eleven tests of `scripts/derive.py`, which run the script against the fixture repository in `tests/derive/repo/`: four workflow files and two action files that show each of its rules.[^test_derive.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
+`tests/test_derive.py` holds the twenty-four tests of `scripts/derive.py`. They run the script against the fixture repository in `tests/derive/repo/`: six workflow files and two action files that show each of its rules.[^test_derive.py] They also read `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what `scripts/github_export.py` prints. `tests/test_github_export.py` runs that script against fixed answers in place of the REST API.[^test_github_export.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
 
 ## How they run
 
@@ -82,3 +86,4 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 [^test_schema_rules.py]: tests/test_schema_rules.py, the eight test functions and the comment above COPY
 [^justfile]: justfile, the `test`, `_test-schema`, `_test-python` and `_test-examples` recipes
 [^test_derive.py]: tests/test_derive.py, the docstring and the fixture path
+[^test_github_export.py]: tests/test_github_export.py, the docstring

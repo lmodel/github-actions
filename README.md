@@ -50,21 +50,27 @@ Runs and events, such as CDEvents and GitHub's run logs, are records, not facts 
 * the name of each check run a top-level workflow's jobs report (the `check_context` a ruleset requires), with the job path and what can skip the job;
 * what the OpenSSF Baseline and Scorecard call out: write access at a workflow's top level, a caller that passes `secrets: inherit`, and a `uses` not pinned to a commit.
 
-With `--check` and a bundle, it exits 1 on drift between the files and the concepts, or on a required check that no job of its `emitted_by` workflow reports.
+With `--check` and a bundle, it exits 1 on drift between the files and the concepts, on a required check that no job of its `emitted_by` workflow reports, or on a skip condition that a check's body does not name. Each skip condition is a finding, which fails the check under `--strict`. A job skipped by its own `if`, or by a failed or skipped job it `needs`, lets a required check pass without running. A path filter, or a calling job's `if` or `needs`, leaves the check pending, which blocks the merge.
+
+`scripts/github_export.py` asks GitHub's REST API what the files cannot say. `rulesets` prints the repository's rulesets and the rules in effect on its default branch, which `derive.py --rulesets` compares with the ruleset and check concepts. `check-runs` prints what GitHub recorded on one commit, such as the head of a recent pull request, and `derive.py --check-runs` reports each required check that no run on it matched. On a private repository, `GH_TOKEN` holds a token with Metadata read, and Checks and Commit statuses read for `check-runs`.
 
 ```bash
 uv run scripts/derive.py --root ../host-repository
 uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge
+python3 scripts/github_export.py rulesets --repository OWNER/REPO > rulesets.md
+python3 scripts/github_export.py check-runs SHA --repository OWNER/REPO > check-runs.md
+uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge \
+  --rulesets rulesets.md --check-runs check-runs.md
 ```
 
-Its only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project. A host copies the script from a pinned release and records the version beside it. The fixtures in [tests/derive/](tests/derive/) show each rule.
+derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.10 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.
 
 ## Repository Structure
 
 * [docs/](docs/): the website's pages, with the generated schema pages in [elements/](docs/elements/)
 * [examples/](examples/): usage examples
 * [project/](project/): generated project files (do not edit them)
-* [scripts/](scripts/): the upstream watch and the derivation script
+* [scripts/](scripts/): the upstream watch, the derivation script and the export script
 * [src/github_actions/schema/](src/github_actions/schema): the LinkML schema, `github_actions.yaml` and the modules it imports (edit these)
 * [src/github_actions/datamodel/](src/github_actions/datamodel): the generated Python datamodel
 * [tests/](tests/): Python tests, with example data in [data/](tests/data)

@@ -1,0 +1,25 @@
+# A job that a failed or skipped dependency can skip, a call that waits on
+# another job, and a gate job that `always()` runs.
+name: Gate
+on:
+  pull_request:
+permissions: {}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: make
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: make test
+  style:
+    needs: build
+    uses: ./.github/workflows/lint.yaml
+  gate:
+    needs: [build, test, style]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '${{ toJSON(needs) }}'

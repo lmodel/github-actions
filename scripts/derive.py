@@ -3,7 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyyaml>=6"]
 # ///
-"""Derive the facts github_actions describes from a repository's own files.
+"""Derive the facts github_actions describes from a repository's files.
 
 Reads the workflow files under ``.github/workflows/`` and every ``action.yml``
 or ``action.yaml`` of a repository, with ``yaml.safe_load``. For each, it
@@ -27,24 +27,43 @@ It also reports, as findings, what the OpenSSF Baseline and Scorecard call
 out: a ``write`` permission at the top level of a workflow, a caller that
 passes ``secrets: inherit``, and a ``uses`` that is not pinned to a commit.
 
+With ``--rulesets FILE``, it also reads the rulesets ``github_export.py
+rulesets`` printed, or a ruleset saved as the REST API returns it, and prints
+the frontmatter of each ruleset's concept and the facts of each status check
+the rulesets require.
+
 With ``--check BUNDLE``, it compares the facts with the concepts in a
-knowledge bundle, and exits 1 on drift. Drift is a file with no concept, a
-concept whose file is gone, a fact the two disagree on, or a required check
-that no job of the workflow its ``emitted_by`` names reports. A required check
-whose job a path filter or an ``if`` can skip is a finding, since a skipped
-job reports success; ``--strict`` makes findings fail too.
+knowledge bundle, and exits 1 on drift:
 
-The files are read as data and never run, so the script is safe on files a
-pull request changed. Usage::
+- a file with no concept, or a concept whose file is gone;
+- a fact the file and the concept disagree on;
+- a required check that no job of its ``emitted_by`` workflow reports, unless
+  another app reports it;
+- a skip condition that a required check's body does not name;
+- with ``--rulesets``, a ruleset or a required check with no concept, a
+  concept no ruleset holds or requires, or a fact the two disagree on;
+- with ``--check-runs FILE``, which ``github_export.py check-runs`` printed
+  for one commit, a required check that no check run or status matched.
 
-    uv run scripts/derive.py [--root DIR] [--exclude PATH ...]
-    uv run scripts/derive.py --check .lokf/knowledge [--strict]
+Each skip condition of a required check is a finding. A job skipped by its
+own ``if``, or because a job it ``needs`` failed or was skipped, reports
+success, so the check passes without running; ``if: always()`` never skips.
+A path filter skips the run, and a calling job's ``if`` or ``needs`` skips
+the call, so no check run carries the name and the check stays pending.
+``--strict`` makes findings fail too.
+
+The files are read as data and never run, and the script calls no network,
+so it is safe on files a pull request changed. Usage::
+
+    uv run scripts/derive.py [--root DIR] [--exclude PATH ...] [--rulesets FILE ...]
+    uv run scripts/derive.py --check .lokf/knowledge [--rulesets FILE ...] [--check-runs FILE] [--strict]
 """
 
 from __future__ import annotations
 
 import argparse
 import itertools
+import json
 import os
 import re
 import sys
@@ -62,6 +81,12 @@ SKIPPED_DIRS = {".git", "node_modules", ".venv", "venv", "__pycache__"}
 MAX_DEPTH = 10
 # The events whose filters can skip a whole workflow run.
 FILTER_KEYS = ("paths", "paths-ignore")
+# An `if` that never skips its job.
+ALWAYS = re.compile(r"^\s*(\$\{\{\s*)?always\(\s*\)(\s*\}\})?\s*$")
+# A status function that runs a job whatever its `needs` concluded.
+STATUS_FUNCTION = re.compile(r"\b(always|failure|cancelled)\(\s*\)")
+# The app GitHub Actions reports its check runs as.
+ACTIONS_APP_ID = 15368
 
 
 class _Dumper(yaml.SafeDumper):
@@ -297,7 +322,12 @@ def _local_workflow(uses: str) -> str | None:
 
 
 def _job_skips(job_id: str, job: dict) -> list[str]:
-    return [f"jobs.{job_id}.if"] if "if" in job else []
+    """What can skip a job: its own `if`, and a job it needs that failed or was skipped."""
+    condition = str(job.get("if", ""))
+    skips = [f"jobs.{job_id}.if"] if "if" in job and not ALWAYS.match(condition) else []
+    if job.get("needs") and not STATUS_FUNCTION.search(condition):
+        skips.append(f"jobs.{job_id}.needs")
+    return skips
 
 
 def checks_of(path: str, workflows: dict[str, dict]) -> list[dict]:
@@ -359,6 +389,11 @@ def checks_of(path: str, workflows: dict[str, dict]) -> list[dict]:
             for name in full:
                 record = {"check_context": name, "job_path": job_path}
                 _put(record, "skip_conditions", skips + conditions)
+                # A skipped job reports success under its own name. A path
+                # filter skips the whole run, and a calling job's `if` or
+                # `needs` skips the call, which GitHub reports under the
+                # caller's name alone, so no check run carries this name.
+                _put(record, "leaves_pending", skips + inherited)
                 checks.append(record)
 
     walk(workflow.get("jobs"), [], [], [], 0)
@@ -433,7 +468,122 @@ def read_repository(
     return workflows, actions
 
 
-def derive(root: Path, exclude: list[str] | None = None) -> dict:
+def _exported(path: Path):
+    """The JSON in what github_export.py printed, in the ingest's mirror of it, or in a JSON file."""
+    try:
+        text = path.read_text(encoding="utf-8")
+        start = text.find("```json\n")
+        if start >= 0:
+            end = text.find("\n```", start + 8)
+            text = text[start + 8 : end if end >= 0 else None]
+        return json.loads(text)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as err:
+        raise SystemExit(
+            f"derive: {path} holds no JSON github_export.py printed ({err})"
+        ) from None
+
+
+def read_rulesets(paths: list[Path]) -> dict:
+    """The rulesets in the files given, and the rules in effect on the default branch when a file lists them."""
+    evidence = {"rulesets": [], "branch_rules": None, "default_branch": None}
+    seen = set()
+    for path in paths:
+        data = _exported(path)
+        if isinstance(data, dict) and "rulesets" in data:
+            rulesets = data.get("rulesets") or []
+            if data.get("branch_rules") is not None:
+                evidence["branch_rules"] = (evidence["branch_rules"] or []) + data[
+                    "branch_rules"
+                ]
+                evidence["default_branch"] = data.get("default_branch")
+        else:
+            rulesets = data if isinstance(data, list) else [data]
+        for ruleset in rulesets:
+            if ruleset.get("id") not in seen:
+                seen.add(ruleset.get("id"))
+                evidence["rulesets"].append(ruleset)
+    return evidence
+
+
+def _required(rules: list[dict]):
+    """Each required status check in a list of rules, with its rule's parameters."""
+    for rule in rules or []:
+        if rule.get("type") == "required_status_checks":
+            params = rule.get("parameters") or {}
+            for entry in params.get("required_status_checks") or []:
+                if entry.get("context"):
+                    yield entry, params
+
+
+def ruleset_facts(ruleset: dict) -> dict:
+    """The frontmatter of the concept that describes one ruleset."""
+    ref = (ruleset.get("conditions") or {}).get("ref_name") or {}
+    rules = ruleset.get("rules") or []
+    record = {"type": "GhaRepositoryRuleset", "ruleset_id": ruleset.get("id")}
+    _put(record, "ruleset_source_type", ruleset.get("source_type"))
+    _put(record, "ruleset_source", ruleset.get("source"))
+    _put(record, "ruleset_target", ruleset.get("target") or "branch")
+    _put(record, "enforcement", ruleset.get("enforcement"))
+    _put(record, "ref_name_include", ref.get("include"))
+    _put(record, "ref_name_exclude", ref.get("exclude"))
+    _put(
+        record,
+        "bypass_actors",
+        [
+            {
+                key: actor[key]
+                for key in ("actor_id", "actor_type", "bypass_mode")
+                if actor.get(key) is not None
+            }
+            for actor in ruleset.get("bypass_actors") or []
+        ],
+    )
+    _put(
+        record,
+        "rule_types",
+        list(dict.fromkeys(r["type"] for r in rules if r.get("type"))),
+    )
+    return record
+
+
+def required_checks(evidence: dict) -> dict[str, dict]:
+    """The facts of each status check the rulesets require, by its context.
+
+    ``required_by`` lists the rulesets that require it. ``in_effect`` says
+    whether a rule in effect on the default branch requires it, when the
+    evidence lists those rules.
+    """
+    branch_rules = evidence.get("branch_rules")
+    in_effect = (
+        None
+        if branch_rules is None
+        else {entry["context"] for entry, _ in _required(branch_rules)}
+    )
+    checks: dict[str, dict] = {}
+    for ruleset in evidence["rulesets"]:
+        for entry, params in _required(ruleset.get("rules")):
+            context = entry["context"]
+            if context not in checks:
+                record = {"check_context": context}
+                _put(record, "integration_id", entry.get("integration_id"))
+                for key, field in (
+                    ("strict_policy", "strict_required_status_checks_policy"),
+                    ("do_not_enforce_on_create", "do_not_enforce_on_create"),
+                ):
+                    if isinstance(params.get(field), bool):
+                        record[key] = params[field]
+                record["required_by"] = []
+                if in_effect is not None:
+                    record["in_effect"] = context in in_effect
+                checks[context] = record
+            if ruleset.get("id") not in checks[context]["required_by"]:
+                checks[context]["required_by"].append(ruleset.get("id"))
+    return checks
+
+
+def derive(
+    root: Path, exclude: list[str] | None = None, rulesets: dict | None = None
+) -> dict:
     """Everything the script prints, as one mapping."""
     workflows, actions = read_repository(root, exclude or [])
     top = [
@@ -441,12 +591,18 @@ def derive(root: Path, exclude: list[str] | None = None) -> dict:
         for p, w in workflows.items()
         if any(t != "workflow_call" for t in _triggers(_on(w)))
     ]
-    return {
+    derived = {
         "workflows": {path: workflow_facts(path, w) for path, w in workflows.items()},
         "actions": {path: action_facts(path, a) for path, a in actions.items()},
         "checks": {path: checks_of(path, workflows) for path in top},
         "findings": findings_of(workflows, actions),
     }
+    if rulesets is not None:
+        derived["rulesets"] = {
+            r.get("id"): ruleset_facts(r) for r in rulesets["rulesets"]
+        }
+        derived["required_checks"] = required_checks(rulesets)
+    return derived
 
 
 # --- comparison with a knowledge bundle ---------------------------------------
@@ -474,46 +630,236 @@ def _normal(key: str, value, derived_value):
             if isinstance(item, dict)
         }
     if isinstance(value, list) and key not in ORDERED:
-        return sorted(_text(v) for v in value)
+        return sorted(
+            json.dumps(v, sort_keys=True) if isinstance(v, dict) else _text(v)
+            for v in value
+        )
     if isinstance(value, list):
         return [_text(v) for v in value]
     return value
 
 
-def _frontmatter(path: Path) -> dict | None:
+def _list(value) -> list:
+    """A key that holds one value or a list of them, as a list."""
+    if value is None:
+        return []
+    return value if isinstance(value, list) else [value]
+
+
+def _document(path: Path) -> tuple[dict | None, str]:
+    """A bundle file's frontmatter and the body after it."""
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---"):
-        return None
+        return None, text
     head = text.split("---", 2)
-    return yaml.safe_load(head[1]) if len(head) == 3 else None
+    return (yaml.safe_load(head[1]), head[2]) if len(head) == 3 else (None, text)
 
 
-def read_bundle(bundle: Path) -> tuple[dict[str, tuple[str, dict]], str]:
-    """Each concept by its IRI, with the file it is in, and the base IRI."""
+def read_bundle(bundle: Path) -> tuple[dict[str, tuple[str, dict, str]], str]:
+    """Each concept by its IRI, with the file it is in and its body, and the base IRI."""
     index = (
-        _frontmatter(bundle / "index.md") if (bundle / "index.md").exists() else None
+        _document(bundle / "index.md")[0] if (bundle / "index.md").exists() else None
     )
     base = (index or {}).get("base_iri", "")
     concepts = {}
     for path in sorted(bundle.rglob("*.md")):
         if path.name in ("index.md", "log.md"):
             continue
-        data = _frontmatter(path)
+        data, body = _document(path)
         if isinstance(data, dict):
             rel = path.relative_to(bundle).with_suffix("").as_posix()
             concepts[data.get("id") or base + rel] = (
                 path.relative_to(bundle).as_posix(),
                 data,
+                body,
             )
     return concepts, base
 
 
-def compare(derived: dict, bundle: Path) -> tuple[list[str], list[str]]:
+def _skip_findings(file: str, context: str, check: dict) -> list[str]:
+    """What each skip condition of a derived check does to the required check."""
+    found = []
+    pending = check.get("leaves_pending") or []
+    passes = [c for c in check.get("skip_conditions") or [] if c not in pending]
+    if passes:
+        found.append(
+            f"{file}: {context!r} is required, but {', '.join(passes)} can skip its job,"
+            " and a skipped job reports success, so the check passes without running"
+        )
+    if pending:
+        found.append(
+            f"{file}: {context!r} is required, but {', '.join(pending)} can skip the run or the call"
+            " before its job starts, so no check run carries its name and the check stays pending,"
+            " which blocks the merge"
+        )
+    return found
+
+
+# The keys of a ruleset's concept that the REST API states.
+RULESET_KEYS = (
+    "ruleset_source_type",
+    "ruleset_source",
+    "ruleset_target",
+    "enforcement",
+    "ref_name_include",
+    "ref_name_exclude",
+    "bypass_actors",
+    "rule_types",
+)
+# The keys of a required check's concept that its ruleset states.
+CHECK_KEYS = ("integration_id", "strict_policy", "do_not_enforce_on_create")
+
+
+def compare_rulesets(evidence: dict, concepts: dict) -> tuple[list[str], list[str]]:
+    """Drift between the rulesets and their concepts and those of the checks they require."""
+    drift, found = [], []
+    by_id = {
+        data.get("ruleset_id"): (file, data)
+        for file, data, _ in concepts.values()
+        if data.get("type") == "GhaRepositoryRuleset"
+    }
+    held = set()
+    for ruleset in evidence["rulesets"]:
+        rid = ruleset.get("id")
+        if rid not in by_id:
+            drift.append(f"ruleset {rid} ({ruleset.get('name')}) has no concept")
+            continue
+        held.add(rid)
+        file, data = by_id[rid]
+        facts = ruleset_facts(ruleset)
+        # GitHub returns bypass actors only to a token that can edit the
+        # ruleset, so an export made without one says nothing about them.
+        keys = [
+            k
+            for k in RULESET_KEYS
+            if k != "bypass_actors" or "bypass_actors" in ruleset
+        ]
+        for key in keys:
+            if _normal(key, data.get(key), None) != _normal(key, facts.get(key), None):
+                drift.append(
+                    f"{file}: {key} is {data.get(key)!r}, but ruleset {rid} says {facts.get(key)!r}"
+                )
+        requires = sorted(
+            dict.fromkeys(
+                entry["context"] for entry, _ in _required(ruleset.get("rules"))
+            )
+        )
+        named = sorted(
+            str(concepts[iri][1].get("check_context")) if iri in concepts else str(iri)
+            for iri in _list(data.get("requires_check"))
+        )
+        if named != requires:
+            drift.append(
+                f"{file}: requires_check names {named}, but ruleset {rid} requires {requires}"
+            )
+    for rid, (file, _) in by_id.items():
+        if rid not in held:
+            drift.append(f"{file}: ruleset {rid} is not among the rulesets given")
+
+    checks = {
+        data.get("check_context"): (file, data)
+        for file, data, _ in concepts.values()
+        if data.get("type") == "GhaRequiredStatusCheck"
+    }
+    required = required_checks(evidence)
+    branch = evidence.get("default_branch") or "the default branch"
+    for context, facts in required.items():
+        rulesets = ", ".join(str(r) for r in facts["required_by"])
+        if context not in checks:
+            drift.append(
+                f"{context!r}, which ruleset {rulesets} requires, has no concept"
+            )
+            continue
+        file, data = checks[context]
+        for key in CHECK_KEYS:
+            if data.get(key) != facts.get(key):
+                drift.append(
+                    f"{file}: {key} is {data.get(key)!r}, but ruleset {rulesets} says {facts.get(key)!r}"
+                )
+        if facts.get("in_effect") is False:
+            found.append(
+                f"{file}: ruleset {rulesets} requires {context!r}, but no rule in effect on {branch} does"
+            )
+    for context, (file, _) in checks.items():
+        if context not in required:
+            drift.append(f"{file}: no ruleset given requires {context!r}")
+    return drift, found
+
+
+def compare_check_runs(
+    runs: dict, concepts: dict, derived: dict
+) -> tuple[list[str], list[str]]:
+    """Drift between the required checks and what GitHub recorded on one commit."""
+    drift, found = [], []
+    where = str(runs.get("sha") or runs.get("ref") or "the commit")[:12]
+    pending = {
+        c["check_context"]: c.get("leaves_pending") or []
+        for checks in derived["checks"].values()
+        for c in checks
+        if c.get("check_context")
+    }
+    for file, data, _ in concepts.values():
+        if data.get("type") != "GhaRequiredStatusCheck":
+            continue
+        context, app = data.get("check_context"), data.get("integration_id")
+        named = [r for r in runs.get("check_runs") or [] if r.get("name") == context]
+        accepted = [r for r in named if app is None or r.get("app_id") == app]
+        statuses = [
+            s for s in runs.get("statuses") or [] if s.get("context") == context
+        ]
+        if accepted or statuses:
+            if any(r.get("conclusion") == "skipped" for r in accepted):
+                found.append(
+                    f"{file}: {context!r} was skipped on {where}, and GitHub counts a skipped check as passed"
+                )
+            continue
+        if named:
+            apps = ", ".join(
+                sorted({str(r.get("app_slug") or r.get("app_id")) for r in named})
+            )
+            drift.append(
+                f"{file}: {context!r} ran on {where} from {apps}, but only app {app} may report it"
+            )
+            continue
+        if pending.get(context):
+            # A skipped call is reported under the caller's name alone.
+            parts = str(context).split(" / ")
+            callers = sorted(
+                {
+                    r["name"]
+                    for r in runs.get("check_runs") or []
+                    if r.get("conclusion") == "skipped"
+                    and r.get("name")
+                    in {" / ".join(parts[:n]) for n in range(1, len(parts))}
+                }
+            )
+            instead = (
+                f"; GitHub recorded {', '.join(repr(c) for c in callers)} as skipped instead"
+                if callers
+                else ""
+            )
+            found.append(
+                f"{file}: no check run on {where} is named {context!r}, so the check stayed pending:"
+                f" {', '.join(pending[context])} can skip it before its job starts{instead}"
+            )
+        else:
+            drift.append(
+                f"{file}: no check run or status on {where} is named {context!r}, so a merge would wait for it"
+            )
+    return drift, found
+
+
+def compare(
+    derived: dict,
+    bundle: Path,
+    rulesets: dict | None = None,
+    check_runs: dict | None = None,
+) -> tuple[list[str], list[str]]:
     """Drift between the files and the bundle, and findings about the checks."""
     concepts, _ = read_bundle(bundle)
     drift, found = [], []
     by_path = {}
-    for iri, (file, data) in concepts.items():
+    for iri, (file, data, _) in concepts.items():
         path = data.get("workflow_path") or data.get("action_path")
         if path and str(data.get("type", "")).startswith("Gha"):
             by_path[path] = (iri, file, data)
@@ -544,10 +890,21 @@ def compare(derived: dict, bundle: Path) -> tuple[list[str], list[str]]:
         if path not in facts:
             drift.append(f"{file} describes {path}, which the repository does not hold")
 
-    for iri, (file, data) in concepts.items():
+    for file, data, body in concepts.values():
         if data.get("type") != "GhaRequiredStatusCheck":
             continue
         context = data.get("check_context")
+        for condition in _list(data.get("skip_conditions")):
+            if str(condition) not in body:
+                drift.append(
+                    f"{file}: {context!r} can be skipped by {condition}, which its body does not name"
+                )
+        integration = data.get("integration_id")
+        if integration is not None and integration != ACTIONS_APP_ID:
+            found.append(
+                f"{file}: app {integration} reports {context!r}, not GitHub Actions, so no job here is matched to it"
+            )
+            continue
         emitter = concepts.get(data.get("emitted_by") or "")
         if emitter is None:
             drift.append(f"{file}: {context!r} names no workflow concept in emitted_by")
@@ -580,11 +937,15 @@ def compare(derived: dict, bundle: Path) -> tuple[list[str], list[str]]:
                 drift.append(
                     f"{file}: {key} is {data.get(key)!r}, but {workflow} says {match.get(key)!r}"
                 )
-        if match.get("skip_conditions"):
-            found.append(
-                f"{file}: {context!r} is required, but {', '.join(match['skip_conditions'])} can skip its job,"
-                " and a skipped job reports success"
-            )
+        found += _skip_findings(file, context, match)
+    for more in (
+        compare_rulesets(rulesets, concepts) if rulesets is not None else ([], []),
+        compare_check_runs(check_runs, concepts, derived)
+        if check_runs is not None
+        else ([], []),
+    ):
+        drift += more[0]
+        found += more[1]
     return drift, found
 
 
@@ -610,10 +971,27 @@ def main(argv: list[str] | None = None) -> int:
         help="Compare the facts with this knowledge bundle",
     )
     parser.add_argument(
+        "--rulesets",
+        type=Path,
+        action="append",
+        default=[],
+        metavar="FILE",
+        help="What github_export.py rulesets printed, or a ruleset as the REST API returns it; repeatable",
+    )
+    parser.add_argument(
+        "--check-runs",
+        type=Path,
+        metavar="FILE",
+        help="With --check, what github_export.py check-runs printed for one commit",
+    )
+    parser.add_argument(
         "--strict", action="store_true", help="With --check, fail on findings too"
     )
     args = parser.parse_args(argv)
-    derived = derive(args.root, args.exclude)
+    if args.check_runs and args.check is None:
+        parser.error("--check-runs needs --check")
+    rulesets = read_rulesets(args.rulesets) if args.rulesets else None
+    derived = derive(args.root, args.exclude, rulesets)
     if args.check is None:
         yaml.dump(
             derived,
@@ -624,7 +1002,8 @@ def main(argv: list[str] | None = None) -> int:
             width=1000,
         )
         return 0
-    drift, found = compare(derived, args.check)
+    check_runs = _exported(args.check_runs) if args.check_runs else None
+    drift, found = compare(derived, args.check, rulesets, check_runs)
     found = derived["findings"] + found
     for line in drift:
         print(f"drift: {line}")
