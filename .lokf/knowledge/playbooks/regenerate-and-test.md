@@ -63,7 +63,7 @@ CONTRIBUTING.md asks for Python 3.10 or later, uv and just.[^contributing.md] Cl
 - Update `uv.lock`, or `.lokf/uv.lock`, in the same change as a dependency edit, because CI installs with `uv sync --locked` and fails otherwise.
 - Run `cd .lokf && just lokf-validate` after a change to `.lokf/`.
 
-[Build and test](../workflows/main.md) runs `just test` on Python 3.10 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell, which CONTRIBUTING.md says a change can easily fail locally.
+[Build and test](../workflows/main.md) runs `just test` on Python 3.10 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell. CONTRIBUTING.md says that these checks are easy to trip locally.
 
 [^contributing.md]: CONTRIBUTING.md, Development setup and Before opening a pull request
 [^justfile]: justfile, the `_wsl2_compat_check`, `update`, `test` and `lint` recipes

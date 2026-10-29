@@ -44,7 +44,7 @@ verified:
 
 ## Three schemas in one namespace
 
-The README says that a host imports the schema's adapt copy beside `lokf.yaml` and slsa's copy, and that LinkML merges the three into one namespace, where the last definition of a name wins silently.[^readme.md] So no class, enum or type shares a name with either, and a slot shares a name only where it carries LOKF's meaning and IRI: `description` and `required`.
+The README says that a host imports the schema's adapt copy beside `lokf.yaml` and slsa's copy. It adds that LinkML merges the three into one namespace, where the last definition of a name wins silently.[^readme.md] So no class, enum or type shares a name with either, and a slot shares a name only where it carries LOKF's meaning and IRI: `description` and `required`.
 
 The core module's comments say how those two stay apart.[^github_actions_core.yaml] The `description` slot carries the IRI `schema:description`, so `lokf adapt` folds it into LOKF's slot and a bundle reads one `description` key. `required` is an attribute of `GhaRequiredMixin` rather than a slot, with the IRI `schema:valueRequired`, because `lokf adapt` keeps an attribute's name where it would rename a slot that shares one with `lokf.yaml`.
 
