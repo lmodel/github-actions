@@ -3,7 +3,7 @@ type: Service
 id: https://w3id.org/lmodel/github-actions/knowledge/services/documentation-site
 genre: reference
 title: github-actions documentation site
-description: The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions once the repository is published and KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
+description: The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions when KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
 resource: website
 dependsOn:
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/knowledge-website
@@ -21,7 +21,7 @@ sources:
     title: the Knowledge bundle section
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
+  at: "2026-10-29T01:12:19Z"
   revision: 67d51bcffa835417e6f4785bb2d9a6945a15d95f
 status: draft
 verified:
@@ -31,15 +31,15 @@ verified:
 
 # github-actions documentation site
 
-`website/` holds an Astro Starlight site, which the README describes as built from the README, `docs/`, the schema's pages and the knowledge bundle.[^readme.md] `website/site.config.mjs` names the repository `lmodel/github-actions`, the address `https://lmodel.github.io` and the base path `/github-actions`.[^site.config.mjs] So once the repository is published and the site deployed, its pages are served under `https://lmodel.github.io/github-actions/`. NOTICE says that the site derives from the ktl-website templates.
+`website/` holds an Astro Starlight site, which the README describes as built from the README, `docs/`, the schema's pages and the knowledge bundle.[^readme.md] `website/site.config.mjs` names the repository `lmodel/github-actions`, the address `https://lmodel.github.io` and the base path `/github-actions`.[^site.config.mjs] So its pages are served under `https://lmodel.github.io/github-actions/`. NOTICE says that the site derives from the ktl-website templates.
 
 ## What the pages come from
 
 `website/README.md` says that every page comes from a file the repository already holds, so a change to the site is a change to that file:[^website-readme.md]
 
-- each concept in `.lokf/knowledge/` becomes a page under `knowledge/`, with its trust label from `knowledge-report.sh`, its sources and its typed relations both ways, and the four files `lokf export` writes are served beside them;
+- each concept in `.lokf/knowledge/` becomes a page under `knowledge/`, with its trust label from `knowledge-report.sh`, its sources and its typed relations both ways, and the four files `lokf export` writes are served beside them, with the bundle log as an Atom feed, `knowledge/log.xml`;
 - the README becomes the home page, and each page under `docs/` a page under `docs/`, except `docs/templates-linkml/`, which `site.config.mjs` leaves out;
-- `CHANGELOG.md` becomes a page per release under `changelog/`, once it holds a released version;
+- `CHANGELOG.md` becomes a page per release under `changelog/`;
 - the schema's pages, which `gen-doc` writes into `docs/elements/`, become a page each under `schema/`.
 
 `site.config.mjs` shows no data pages, since `BROWSE` is `null`. Its `REDIRECTS` send the addresses that the retired mkdocs site gave its pages on to the new ones: `/elements` and each `/elements/<name>` to `/schema/`, and `/about` to `/docs/about/`.

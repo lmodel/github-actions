@@ -53,7 +53,7 @@ verified:
 
 # Knowledge Registrar (knowledge-registrar.yaml)
 
-`.github/workflows/knowledge-registrar.yaml` is the workflow named "Knowledge Registrar". A header comment says that it keeps the knowledge bundle's records well formed and provenanced, and never judges whether their content is true, which is the curator's job.[^knowledge-registrar.yaml] NOTICE says that it is a copy of a ktl-sidecar template from the Knowledge Trust Ladder (KTL) repository.[^notice] It runs on a pull request that touches `.lokf/`, `knowledge_bundle/` or the workflow itself, every Monday at 06:00 UTC, and by hand.
+`.github/workflows/knowledge-registrar.yaml` is the workflow named "Knowledge Registrar". A header comment says that it keeps the knowledge bundle's records well formed, with their provenance recorded, and never judges whether their content is true, which is the curator's job.[^knowledge-registrar.yaml] NOTICE says that it is a copy of a ktl-sidecar template from the Knowledge Trust Ladder (KTL) repository.[^notice] It runs on a pull request that touches `.lokf/`, `knowledge_bundle/` or the workflow itself, every Monday at 06:00 UTC, and by hand.
 
 None of its three jobs can write to the repository: each runs with a read-only token, keeps no credential on disk, and runs no LLM or agent.
 

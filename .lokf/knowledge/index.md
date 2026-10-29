@@ -18,14 +18,14 @@ A [LOKF](https://lokf.nolan-nichols.com) knowledge base for github-actions. Ever
 
 # Services
 
-* [github-actions documentation site](services/documentation-site.md) - The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions once the repository is published and KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
+* [github-actions documentation site](services/documentation-site.md) - The Astro Starlight site in website/, built from the README, docs/, the schema's gen-doc pages, the changelog and the knowledge bundle by the Knowledge website workflow, which deploys it to GitHub Pages under lmodel.github.io/github-actions when KNOWLEDGE_WEBSITE_ENABLED is true; its REDIRECTS send the retired mkdocs addresses on to the new pages.
 
 # Datasets
 
 * [github-actions LinkML schema](datasets/github-actions-linkml-schema.md) - The modular LinkML schema of what GitHub Actions workflow files, action metadata files and repository rulesets state (schema id `https://w3id.org/lmodel/github-actions`, version 2026-10-28): `github_actions.yaml` imports a core, a workflow, an action and a rules module, and its `lokf adapt` copy in `.lokf/github-actions.yaml` is the bundle's domain schema.
 * [SchemaStore copy](datasets/schemastore-copy.md) - SchemaStore's `github-workflow.json` and `github-action.json`, the JSON Schemas of a workflow file and an action's metadata file, copied with SchemaStore's LICENSE and NOTICE into `src/github_actions/schema/schemastore/` at commit f7c2f3b; never edited here, compared by tests with the schema, and checked weekly against upstream.
 * [Generated artefacts](datasets/generated-artefacts.md) - Files generated from the github-actions schema and never edited by hand: project/ (Excel, GraphQL, Java, JSON-LD, JSON Schema, OWL, a prefix map, protobuf, SHACL, ShEx, SQL and TypeScript), the dataclass and Pydantic models in src/github_actions/datamodel/, the two schema files in docs/schema/, the gen-doc pages in docs/elements/ and the domain schema copy .lokf/github-actions.yaml.
-* [Test data and schema tests](datasets/test-data.md) - Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy and its names with LOKF's and slsa's, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/.
+* [Test data and schema tests](datasets/test-data.md) - Example instances of the github-actions schema in tests/data/: 9 valid files and 34 counter-examples, each named after the class it instantiates (GhaWorkflow-pull-request.yaml and the like), which tests/test_data.py holds to the validator; beside them, tests/test_schema_rules.py compares the schema with the SchemaStore copy, the adapt copy's names with LOKF's and slsa's, and the copy's mappings with its prefixes, and tests/test_derive.py runs scripts/derive.py against the fixture repository in tests/derive/repo/.
 
 # References
 

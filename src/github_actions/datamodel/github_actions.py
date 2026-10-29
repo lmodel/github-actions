@@ -64,6 +64,7 @@ version = "2026-10-28"
 # Namespaces
 CDX = CurieNamespace('cdx', 'http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/')
 GHA = CurieNamespace('gha', 'https://w3id.org/lmodel/github-actions/')
+IN_TOTO = CurieNamespace('in_toto', 'https://in-toto.io/attestation/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
 SCHEMA = CurieNamespace('schema', 'http://schema.org/')
 SPDX_BUILD = CurieNamespace('spdx_build', 'https://spdx.org/rdf/3.0.1/terms/Build/')

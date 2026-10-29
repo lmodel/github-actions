@@ -37,6 +37,7 @@ prefixes:
   schema: http://schema.org/
   cdx: http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/
   spdx_build: https://spdx.org/rdf/3.0.1/terms/Build/
+  in_toto: https://in-toto.io/attestation/
 imports:
 - linkml:types
 - lokf
@@ -435,7 +436,7 @@ classes:
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks
     related_mappings:
-    - https://in-toto.io/attestation/test-result/v0.1
+    - in_toto:test-result/v0.1
     comments:
     - 'GitHub Actions reports each job as a check run named after the job: its name, or its id when it
       has none. A job of a called workflow is named after the calling job and the called job, joined by

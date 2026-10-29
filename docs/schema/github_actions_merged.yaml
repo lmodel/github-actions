@@ -56,6 +56,9 @@ prefixes:
   spdx_build:
     prefix_prefix: spdx_build
     prefix_reference: https://spdx.org/rdf/3.0.1/terms/Build/
+  in_toto:
+    prefix_prefix: in_toto
+    prefix_reference: https://in-toto.io/attestation/
 default_prefix: gha
 default_range: string
 types:
@@ -1624,7 +1627,7 @@ classes:
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks
     related_mappings:
-    - https://in-toto.io/attestation/test-result/v0.1
+    - in_toto:test-result/v0.1
     attributes:
       check_uri:
         name: check_uri

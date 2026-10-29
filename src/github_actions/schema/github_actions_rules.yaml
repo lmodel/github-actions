@@ -21,6 +21,7 @@ default_range: string
 prefixes:
   linkml: https://w3id.org/linkml/
   gha: https://w3id.org/lmodel/github-actions/
+  in_toto: https://in-toto.io/attestation/
 
 imports:
   - linkml:types
@@ -146,7 +147,7 @@ classes:
       - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
       - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks
     related_mappings:
-      - https://in-toto.io/attestation/test-result/v0.1
+      - in_toto:test-result/v0.1
     comments:
       - >-
         GitHub Actions reports each job as a check run named after the job:

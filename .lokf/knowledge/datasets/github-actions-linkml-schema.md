@@ -47,6 +47,9 @@ generated:
   by: process:ktl-librarian
   at: "2026-10-28T21:21:37Z"
 status: draft
+verified:
+  - by: process:ktl-librarian
+    at: "2026-10-28T22:46:12Z"
 ---
 
 # github-actions LinkML schema
@@ -62,7 +65,7 @@ The schema directory's README lists the umbrella and four modules.[^schema-readm
 - **`github_actions_action.yaml`** holds `GhaAction` with `GhaActionInput` and `GhaActionOutput`, and the `GhaActionRuntime` enum of the runtimes that `runs.using` may name: `composite`, `docker`, `node20` and `node24`.[^github_actions_action.yaml]
 - **`github_actions_rules.yaml`** holds `GhaRepositoryRuleset`, `GhaBypassActor` and `GhaRequiredStatusCheck`, and the `GhaRulesetSourceType`, `GhaRulesetTarget` and `GhaRulesetEnforcement` enums.[^github_actions_rules.yaml]
 
-The umbrella adds only the tree root, `GhaDocument`, which holds the workflows, reusable workflows, actions, rulesets and required checks of one or more repositories. Counted across the five files, the schema defines 16 classes, 6 enums and 2 types, and no subsets.
+The umbrella adds only the tree root, `GhaDocument`, which holds the workflows, reusable workflows, actions, rulesets and required checks of one or more repositories. Across the five files, the schema defines 16 classes, 6 enums and 2 types, and no subsets.
 
 ## What the classes record
 
