@@ -6,6 +6,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-29
+
 ### Added
 
 - **`derive.py --rulesets` compares the ruleset and required check concepts with the rulesets GitHub returns, and `--check-runs` compares the required checks with what one commit recorded.** `scripts/github_export.py` prints both from the REST API, as Markdown that a host's ingest can mirror.
