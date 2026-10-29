@@ -184,7 +184,7 @@ def _mappings(node):
     if isinstance(node, dict):
         for key, value in node.items():
             if key in MAPPING_KEYS:
-                yield from value
+                yield from value if isinstance(value, list) else [value]
             else:
                 yield from _mappings(value)
     elif isinstance(node, list):
