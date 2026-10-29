@@ -98,7 +98,7 @@ The script names a check by the rule in [Required status check](../glossary/requ
 - a job of a called workflow is named after the calling job and the called job, joined by a slash with a space on each side;
 - a matrix job's name adds its matrix values in parentheses, joined by a comma and a space, and a `name` that reads the matrix context takes the values in its own place instead.
 
-A path filter under an event (`paths` or `paths-ignore`), a job's `if` and a job's `needs` are recorded as skip conditions, and a called job's check carries its caller's `if` and `needs` too. An `if` that is `always()` alone is not one, and a job whose `if` calls `always()`, `failure()` or `cancelled()` does not wait on its `needs`. The conditions differ in what they do to a required check. A job skipped by its own `if`, or because a job it needs failed or was skipped, reports success, so the check passes without running. A path filter skips the whole run, and a calling job's `if` or `needs` skips the call, which GitHub records under the caller's name alone. No check run then carries the check's name, so the check stays pending and blocks the merge.
+A path filter under an event (`paths` or `paths-ignore`), a job's `if` and a job's `needs` are recorded as skip conditions, and a called job's check carries its caller's `if` and `needs` too. An `if` that is `always()` alone is not one, and a job whose `if` calls `always()`, `failure()` or `cancelled()` does not wait on its `needs`. A job skipped by its own `if`, or because a job it needs failed or was skipped, reports success, so the check passes without running. A path filter skips the whole run, and a calling job's `if` or `needs` skips the call, which GitHub records under the caller's name alone. No check run then carries the check's name, so the check stays pending and blocks the merge.
 
 A job whose matrix an expression sets, and a job that calls a workflow in another repository, are reported as unresolved, because the script reads only the repository it is given. It stops following calls at ten levels, which a comment calls GitHub's limit on how deep workflows can call one another.
 
@@ -114,7 +114,7 @@ With `--check BUNDLE`, the script compares the facts with the concepts in the bu
 
 A concept takes part when its `type` starts with `Gha` and it has a `workflow_path` or an `action_path`. The script compares only the keys it derives, compares lists in any order except `job_path`, and matches the items of `jobs`, `inputs`, `outputs` and `secrets` by their ids. So a key that the files cannot give, such as `workflow_repository` or `runner_environment`, is not compared.
 
-A required check whose `integration_id` names an app other than GitHub Actions is not matched to a job, and that is a finding. Each skip condition of a required check is a finding, worded by what it does to the check, and so is a check of a job in another repository's workflow. Findings fail the check only with `--strict`. The last line counts both, as in `0 drift, 0 finding(s)`.
+A required check whose `integration_id` names an app other than GitHub Actions is not matched to a job, and that is a finding. Each skip condition of a required check is a finding, worded by what it does to the check, and so is a check of a job in another repository's workflow. Findings fail the check only with `--strict`. The last line counts drift and findings, as in `0 drift, 0 finding(s)`.
 
 With `--rulesets`, these are drift too:
 

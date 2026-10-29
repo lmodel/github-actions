@@ -75,7 +75,7 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 
 ## tests/test_derive.py
 
-`tests/test_derive.py` holds the twenty-four tests of `scripts/derive.py`, which run the script against the fixture repository in `tests/derive/repo/`: six workflow files and two action files that show each of its rules.[^test_derive.py] They also read `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what `scripts/github_export.py` prints. `tests/test_github_export.py` runs that script against fixed answers in place of the REST API.[^test_github_export.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
+`tests/test_derive.py` holds the twenty-four tests of `scripts/derive.py`. They run the script against the fixture repository in `tests/derive/repo/`: six workflow files and two action files that show each of its rules.[^test_derive.py] They also read `tests/derive/rulesets.md` and `tests/derive/check-runs.md`, which hold what `scripts/github_export.py` prints. `tests/test_github_export.py` runs that script against fixed answers in place of the REST API.[^test_github_export.py] [Derive and check concepts from workflow files](../playbooks/derive-and-check.md) describes the script and its tests.
 
 ## How they run
 

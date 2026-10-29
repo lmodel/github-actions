@@ -2,6 +2,7 @@
 
 ## 2026-10-29
 
+* **Prose**: reworded 2 concept bodies in plain English. No fact, link, number or frontmatter changed.
 * **Changed**: Derive and check concepts from workflow files, Test data and Required status check say that a job's `needs` is a skip condition and `if: always()` is not, and count twenty-four derive.py tests.
 * **Changed**: Knowledge sources map adds `scripts/github_export.py` and its tests to the derive.py row.
 * **Changed**: Test data counts twenty-one derive.py tests and adds the export script's tests and the two export files.
