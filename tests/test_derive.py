@@ -662,3 +662,12 @@ def test_main_with_both_files(tmp_path, derived, capsys):
     assert "finding: workflows/label-ruff.md: no check run on 0123456789ab" in out
     assert "finding: workflows/build-the-docs.md: ruleset 202 requires" in out
     assert out.rstrip().endswith("0 drift, 14 finding(s)")
+
+
+def test_an_unreadable_export_stops_with_its_path(tmp_path):
+    """A missing file, or one with no JSON, names itself rather than raising."""
+    broken = tmp_path / "rulesets.md"
+    broken.write_text("# Rulesets\n\nNothing here.\n")
+    for path in (tmp_path / "missing.md", broken):
+        with pytest.raises(SystemExit, match=str(path)):
+            derive._exported(path)

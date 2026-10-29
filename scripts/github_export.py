@@ -54,7 +54,8 @@ import urllib.request
 # The REST API version the rulesets module follows; a test holds it to the
 # schema's rest_api_version annotation.
 API_VERSION = "2026-03-10"
-REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+# OWNER/REPO, neither of them `.` or `..`, which would leave the path.
+REPOSITORY = re.compile(r"^(?!\.\.?/)[A-Za-z0-9_.-]+/(?!\.\.?$)[A-Za-z0-9_.-]+$")
 # The origin remote's owner and name, over https or ssh, with or without .git.
 REMOTE = re.compile(r"[:/]([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?)(?:\.git)?/?$")
 TOKENS = ("KNOWLEDGE_INGEST_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
@@ -86,11 +87,11 @@ def _get(api: str, path: str, **params):
         with urllib.request.urlopen(req, timeout=60) as resp:
             return json.load(resp)
     except urllib.error.HTTPError as err:
-        hint = (
-            ": the repository, ref or ruleset is not there, or the token cannot read it"
-            if err.code == 404
-            else ""
-        )
+        hint = {
+            404: ": the repository, ref or ruleset is not there, or the token cannot read it",
+            403: ": the token lacks a permission, or the rate limit is spent",
+            429: ": the rate limit is spent",
+        }.get(err.code, "")
         raise SystemExit(
             f"github_export: GET {path} answered {err.code} {err.reason}{hint}"
         ) from None
@@ -224,6 +225,10 @@ def main(argv: list[str] | None = None) -> int:
     repository = args.repository or origin_repository()
     if not repository or not REPOSITORY.match(repository):
         parser.error("--repository is OWNER/REPO, or the origin remote names one")
+    if args.command == "check-runs" and (
+        not args.ref.strip() or args.ref.startswith("/") or ".." in args.ref
+    ):
+        parser.error("REF is a commit SHA, a branch name or a tag name")
     if args.command == "rulesets":
         data = rulesets(api, repository)
         sys.stdout.write(

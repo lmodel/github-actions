@@ -190,6 +190,10 @@ def test_the_origin_remote_names_the_repository(url):
     assert export.REMOTE.search(url).group(1) == "example-org/repo"
 
 
+def test_a_repository_named_with_a_dot_is_accepted():
+    assert export.REPOSITORY.match("example-org/.github")
+
+
 @pytest.mark.parametrize(
     "argv",
     [
@@ -201,11 +205,14 @@ def test_the_origin_remote_names_the_repository(url):
             "http://api.example",
         ],
         ["rulesets", "--repository", "not a repository"],
+        ["rulesets", "--repository", "example-org/.."],
+        ["rulesets", "--repository", "../repo"],
         ["check-runs", "--repository", "example-org/repo"],
+        ["check-runs", "../../user", "--repository", "example-org/repo"],
     ],
 )
 def test_main_refuses(argv):
-    """Plain http, a malformed repository and a missing ref stop before any call."""
+    """Plain http, a malformed repository and a missing or malformed ref stop before any call."""
     with pytest.raises(SystemExit) as stop:
         export.main(argv)
     assert stop.value.code == 2

@@ -470,12 +470,17 @@ def read_repository(
 
 def _exported(path: Path):
     """The JSON in what github_export.py printed, in the ingest's mirror of it, or in a JSON file."""
-    text = path.read_text(encoding="utf-8")
-    start = text.find("```json\n")
-    if start >= 0:
-        end = text.find("\n```", start + 8)
-        text = text[start + 8 : end if end >= 0 else None]
-    return json.loads(text)
+    try:
+        text = path.read_text(encoding="utf-8")
+        start = text.find("```json\n")
+        if start >= 0:
+            end = text.find("\n```", start + 8)
+            text = text[start + 8 : end if end >= 0 else None]
+        return json.loads(text)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as err:
+        raise SystemExit(
+            f"derive: {path} holds no JSON github_export.py printed ({err})"
+        ) from None
 
 
 def read_rulesets(paths: list[Path]) -> dict:
