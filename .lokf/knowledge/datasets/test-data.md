@@ -39,7 +39,7 @@ sources:
 generated:
   by: process:ktl-librarian
   at: "2026-10-29T16:44:32Z"
-  revision: 887239f06895b693305dd93c1714c6b792f6c100
+  revision: cc14f8e2bd682e256323ad6fcc7cd655e28798b9
 status: draft
 verified:
   - by: process:ktl-librarian
