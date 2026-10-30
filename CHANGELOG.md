@@ -6,6 +6,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-30
+
 ### Added
 
 - **`github_export.py rulesets --organization OWNER` prints an organization's rulesets, which `derive.py --rulesets` reads beside a repository's.** GitHub answers it only to a token with the organization's Administration permission.
