@@ -1,5 +1,10 @@
 # Change Log
 
+## 2026-10-30
+
+* **Changed**: the export script prints an organization's rulesets with `rulesets --organization`.
+* **Changed**: SECURITY.md names the ruleset that holds `main`.
+
 ## 2026-10-29
 
 * **Prose**: reworded 2 concept bodies in plain English. No fact, link, number or frontmatter changed.

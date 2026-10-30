@@ -3,7 +3,7 @@ type: Policy
 id: https://w3id.org/lmodel/github-actions/knowledge/policies/security-policy
 genre: reference
 title: Security policy
-description: "How to report a vulnerability in github-actions (GitHub's private vulnerability reporting, not a public issue), which release gets fixes, what the repository releases and runs, what holds each workflow, and the three repository settings not yet in force: required reviewers on the release Environment, a deletion and force-push rule on main, and secret scanning with push protection."
+description: "How to report a vulnerability in github-actions (GitHub's private vulnerability reporting, not a public issue), which release gets fixes, what the repository releases and runs, what holds each workflow, the ruleset that holds main, and the two repository settings not yet in force: required reviewers on the release Environment, and secret scanning with push protection."
 resource: SECURITY.md
 references:
   - https://w3id.org/lmodel/github-actions/knowledge/workflows/main
@@ -24,7 +24,7 @@ sources:
     title: the three update entries
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T21:21:37Z"
+  at: "2026-10-30T15:31:58Z"
 status: draft
 ---
 
@@ -56,9 +56,9 @@ The repository releases a LinkML schema, the Python datamodel generated from it,
 
 SECURITY.md says that every workflow declares `permissions: {}` at the top, pins its actions to commit SHAs that Dependabot keeps current, and runs harden-runner in audit mode. `.github/dependabot.yml` asks Dependabot for monthly updates of the workflows' actions, of the package's `uv` dependencies and of the sidecar's `uv` dependencies in `.lokf/`.[^dependabot.yml]
 
-## Settings not yet in force
+## Settings
 
-Three protections are repository settings, not files, and SECURITY.md says that they are not yet in force: required reviewers on the `release` Environment, a rule blocking deletion and force-pushes on `main`, and secret scanning with push protection. Until they are, a qualifying merge releases with no human step. Nothing in CI can assert them, so keeping them on is the maintainer's job.
+Three protections are repository settings, not files. SECURITY.md says that a ruleset on `main` blocks deletion and force-pushes and keeps the history linear, and that two are not yet in force: required reviewers on the `release` Environment, and secret scanning with push protection. Until they are, a qualifying merge releases with no human step. Nothing in CI can assert them, so keeping them on is the maintainer's job.
 
 ## Not covered
 
