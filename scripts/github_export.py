@@ -3,7 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = []
 # ///
-"""Print what GitHub records about a repository's rulesets or a commit's checks.
+"""Print what GitHub records about rulesets or about a commit's checks.
 
 derive.py reads files and calls no network, so this script asks GitHub's
 REST API what a ruleset requires and what a commit reported. Each command
@@ -17,6 +17,14 @@ the same text.
   as an entry of ``kind: command``, and ``derive.py --rulesets`` reads the
   mirror file the ingest writes. On a private repository it needs a token with
   Metadata read.
+- ``rulesets --organization OWNER`` prints each ruleset an organization
+  holds, as the REST API returns it. Such a ruleset applies to the
+  repositories its conditions select, by name, id or custom property, so a
+  repository that none of them selects never sees it in its own list.
+  ``derive.py --rulesets`` reads this beside a repository's export. GitHub
+  answers only a token with the organization's Administration permission,
+  which its permissions table lists as write, or a classic token with the
+  ``admin:org`` scope, and it answers 404 to any other token.
 - ``check-runs REF`` prints the name, app and conclusion of each check run on
   a commit, and the context and state of each commit status, for
   ``derive.py --check-runs``. On a private repository it needs Checks read and
@@ -33,11 +41,13 @@ The address is ``--api-url``, or GITHUB_API_URL, or https://api.github.com.
 The ingest passes a command only the variables its ``auth`` block names, so
 an entry for GitHub Enterprise Server puts ``--api-url`` in its args. The
 repository is ``--repository``, or the one the origin remote names.
+``--organization`` takes its place for an organization's rulesets.
 
 It needs Python 3.10 and nothing else, so the ingest can run it as a tracked
 command with whatever ``python3`` the job has. Usage::
 
     python3 scripts/github_export.py rulesets [--repository OWNER/REPO]
+    python3 scripts/github_export.py rulesets --organization OWNER
     python3 scripts/github_export.py check-runs REF [--repository OWNER/REPO]
 """
 
@@ -58,6 +68,8 @@ import urllib.request
 API_VERSION = "2026-03-10"
 # OWNER/REPO, neither of them `.` or `..`, which would leave the path.
 REPOSITORY = re.compile(r"^(?!\.\.?/)[A-Za-z0-9_.-]+/(?!\.\.?$)[A-Za-z0-9_.-]+$")
+# An organization's login, which is neither `.` nor `..` either.
+OWNER = re.compile(r"^(?!\.\.?$)[A-Za-z0-9_.-]+$")
 # The origin remote's owner and name, over https or ssh, with or without .git.
 REMOTE = re.compile(r"[:/]([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?)(?:\.git)?/?$")
 TOKENS = ("KNOWLEDGE_INGEST_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
@@ -90,7 +102,9 @@ def _get(api: str, path: str, **params):
             return json.load(resp)
     except urllib.error.HTTPError as err:
         hint = {
-            404: ": the repository, ref or ruleset is not there, or the token cannot read it",
+            401: ": GitHub answers this only to a token, and none is set or it has expired",
+            404: ": the repository, organization, ref or ruleset is not there, or the token"
+            " cannot read it; an organization's rulesets need its Administration permission",
             403: ": the token lacks a permission, or the rate limit is spent",
             429: ": the rate limit is spent",
         }.get(err.code, "")
@@ -130,16 +144,22 @@ def origin_repository() -> str | None:
     return match.group(1) if match else None
 
 
-def rulesets(api: str, repository: str) -> dict:
-    """The repository's rulesets in full, and the rules in effect on its default branch."""
-    branch = _get(api, f"/repos/{repository}").get("default_branch")
-    listed, _ = _pages(api, f"/repos/{repository}/rulesets")
+def _full_rulesets(api: str, at: str) -> list[dict]:
+    """Each ruleset listed under a repository's or an organization's path, in full, by id."""
+    listed, _ = _pages(api, f"{at}/rulesets")
     full = []
     for item in sorted(listed, key=lambda r: r.get("id") or 0):
-        ruleset = _get(api, f"/repos/{repository}/rulesets/{int(item['id'])}")
+        ruleset = _get(api, f"{at}/rulesets/{int(item['id'])}")
         for field in ASKER_FIELDS:
             ruleset.pop(field, None)
         full.append(ruleset)
+    return full
+
+
+def rulesets(api: str, repository: str) -> dict:
+    """The repository's rulesets in full, and the rules in effect on its default branch."""
+    branch = _get(api, f"/repos/{repository}").get("default_branch")
+    full = _full_rulesets(api, f"/repos/{repository}")
     rules = []
     if branch:
         rules, _ = _pages(
@@ -154,6 +174,15 @@ def rulesets(api: str, repository: str) -> dict:
         "branch_rules": sorted(
             rules, key=lambda r: (r.get("ruleset_id") or 0, r.get("type") or "")
         ),
+    }
+
+
+def organization_rulesets(api: str, organization: str) -> dict:
+    """The organization's rulesets in full, each with the conditions that select its repositories."""
+    return {
+        "api_version": API_VERSION,
+        "organization": organization,
+        "rulesets": _full_rulesets(api, f"/orgs/{organization}"),
     }
 
 
@@ -207,10 +236,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser(
+    sets = sub.add_parser(
         "rulesets",
         parents=[common],
         help="The rulesets, and the rules in effect on the default branch",
+    )
+    sets.add_argument(
+        "--organization",
+        metavar="OWNER",
+        help="Print the organization's rulesets instead of a repository's",
     )
     runs = sub.add_parser(
         "check-runs",
@@ -224,6 +258,25 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(
             "--api-url is an https address, so the token never travels in clear"
         )
+    organization = getattr(args, "organization", None)
+    if organization is not None:
+        if args.repository:
+            parser.error("give --organization or --repository, not both")
+        if not OWNER.match(organization):
+            parser.error("--organization is an organization's login")
+        data = organization_rulesets(api, organization)
+        sys.stdout.write(
+            markdown(
+                f"Rulesets of the {organization} organization",
+                f"The rulesets the {organization} organization holds, as GitHub's REST API"
+                f" (version {API_VERSION}) returns them. Each one applies to the"
+                " repositories its conditions select. `scripts/github_export.py rulesets"
+                " --organization` printed this, and `scripts/derive.py --rulesets` reads"
+                " the JSON below.",
+                data,
+            )
+        )
+        return 0
     repository = args.repository or origin_repository()
     if not repository or not REPOSITORY.match(repository):
         parser.error("--repository is OWNER/REPO, or the origin remote names one")

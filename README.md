@@ -52,15 +52,16 @@ Runs and events, such as CDEvents and GitHub's run logs, are records, not facts 
 
 With `--check` and a bundle, it exits 1 on drift between the files and the concepts, on a required check that no job of its `emitted_by` workflow reports, or on a skip condition that a check's body does not name. Each skip condition is a finding, which fails the check under `--strict`. A job skipped by its own `if`, or by a failed or skipped job it `needs`, lets a required check pass without running. A path filter, or a calling job's `if` or `needs`, leaves the check pending, which blocks the merge.
 
-`scripts/github_export.py` asks GitHub's REST API what the files cannot say. `rulesets` prints the repository's rulesets and the rules in effect on its default branch, which `derive.py --rulesets` compares with the ruleset and check concepts. `check-runs` prints what GitHub recorded on one commit, such as the head of a recent pull request, and `derive.py --check-runs` reports each required check that no run on it matched. On a private repository, `GH_TOKEN` holds a token with Metadata read, and Checks and Commit statuses read for `check-runs`.
+`scripts/github_export.py` asks GitHub's REST API what the files cannot say. `rulesets` prints the repository's rulesets and the rules in effect on its default branch, which `derive.py --rulesets` compares with the ruleset and check concepts. `check-runs` prints what GitHub recorded on one commit, such as the head of a recent pull request, and `derive.py --check-runs` reports each required check that no run on it matched. On a private repository, `GH_TOKEN` holds a token with Metadata read, and Checks and Commit statuses read for `check-runs`. `rulesets --organization OWNER` prints an organization's rulesets, which a repository's own list holds only when their conditions select it. GitHub answers that only to a token with the organization's Administration permission, which can also change those rulesets, so a person runs it and commits what it prints rather than giving the ingest that token.
 
 ```bash
 uv run scripts/derive.py --root ../host-repository
 uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge
 python3 scripts/github_export.py rulesets --repository OWNER/REPO > rulesets.md
+python3 scripts/github_export.py rulesets --organization OWNER > organization-rulesets.md
 python3 scripts/github_export.py check-runs SHA --repository OWNER/REPO > check-runs.md
 uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge \
-  --rulesets rulesets.md --check-runs check-runs.md
+  --rulesets rulesets.md --rulesets organization-rulesets.md --check-runs check-runs.md
 ```
 
 derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.10 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.

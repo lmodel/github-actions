@@ -6,6 +6,14 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Added
+
+- **`github_export.py rulesets --organization OWNER` prints an organization's rulesets, which `derive.py --rulesets` reads beside a repository's.** GitHub answers it only to a token with the organization's Administration permission.
+
+### Fixed
+
+- **SECURITY.md says that a ruleset on `main` blocks deletion and force-pushes and keeps the history linear.** It said that no such rule was in force.
+
 ## [0.2.1] - 2026-10-29
 
 ### Fixed

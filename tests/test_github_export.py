@@ -79,6 +79,66 @@ def test_rulesets(monkeypatch):
     ]
 
 
+def test_organization_rulesets(monkeypatch):
+    """Each of the organization's rulesets in full by id, conditions kept, without what depends on the asker."""
+    org = "/orgs/example-org"
+    selects = {
+        "ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []},
+        "repository_property": {
+            "include": [{"name": "tier", "property_values": ["core"]}],
+            "exclude": [],
+        },
+    }
+    calls = _answers(
+        monkeypatch,
+        {
+            f"{org}/rulesets": [{"id": 31}, {"id": 7}],
+            f"{org}/rulesets/7": {"id": 7, "conditions": selects},
+            f"{org}/rulesets/31": {"id": 31, "current_user_can_bypass": "never"},
+        },
+    )
+    data = export.organization_rulesets("https://api.example", "example-org")
+    assert data == {
+        "api_version": export.API_VERSION,
+        "organization": "example-org",
+        "rulesets": [{"id": 7, "conditions": selects}, {"id": 31}],
+    }
+    assert not any(path.startswith("/repos/") for path, _ in calls)
+
+
+def test_derive_reads_an_organization_export_beside_a_repository_one(tmp_path):
+    """The organization's rulesets join the repository's, once each, and the repository's rules still say what binds."""
+    required = {
+        "type": "required_status_checks",
+        "parameters": {"required_status_checks": [{"context": "org / scan"}]},
+    }
+    printed = tmp_path / "organization.md"
+    printed.write_text(
+        export.markdown(
+            "Rulesets of the example-org organization",
+            "A sentence.",
+            {
+                "organization": "example-org",
+                # 202 is in the repository's export too, since it applies there.
+                "rulesets": [
+                    {"id": 202, "name": "docs trial"},
+                    {"id": 7, "name": "core", "rules": [required]},
+                ],
+            },
+        ),
+        encoding="utf-8",
+    )
+    path = Path(__file__).parent / "derive" / "rulesets.md"
+    evidence = derive.read_rulesets([path, printed])
+    assert [r["id"] for r in evidence["rulesets"]] == [101, 202, 7]
+    assert evidence["default_branch"] == "main"
+    checks = derive.required_checks(evidence)
+    # No rule in effect on the repository's default branch requires it, since
+    # ruleset 7's conditions do not select the repository.
+    assert checks["org / scan"]["required_by"] == [7]
+    assert checks["org / scan"]["in_effect"] is False
+
+
 def test_check_runs(monkeypatch):
     """Each check run's name, app and conclusion, and each status, sorted."""
     at = "/repos/example-org/repo/commits/feature/x"
@@ -209,10 +269,32 @@ def test_a_repository_named_with_a_dot_is_accepted():
         ["rulesets", "--repository", "../repo"],
         ["check-runs", "--repository", "example-org/repo"],
         ["check-runs", "../../user", "--repository", "example-org/repo"],
+        ["rulesets", "--organization", ".."],
+        ["rulesets", "--organization", "example-org/repo"],
+        [
+            "rulesets",
+            "--organization",
+            "example-org",
+            "--repository",
+            "example-org/repo",
+        ],
+        [
+            "rulesets",
+            "--organization",
+            "example-org",
+            "--api-url",
+            "http://api.example",
+        ],
+        ["check-runs", "SHA", "--organization", "example-org"],
     ],
 )
-def test_main_refuses(argv):
-    """Plain http, a malformed repository and a missing or malformed ref stop before any call."""
+def test_main_refuses(argv, monkeypatch):
+    """Plain http, a malformed repository, organization or ref, and both owners at once stop before any call."""
+
+    def no_call(*args, **kwargs):
+        raise AssertionError("the API was called")
+
+    monkeypatch.setattr(export, "_get", no_call)
     with pytest.raises(SystemExit) as stop:
         export.main(argv)
     assert stop.value.code == 2
@@ -237,3 +319,23 @@ def test_main_prints_markdown(monkeypatch, capsys):
         json.loads(out[out.index("```json\n") + 8 : out.rindex("\n```")])["rulesets"]
         == []
     )
+
+
+def test_main_prints_an_organization_export(monkeypatch, capsys):
+    """--organization asks for the organization's rulesets and never reads the origin remote."""
+    monkeypatch.setattr(
+        export,
+        "organization_rulesets",
+        lambda api, org: {"organization": org, "rulesets": [{"id": 7}]},
+    )
+    monkeypatch.setattr(
+        export,
+        "origin_repository",
+        lambda: (_ for _ in ()).throw(AssertionError("origin read")),
+    )
+    assert export.main(["rulesets", "--organization", "example-org"]) == 0
+    out = capsys.readouterr().out
+    assert out.startswith("# Rulesets of the example-org organization\n")
+    assert "`scripts/github_export.py rulesets --organization`" in out
+    data = json.loads(out[out.index("```json\n") + 8 : out.rindex("\n```")])
+    assert data == {"organization": "example-org", "rulesets": [{"id": 7}]}

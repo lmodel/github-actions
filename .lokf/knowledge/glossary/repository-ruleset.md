@@ -19,11 +19,10 @@ sources:
     title: the rules with no check
   - id: security.md
     resource: SECURITY.md
-    title: the settings not yet in force
+    title: the ruleset on main
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
+  at: "2026-10-30T15:31:58Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -50,7 +49,7 @@ A comment says that SLSA's Source track calls such rules technical controls on p
 
 ## In this repository
 
-SECURITY.md says that a rule blocking deletion and force-pushes on `main` is a repository setting, not a file, and that it is not yet in force.[^security.md]
+SECURITY.md says that a ruleset on `main`, a repository setting rather than a file, blocks deletion and force-pushes and keeps the history linear.[^security.md]
 
 [^github_actions_rules.yaml]: src/github_actions/schema/github_actions_rules.yaml, GhaRepositoryRuleset, GhaBypassActor and the enums
 [^docs-index.md]: docs/index.md, the Validating data section

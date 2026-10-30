@@ -16,7 +16,7 @@ sources:
     title: the PEP 723 header, the docstring, the options and the comparisons
   - id: github_export.py
     resource: scripts/github_export.py
-    title: the docstring and the two commands
+    title: the docstring, the two commands and the --organization option
   - id: readme.md
     resource: README.md
     title: the Deriving the facts from a repository section
@@ -36,8 +36,7 @@ sources:
     title: the fixture repository and the two export files
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:44:32Z"
-  revision: cc14f8e2bd682e256323ad6fcc7cd655e28798b9
+  at: "2026-10-30T15:31:58Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -58,9 +57,10 @@ derive.py's only dependency is PyYAML, declared in its PEP 723 header, so `uv ru
 uv run scripts/derive.py --root ../host-repository
 uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge
 python3 scripts/github_export.py rulesets --repository OWNER/REPO > rulesets.md
+python3 scripts/github_export.py rulesets --organization OWNER > organization-rulesets.md
 python3 scripts/github_export.py check-runs SHA --repository OWNER/REPO > check-runs.md
 uv run scripts/derive.py --root ../host-repository --check ../host-repository/.lokf/knowledge \
-  --rulesets rulesets.md --check-runs check-runs.md
+  --rulesets rulesets.md --rulesets organization-rulesets.md --check-runs check-runs.md
 ```
 
 derive.py takes these options:
@@ -72,7 +72,7 @@ derive.py takes these options:
 - `--check-runs FILE`, with `--check`, reads what `github_export.py check-runs` printed for one commit, such as the head of a recent pull request.
 - `--strict` makes the check fail on findings as well as on drift.
 
-On a private repository, `GH_TOKEN` holds a token with Metadata read, and Checks and Commit statuses read for `check-runs`. The README says that a host copies both scripts from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source.
+On a private repository, `GH_TOKEN` holds a token with Metadata read, and Checks and Commit statuses read for `check-runs`. `rulesets --organization OWNER` prints an organization's rulesets, which a repository's own list holds only when their conditions select it. The README says that GitHub answers it only to a token with the organization's Administration permission, which can also change those rulesets, so a person runs it and commits what it prints rather than giving the ingest that token. The README says that a host copies both scripts from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source.
 
 In this repository, pass `--exclude tests/`. The script looks for action files in the whole tree, and would otherwise also read the two fixture actions under `tests/derive/repo/`, which no concept describes. So the check of this bundle, run from the repository root, is:
 
