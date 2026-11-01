@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-11-01
+
+* **Changed**: the test-data page says the slsa neighbour copy is the schema asset of slsa's v0.9.0 release.
+
 ## 2026-10-30
 
 * **Changed**: the export script prints an organization's rulesets with `rulesets --organization`.

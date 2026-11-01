@@ -118,8 +118,8 @@ def test_key_and_uses_patterns_are_schemastores():
 
 
 # What a host imports beside this schema's adapt copy: LOKF's schema, pinned
-# by the sidecar, and lmodel/slsa's adapt copy, the schema-v0.7.0-slsa.yaml
-# asset of slsa's v0.7.0 release, checked against its .sha256 and attestation.
+# by the sidecar, and lmodel/slsa's adapt copy, the schema-v0.9.0-slsa.yaml
+# asset of slsa's v0.9.0 release, checked against its .sha256 and attestation.
 COPY = ROOT / ".lokf" / "github-actions.yaml"
 NEIGHBOURS = (ROOT / ".lokf" / "lokf.yaml", ROOT / "tests" / "neighbours" / "slsa.yaml")
 ELEMENT_KINDS = ("classes", "enums", "types", "subsets")
@@ -203,3 +203,34 @@ def test_mappings_use_a_bound_prefix():
     for mapping in mappings:
         prefix, sep, _ = mapping.partition(":")
         assert sep and prefix in prefixes, mapping
+
+
+def test_inverses_point_back():
+    """Each slot that names an inverse ranges over the inverse's domain, and
+    the inverse ranges over the slot's, so the pair joins the same two
+    classes from either end."""
+    sv = SchemaView(str(SCHEMA))
+    pairs = [slot for slot in sv.all_slots().values() if slot.inverse]
+    assert pairs
+    for slot in pairs:
+        inverse = sv.get_slot(slot.inverse)
+        assert slot.range == inverse.domain, slot.name
+        assert inverse.range == slot.domain, slot.name
+
+
+def test_slsa_mappings_name_a_slsa_class():
+    """A mapping into lmodel/slsa's namespace names a class that slsa's copy
+    declares."""
+    slsa = yaml.safe_load(NEIGHBOURS[1].read_text())
+    namespace = slsa["prefixes"]["slsa"]
+    found = []
+    for module in SCHEMA_DIR.glob("*.yaml"):
+        doc = yaml.safe_load(module.read_text())
+        prefixes = doc.get("prefixes") or {}
+        for mapping in _mappings(doc):
+            prefix, _, local = mapping.partition(":")
+            if prefixes.get(prefix) == namespace:
+                found.append(local)
+    assert found
+    for local in found:
+        assert local in slsa["classes"], local

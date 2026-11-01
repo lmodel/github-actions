@@ -8,6 +8,15 @@ description: >-
   secrets, actions with their runtimes, and the rulesets and required status
   checks that tie a workflow's jobs to the refs a ruleset protects.
 version: "2026-10-28"
+in_language: en
+keywords:
+  - GitHub Actions
+  - workflow
+  - reusable workflow
+  - action
+  - repository ruleset
+  - required status check
+  - continuous integration
 source: https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json
 license: Apache-2.0
 see_also:

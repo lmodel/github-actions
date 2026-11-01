@@ -131,7 +131,8 @@ linkml:Sparqlpath xsd:string
 }
 
 <GhaRepositoryRuleset> CLOSED {
-    (  $<GhaRepositoryRuleset_tes> (  <ruleset_id> @linkml:Integer ? ;
+    (  $<GhaRepositoryRuleset_tes> (  <requires_check> @<GhaRequiredStatusCheck> * ;
+          <ruleset_id> @linkml:Integer ? ;
           <ruleset_source_type> [ <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Repository>
              <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Organization>
              <https://w3id.org/lmodel/github-actions/GhaRulesetSourceType#Enterprise> ] ? ;
@@ -145,8 +146,7 @@ linkml:Sparqlpath xsd:string
           <ref_name_include> @linkml:String * ;
           <ref_name_exclude> @linkml:String * ;
           <bypass_actors> @<GhaBypassActor> * ;
-          <rule_types> @linkml:String * ;
-          <requires_check> @<GhaRequiredStatusCheck> *
+          <rule_types> @linkml:String *
        ) ;
        rdf:type [ <RepositoryRuleset> ]
     )
@@ -159,7 +159,8 @@ linkml:Sparqlpath xsd:string
 }
 
 <GhaRequiredStatusCheck> CLOSED {
-    (  $<GhaRequiredStatusCheck_tes> (  <check_context> @linkml:String ;
+    (  $<GhaRequiredStatusCheck_tes> (  <required_by> @<GhaRepositoryRuleset> * ;
+          <check_context> @linkml:String ;
           <integration_id> @linkml:Integer ? ;
           <strict_policy> @linkml:Boolean ? ;
           <do_not_enforce_on_create> @linkml:Boolean ? ;
@@ -186,10 +187,10 @@ linkml:Sparqlpath xsd:string
 <GhaWorkflow>  (
     CLOSED {
        (  $<GhaWorkflow_tes> (  <triggers> @linkml:String + ;
+             <jobs> @<GhaWorkflowJob> + ;
              <workflow_path> @linkml:String ;
              <workflow_repository> @linkml:Uri ? ;
-             <permissions> @<GhaPermission> * ;
-             <jobs> @<GhaWorkflowJob> +
+             <permissions> @<GhaPermission> *
           ) ;
           rdf:type [ <Workflow> ]
        )
@@ -199,16 +200,15 @@ linkml:Sparqlpath xsd:string
 <GhaWorkflowInput> CLOSED {
     (  $<GhaWorkflowInput_tes> (  &<GhaInput_tes> ;
           rdf:type [ <Input> ] ? ;
-          <input_type> [ <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#boolean>
-             <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#number>
-             <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#string> ]
+          <input_type> [ xsd:boolean <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#number> xsd:string ]
        ) ;
        rdf:type [ <WorkflowInput> ] ?
     )
 }
 
 <GhaWorkflowJob> CLOSED {
-    (  $<GhaWorkflowJob_tes> (  <job_id> @<GhaIdentifier> ;
+    (  $<GhaWorkflowJob_tes> (  <job_of> @<GhaWorkflow> ? ;
+          <job_id> @<GhaIdentifier> ;
           <job_name> @linkml:String ? ;
           <calls> @linkml:String ? ;
           <runs_on> @linkml:String * ;

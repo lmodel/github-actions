@@ -24,6 +24,7 @@ comments:
   import the core, the rules module imports the workflow module, and this file adds
   only the document root, so an importer can take one module.
 source: https://github.com/SchemaStore/schemastore/tree/f7c2f3bcb512651bd980ed6896639ea8ded9ddf0/src/schemas/json
+in_language: en
 see_also:
 - https://lmodel.github.io/github-actions
 - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
@@ -31,6 +32,14 @@ see_also:
 - https://docs.github.com/en/rest/repos/rules
 - https://docs.github.com/en/rest/checks/runs
 - https://actions.github.io/buildtypes/workflow/v1
+keywords:
+- GitHub Actions
+- workflow
+- reusable workflow
+- action
+- repository ruleset
+- required status check
+- continuous integration
 id: https://w3id.org/lmodel/github-actions
 version: '2026-10-28'
 license: Apache-2.0
@@ -56,6 +65,9 @@ prefixes:
   spdx_build:
     prefix_prefix: spdx_build
     prefix_reference: https://spdx.org/rdf/3.0.1/terms/Build/
+  slsa:
+    prefix_prefix: slsa
+    prefix_reference: https://w3id.org/lmodel/slsa/
   in_toto:
     prefix_prefix: in_toto
     prefix_reference: https://in-toto.io/attestation/
@@ -330,12 +342,17 @@ enums:
       boolean:
         text: boolean
         description: True or false.
+        meaning: xsd:boolean
       number:
         text: number
         description: A number.
+        comments:
+        - 'Unmapped: GitHub accepts any JSON number, which no one XML Schema datatype
+          matches.'
       string:
         text: string
         description: A string.
+        meaning: xsd:string
   GhaRunnerEnvironment:
     name: GhaRunnerEnvironment
     description: Who hosts the runner a job runs on, as GitHub's build type records
@@ -469,6 +486,8 @@ slots:
     comments:
     - A slot rather than an attribute because GhaWorkflowOutput refines it.
     from_schema: https://w3id.org/lmodel/github-actions
+    aliases:
+    - value
     slot_uri: gha:output_expression
     domain_of:
     - GhaOutput
@@ -482,6 +501,8 @@ slots:
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+    aliases:
+    - 'on'
     related_mappings:
     - cdx:trigger
     slot_uri: gha:triggers
@@ -489,6 +510,58 @@ slots:
     - GhaWorkflow
     multivalued: true
     pattern: ^[a-z_]+$
+  jobs:
+    name: jobs
+    description: The jobs under the file's `jobs` key.
+    comments:
+    - A slot rather than an attribute because job_of names it as its inverse.
+    from_schema: https://w3id.org/lmodel/github-actions
+    domain: GhaWorkflow
+    slot_uri: gha:jobs
+    domain_of:
+    - GhaWorkflow
+    range: GhaWorkflowJob
+    required: true
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  job_of:
+    name: job_of
+    description: The workflow whose `jobs` key holds the job. A workflow holds its
+      jobs inline, so a file states this only by nesting.
+    from_schema: https://w3id.org/lmodel/github-actions
+    domain: GhaWorkflowJob
+    slot_uri: gha:job_of
+    domain_of:
+    - GhaWorkflowJob
+    inverse: jobs
+    range: GhaWorkflow
+  requires_check:
+    name: requires_check
+    description: The status checks the ruleset's required_status_checks rule requires,
+      each a concept of its own.
+    comments:
+    - A slot rather than an attribute because required_by names it as its inverse.
+    from_schema: https://w3id.org/lmodel/github-actions
+    aliases:
+    - required_status_checks
+    domain: GhaRepositoryRuleset
+    slot_uri: gha:requires_check
+    domain_of:
+    - GhaRepositoryRuleset
+    range: GhaRequiredStatusCheck
+    multivalued: true
+  required_by:
+    name: required_by
+    description: The rulesets that require the check.
+    from_schema: https://w3id.org/lmodel/github-actions
+    domain: GhaRequiredStatusCheck
+    slot_uri: gha:required_by
+    domain_of:
+    - GhaRequiredStatusCheck
+    inverse: requires_check
+    range: GhaRepositoryRuleset
+    multivalued: true
 classes:
   GhaDocument:
     name: GhaDocument
@@ -576,7 +649,13 @@ classes:
     name: GhaInput
     description: An input that a reusable workflow or an action declares, under the
       key a caller writes in its `with` map.
+    comments:
+    - 'The mappings to schema.org are this project''s own: an input specifies a value
+      a caller supplies, as schema.org''s PropertyValueSpecification specifies the
+      input of an action, whose valueRequired the required field already carries.'
     from_schema: https://w3id.org/lmodel/github-actions
+    close_mappings:
+    - schema:PropertyValueSpecification
     abstract: true
     mixins:
     - GhaRequiredMixin
@@ -587,6 +666,8 @@ classes:
         name: input_id
         description: The key a caller writes in its `with` map.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        close_mappings:
+        - schema:valueName
         owner: GhaInput
         domain_of:
         - GhaInput
@@ -597,6 +678,8 @@ classes:
         description: The value used when a caller supplies none, written as a string
           even where the input's type is a boolean or a number.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        exact_mappings:
+        - schema:defaultValue
         owner: GhaInput
         domain_of:
         - GhaInput
@@ -631,6 +714,7 @@ classes:
         - GhaRequiredMixin
         range: boolean
     class_uri: gha:Input
+    children_are_mutually_disjoint: true
   GhaOutput:
     name: GhaOutput
     description: An output that a reusable workflow or an action declares for the
@@ -673,31 +757,41 @@ classes:
         comments:
         - A slot rather than an attribute because GhaWorkflowOutput refines it.
         from_schema: https://w3id.org/lmodel/github-actions
+        aliases:
+        - value
         slot_uri: gha:output_expression
         owner: GhaOutput
         domain_of:
         - GhaOutput
         range: string
     class_uri: gha:Output
+    children_are_mutually_disjoint: true
   GhaWorkflow:
     name: GhaWorkflow
     description: 'A workflow file in a repository''s `.github/workflows` directory:
       the events that run it, the access its GITHUB_TOKEN gets, and its jobs.'
     comments:
     - SPDX 3.0.1's Build records one run of a build, such as a run of this workflow,
-      so it is a related term and not a close one.
+      so it is a related term and not a close one. The mappings to CycloneDX, SPDX
+      and schema.org are this project's own; a workflow file is code in a repository,
+      of which schema.org's SoftwareSourceCode is the broader term.
     - The ref a run checks the file out at belongs to the run, and GitHub's build
       type records it in provenance as workflow.ref; it is not a fact of the file,
       so it is not modelled here.
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+    aliases:
+    - workflow
     close_mappings:
     - cdx:workflow
     related_mappings:
     - spdx_build:Build
+    broad_mappings:
+    - schema:SoftwareSourceCode
     slots:
     - triggers
+    - jobs
     slot_usage:
       triggers:
         name: triggers
@@ -736,6 +830,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://actions.github.io/buildtypes/workflow/v1
+        close_mappings:
+        - schema:codeRepository
         owner: GhaWorkflow
         domain_of:
         - GhaWorkflow
@@ -752,18 +848,6 @@ classes:
         - GhaWorkflow
         range: gha_permission
         multivalued: true
-      jobs:
-        name: jobs
-        description: The jobs under the file's `jobs` key.
-        from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
-        owner: GhaWorkflow
-        domain_of:
-        - GhaWorkflow
-        range: GhaWorkflowJob
-        required: true
-        multivalued: true
-        inlined: true
-        inlined_as_list: true
       triggers:
         name: triggers
         description: The names of the events under the file's `on` key, such as `push`,
@@ -774,6 +858,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+        aliases:
+        - 'on'
         related_mappings:
         - cdx:trigger
         slot_uri: gha:triggers
@@ -784,6 +870,22 @@ classes:
         required: true
         multivalued: true
         pattern: ^[a-z_]+$
+      jobs:
+        name: jobs
+        description: The jobs under the file's `jobs` key.
+        comments:
+        - A slot rather than an attribute because job_of names it as its inverse.
+        from_schema: https://w3id.org/lmodel/github-actions
+        domain: GhaWorkflow
+        slot_uri: gha:jobs
+        owner: GhaWorkflow
+        domain_of:
+        - GhaWorkflow
+        range: GhaWorkflowJob
+        required: true
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
     class_uri: gha:Workflow
   GhaReusableWorkflow:
     name: GhaReusableWorkflow
@@ -793,11 +895,17 @@ classes:
     comments:
     - 'When it generates provenance it is the builder: GitHub''s build type sets builder.id
       to the server''s address followed by the job''s workflow reference, which names
-      this file and its ref.'
+      this file and its ref. So lmodel/slsa''s SlsaBuildPlatform, the builder that
+      provenance names, is a related term: this project''s mapping, and not a close
+      one, because a reusable workflow that generates no provenance is no builder.'
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
     - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call
+    aliases:
+    - reusable workflow
+    related_mappings:
+    - slsa:SlsaBuildPlatform
     is_a: GhaWorkflow
     slots:
     - inputs
@@ -862,6 +970,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+        aliases:
+        - 'on'
         related_mappings:
         - cdx:trigger
         slot_uri: gha:triggers
@@ -874,6 +984,22 @@ classes:
         pattern: ^[a-z_]+$
         has_member:
           equals_string: workflow_call
+      jobs:
+        name: jobs
+        description: The jobs under the file's `jobs` key.
+        comments:
+        - A slot rather than an attribute because job_of names it as its inverse.
+        from_schema: https://w3id.org/lmodel/github-actions
+        domain: GhaWorkflow
+        slot_uri: gha:jobs
+        owner: GhaReusableWorkflow
+        domain_of:
+        - GhaWorkflow
+        range: GhaWorkflowJob
+        required: true
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
       workflow_uri:
         name: workflow_uri
         description: 'The file''s address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.'
@@ -907,6 +1033,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://actions.github.io/buildtypes/workflow/v1
+        close_mappings:
+        - schema:codeRepository
         owner: GhaReusableWorkflow
         domain_of:
         - GhaWorkflow
@@ -923,26 +1051,23 @@ classes:
         - GhaWorkflow
         range: gha_permission
         multivalued: true
-      jobs:
-        name: jobs
-        description: The jobs under the file's `jobs` key.
-        from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
-        owner: GhaReusableWorkflow
-        domain_of:
-        - GhaWorkflow
-        range: GhaWorkflowJob
-        required: true
-        multivalued: true
-        inlined: true
-        inlined_as_list: true
     class_uri: gha:ReusableWorkflow
   GhaWorkflowJob:
     name: GhaWorkflowJob
     description: 'A job under a workflow''s `jobs` key: steps that run on a runner,
       or a call to a reusable workflow.'
+    comments:
+    - 'The mapping is this project''s own: CycloneDX makes a workflow of tasks, as
+      a GitHub workflow is made of jobs.'
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs
+    aliases:
+    - job
+    close_mappings:
+    - cdx:task
+    slots:
+    - job_of
     attributes:
       job_id:
         name: job_id
@@ -960,6 +1085,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname
+        aliases:
+        - name
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
@@ -971,6 +1098,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses
+        aliases:
+        - uses
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
@@ -983,6 +1112,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on
+        aliases:
+        - runs-on
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
@@ -994,6 +1125,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group
+        aliases:
+        - group
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
@@ -1015,11 +1148,25 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions
+        aliases:
+        - permissions
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
         range: gha_permission
         multivalued: true
+      job_of:
+        name: job_of
+        description: The workflow whose `jobs` key holds the job. A workflow holds
+          its jobs inline, so a file states this only by nesting.
+        from_schema: https://w3id.org/lmodel/github-actions
+        domain: GhaWorkflowJob
+        slot_uri: gha:job_of
+        owner: GhaWorkflowJob
+        domain_of:
+        - GhaWorkflowJob
+        inverse: jobs
+        range: GhaWorkflow
     class_uri: gha:WorkflowJob
     rules:
     - preconditions:
@@ -1062,6 +1209,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_workflow
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype
+        aliases:
+        - type
         owner: GhaWorkflowInput
         domain_of:
         - GhaWorkflowInput
@@ -1087,6 +1236,8 @@ classes:
         name: input_id
         description: The key a caller writes in its `with` map.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        close_mappings:
+        - schema:valueName
         owner: GhaWorkflowInput
         domain_of:
         - GhaInput
@@ -1097,6 +1248,8 @@ classes:
         description: The value used when a caller supplies none, written as a string
           even where the input's type is a boolean or a number.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        exact_mappings:
+        - schema:defaultValue
         owner: GhaWorkflowInput
         domain_of:
         - GhaInput
@@ -1151,6 +1304,8 @@ classes:
         comments:
         - A slot rather than an attribute because GhaWorkflowOutput refines it.
         from_schema: https://w3id.org/lmodel/github-actions
+        aliases:
+        - value
         slot_uri: gha:output_expression
         owner: GhaWorkflowOutput
         domain_of:
@@ -1174,6 +1329,8 @@ classes:
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets
+    aliases:
+    - secret
     mixins:
     - GhaRequiredMixin
     slots:
@@ -1224,6 +1381,8 @@ classes:
       names its inputs, its outputs and the runtime that executes it. A workflow step
       runs it with `uses`.'
     comments:
+    - 'The mapping to schema.org is this project''s own: an action is code in a repository,
+      of which schema.org''s SoftwareSourceCode is the broader term.'
     - SLSA counts the actions a build runs among its steps, which the tenant defines;
       an action is never a build's trust boundary, as a reusable workflow that signs
       provenance is.
@@ -1232,8 +1391,12 @@ classes:
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
+    aliases:
+    - action
     close_mappings:
     - cdx:task
+    broad_mappings:
+    - schema:SoftwareSourceCode
     slots:
     - inputs
     - outputs
@@ -1322,6 +1485,8 @@ classes:
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_action
         see_also:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage
+        aliases:
+        - deprecationMessage
         owner: GhaActionInput
         domain_of:
         - GhaActionInput
@@ -1347,6 +1512,8 @@ classes:
         name: input_id
         description: The key a caller writes in its `with` map.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        close_mappings:
+        - schema:valueName
         owner: GhaActionInput
         domain_of:
         - GhaInput
@@ -1357,6 +1524,8 @@ classes:
         description: The value used when a caller supplies none, written as a string
           even where the input's type is a boolean or a number.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_core
+        exact_mappings:
+        - schema:defaultValue
         owner: GhaActionInput
         domain_of:
         - GhaInput
@@ -1415,6 +1584,8 @@ classes:
         comments:
         - A slot rather than an attribute because GhaWorkflowOutput refines it.
         from_schema: https://w3id.org/lmodel/github-actions
+        aliases:
+        - value
         slot_uri: gha:output_expression
         owner: GhaActionOutput
         domain_of:
@@ -1445,6 +1616,10 @@ classes:
     see_also:
     - https://docs.github.com/en/rest/repos/rules
     - https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets
+    aliases:
+    - ruleset
+    slots:
+    - requires_check
     attributes:
       ruleset_uri:
         name: ruleset_uri
@@ -1461,6 +1636,8 @@ classes:
         name: ruleset_id
         description: The ruleset's numeric `id` in the REST API.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - id
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1471,6 +1648,8 @@ classes:
         description: 'What owns the ruleset, the REST field `source_type`: a repository,
           an organization or an enterprise.'
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - source_type
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1480,6 +1659,8 @@ classes:
         description: The name of the repository, organization or enterprise that owns
           the ruleset, the REST field `source`, such as `<owner>/<repo>`.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - source
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1489,6 +1670,8 @@ classes:
         description: What the ruleset applies to, the REST field `target`. Named ruleset_target
           because LOKF defines a target slot of its own.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - target
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1509,6 +1692,8 @@ classes:
           names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`.
           A ref must match one of them.'
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - include
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1519,6 +1704,8 @@ classes:
         description: The refs the ruleset leaves out, from `conditions.ref_name.exclude`,
           even when they match an included one.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - exclude
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1552,7 +1739,13 @@ classes:
         name: requires_check
         description: The status checks the ruleset's required_status_checks rule requires,
           each a concept of its own.
-        from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        comments:
+        - A slot rather than an attribute because required_by names it as its inverse.
+        from_schema: https://w3id.org/lmodel/github-actions
+        aliases:
+        - required_status_checks
+        domain: GhaRepositoryRuleset
+        slot_uri: gha:requires_check
         owner: GhaRepositoryRuleset
         domain_of:
         - GhaRepositoryRuleset
@@ -1565,6 +1758,8 @@ classes:
     from_schema: https://w3id.org/lmodel/github-actions
     see_also:
     - https://docs.github.com/en/rest/repos/rules
+    aliases:
+    - bypass actor
     attributes:
       actor_id:
         name: actor_id
@@ -1628,8 +1823,12 @@ classes:
     - https://docs.github.com/en/rest/checks/runs
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks
     - https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks
+    aliases:
+    - required status check
     related_mappings:
     - in_toto:test-result/v0.1
+    slots:
+    - required_by
     attributes:
       check_uri:
         name: check_uri
@@ -1648,6 +1847,8 @@ classes:
         description: The context a check run must report, the rule's `required_status_checks[].context`.
           Named check_context because LOKF defines a context slot of its own.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - context
         owner: GhaRequiredStatusCheck
         domain_of:
         - GhaRequiredStatusCheck
@@ -1669,6 +1870,8 @@ classes:
         description: Whether a pull request must be tested against the latest code
           of the branch it targets, the rule's `strict_required_status_checks_policy`.
         from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
+        aliases:
+        - strict_required_status_checks_policy
         owner: GhaRequiredStatusCheck
         domain_of:
         - GhaRequiredStatusCheck
@@ -1714,6 +1917,18 @@ classes:
         domain_of:
         - GhaRequiredStatusCheck
         range: GhaWorkflow
+      required_by:
+        name: required_by
+        description: The rulesets that require the check.
+        from_schema: https://w3id.org/lmodel/github-actions
+        domain: GhaRequiredStatusCheck
+        slot_uri: gha:required_by
+        owner: GhaRequiredStatusCheck
+        domain_of:
+        - GhaRequiredStatusCheck
+        inverse: requires_check
+        range: GhaRepositoryRuleset
+        multivalued: true
     class_uri: gha:RequiredStatusCheck
 metamodel_version: 1.12.0
 source_file: src/github_actions/schema/github_actions.yaml

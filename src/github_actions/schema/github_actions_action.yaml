@@ -6,6 +6,12 @@ description: >-
   Actions: the metadata file that names an action's inputs, its outputs and
   the runtime that executes it.
 license: Apache-2.0
+in_language: en
+keywords:
+  - GitHub Actions
+  - action
+  - action metadata
+  - runtime
 see_also:
   - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
 
@@ -16,6 +22,7 @@ prefixes:
   linkml: https://w3id.org/linkml/
   gha: https://w3id.org/lmodel/github-actions/
   cdx: "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/"
+  schema: http://schema.org/
 
 imports:
   - linkml:types
@@ -30,9 +37,17 @@ classes:
       step runs it with `uses`.
     see_also:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax
+    aliases:
+      - action
     close_mappings:
       - cdx:task
+    broad_mappings:
+      - schema:SoftwareSourceCode
     comments:
+      - >-
+        The mapping to schema.org is this project's own: an action is code in
+        a repository, of which schema.org's SoftwareSourceCode is the broader
+        term.
       - >-
         SLSA counts the actions a build runs among its steps, which the tenant
         defines; an action is never a build's trust boundary, as a reusable
@@ -79,6 +94,8 @@ classes:
         required: true
     attributes:
       deprecation_message:
+        aliases:
+          - deprecationMessage
         description: >-
           The message GitHub shows a workflow that still passes the input, the
           file's `deprecationMessage`; present only when the input is

@@ -67,6 +67,7 @@ GHA = CurieNamespace('gha', 'https://w3id.org/lmodel/github-actions/')
 IN_TOTO = CurieNamespace('in_toto', 'https://in-toto.io/attestation/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
 SCHEMA = CurieNamespace('schema', 'http://schema.org/')
+SLSA = CurieNamespace('slsa', 'https://w3id.org/lmodel/slsa/')
 SPDX_BUILD = CurieNamespace('spdx_build', 'https://spdx.org/rdf/3.0.1/terms/Build/')
 XSD = CurieNamespace('xsd', 'http://www.w3.org/2001/XMLSchema#')
 DEFAULT_ = GHA
@@ -244,8 +245,8 @@ class GhaWorkflow(YAMLRoot):
 
     workflow_uri: Union[str, GhaWorkflowWorkflowUri] = None
     triggers: Union[str, list[str]] = None
-    workflow_path: str = None
     jobs: Union[Union[dict, "GhaWorkflowJob"], list[Union[dict, "GhaWorkflowJob"]]] = None
+    workflow_path: str = None
     workflow_repository: Optional[Union[str, URI]] = None
     permissions: Optional[Union[Union[str, GhaPermission], list[Union[str, GhaPermission]]]] = empty_list()
 
@@ -261,14 +262,14 @@ class GhaWorkflow(YAMLRoot):
             self.triggers = [self.triggers] if self.triggers is not None else []
         self.triggers = [v if isinstance(v, str) else str(v) for v in self.triggers]
 
+        if self._is_empty(self.jobs):
+            self.MissingRequiredField("jobs")
+        self._normalize_inlined_as_list(slot_name="jobs", slot_type=GhaWorkflowJob, key_name="job_id", keyed=False)
+
         if self._is_empty(self.workflow_path):
             self.MissingRequiredField("workflow_path")
         if not isinstance(self.workflow_path, str):
             self.workflow_path = str(self.workflow_path)
-
-        if self._is_empty(self.jobs):
-            self.MissingRequiredField("jobs")
-        self._normalize_inlined_as_list(slot_name="jobs", slot_type=GhaWorkflowJob, key_name="job_id", keyed=False)
 
         if self.workflow_repository is not None and not isinstance(self.workflow_repository, URI):
             self.workflow_repository = URI(self.workflow_repository)
@@ -294,8 +295,8 @@ class GhaReusableWorkflow(GhaWorkflow):
     class_model_uri: ClassVar[URIRef] = GHA.GhaReusableWorkflow
 
     workflow_uri: Union[str, GhaReusableWorkflowWorkflowUri] = None
-    workflow_path: str = None
     jobs: Union[Union[dict, "GhaWorkflowJob"], list[Union[dict, "GhaWorkflowJob"]]] = None
+    workflow_path: str = None
     triggers: Union[str, list[str]] = None
     inputs: Optional[Union[Union[dict, "GhaWorkflowInput"], list[Union[dict, "GhaWorkflowInput"]]]] = empty_list()
     outputs: Optional[Union[Union[dict, "GhaWorkflowOutput"], list[Union[dict, "GhaWorkflowOutput"]]]] = empty_list()
@@ -335,6 +336,7 @@ class GhaWorkflowJob(YAMLRoot):
     class_model_uri: ClassVar[URIRef] = GHA.GhaWorkflowJob
 
     job_id: Union[str, GhaIdentifier] = None
+    job_of: Optional[Union[str, GhaWorkflowWorkflowUri]] = None
     job_name: Optional[str] = None
     calls: Optional[str] = None
     runs_on: Optional[Union[str, list[str]]] = empty_list()
@@ -347,6 +349,9 @@ class GhaWorkflowJob(YAMLRoot):
             self.MissingRequiredField("job_id")
         if not isinstance(self.job_id, GhaIdentifier):
             self.job_id = GhaIdentifier(self.job_id)
+
+        if self.job_of is not None and not isinstance(self.job_of, GhaWorkflowWorkflowUri):
+            self.job_of = GhaWorkflowWorkflowUri(self.job_of)
 
         if self.job_name is not None and not isinstance(self.job_name, str):
             self.job_name = str(self.job_name)
@@ -560,6 +565,7 @@ class GhaRepositoryRuleset(YAMLRoot):
     ruleset_uri: Union[str, GhaRepositoryRulesetRulesetUri] = None
     ruleset_target: Union[str, "GhaRulesetTarget"] = None
     enforcement: Union[str, "GhaRulesetEnforcement"] = None
+    requires_check: Optional[Union[Union[str, GhaRequiredStatusCheckCheckUri], list[Union[str, GhaRequiredStatusCheckCheckUri]]]] = empty_list()
     ruleset_id: Optional[int] = None
     ruleset_source_type: Optional[Union[str, "GhaRulesetSourceType"]] = None
     ruleset_source: Optional[str] = None
@@ -567,7 +573,6 @@ class GhaRepositoryRuleset(YAMLRoot):
     ref_name_exclude: Optional[Union[str, list[str]]] = empty_list()
     bypass_actors: Optional[Union[Union[dict, "GhaBypassActor"], list[Union[dict, "GhaBypassActor"]]]] = empty_list()
     rule_types: Optional[Union[str, list[str]]] = empty_list()
-    requires_check: Optional[Union[Union[str, GhaRequiredStatusCheckCheckUri], list[Union[str, GhaRequiredStatusCheckCheckUri]]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.ruleset_uri):
@@ -584,6 +589,10 @@ class GhaRepositoryRuleset(YAMLRoot):
             self.MissingRequiredField("enforcement")
         if not isinstance(self.enforcement, GhaRulesetEnforcement):
             self.enforcement = GhaRulesetEnforcement(self.enforcement)
+
+        if not isinstance(self.requires_check, list):
+            self.requires_check = [self.requires_check] if self.requires_check is not None else []
+        self.requires_check = [v if isinstance(v, GhaRequiredStatusCheckCheckUri) else GhaRequiredStatusCheckCheckUri(v) for v in self.requires_check]
 
         if self.ruleset_id is not None and not isinstance(self.ruleset_id, int):
             self.ruleset_id = int(self.ruleset_id)
@@ -607,10 +616,6 @@ class GhaRepositoryRuleset(YAMLRoot):
         if not isinstance(self.rule_types, list):
             self.rule_types = [self.rule_types] if self.rule_types is not None else []
         self.rule_types = [v if isinstance(v, str) else str(v) for v in self.rule_types]
-
-        if not isinstance(self.requires_check, list):
-            self.requires_check = [self.requires_check] if self.requires_check is not None else []
-        self.requires_check = [v if isinstance(v, GhaRequiredStatusCheckCheckUri) else GhaRequiredStatusCheckCheckUri(v) for v in self.requires_check]
 
         super().__post_init__(**kwargs)
 
@@ -661,6 +666,7 @@ class GhaRequiredStatusCheck(YAMLRoot):
 
     check_uri: Union[str, GhaRequiredStatusCheckCheckUri] = None
     check_context: str = None
+    required_by: Optional[Union[Union[str, GhaRepositoryRulesetRulesetUri], list[Union[str, GhaRepositoryRulesetRulesetUri]]]] = empty_list()
     integration_id: Optional[int] = None
     strict_policy: Optional[Union[bool, Bool]] = None
     do_not_enforce_on_create: Optional[Union[bool, Bool]] = None
@@ -678,6 +684,10 @@ class GhaRequiredStatusCheck(YAMLRoot):
             self.MissingRequiredField("check_context")
         if not isinstance(self.check_context, str):
             self.check_context = str(self.check_context)
+
+        if not isinstance(self.required_by, list):
+            self.required_by = [self.required_by] if self.required_by is not None else []
+        self.required_by = [v if isinstance(v, GhaRepositoryRulesetRulesetUri) else GhaRepositoryRulesetRulesetUri(v) for v in self.required_by]
 
         if self.integration_id is not None and not isinstance(self.integration_id, int):
             self.integration_id = int(self.integration_id)
@@ -709,13 +719,15 @@ class GhaWorkflowInputType(EnumDefinitionImpl):
     """
     boolean = PermissibleValue(
         text="boolean",
-        description="True or false.")
+        description="True or false.",
+        meaning=XSD["boolean"])
     number = PermissibleValue(
         text="number",
         description="A number.")
     string = PermissibleValue(
         text="string",
-        description="A string.")
+        description="A string.",
+        meaning=XSD["string"])
 
     _defn = EnumDefinition(
         name="GhaWorkflowInputType",
@@ -843,6 +855,18 @@ slots.triggers = Slot(uri=GHA.triggers, name="triggers", curie=GHA.curie('trigge
                    model_uri=GHA.triggers, domain=None, range=Optional[Union[str, list[str]]],
                    pattern=re.compile(r'^[a-z_]+$'))
 
+slots.jobs = Slot(uri=GHA.jobs, name="jobs", curie=GHA.curie('jobs'),
+                   model_uri=GHA.jobs, domain=GhaWorkflow, range=Union[Union[dict, "GhaWorkflowJob"], list[Union[dict, "GhaWorkflowJob"]]])
+
+slots.job_of = Slot(uri=GHA.job_of, name="job_of", curie=GHA.curie('job_of'),
+                   model_uri=GHA.job_of, domain=GhaWorkflowJob, range=Optional[Union[str, GhaWorkflowWorkflowUri]])
+
+slots.requires_check = Slot(uri=GHA.requires_check, name="requires_check", curie=GHA.curie('requires_check'),
+                   model_uri=GHA.requires_check, domain=GhaRepositoryRuleset, range=Optional[Union[Union[str, GhaRequiredStatusCheckCheckUri], list[Union[str, GhaRequiredStatusCheckCheckUri]]]])
+
+slots.required_by = Slot(uri=GHA.required_by, name="required_by", curie=GHA.curie('required_by'),
+                   model_uri=GHA.required_by, domain=GhaRequiredStatusCheck, range=Optional[Union[Union[str, GhaRepositoryRulesetRulesetUri], list[Union[str, GhaRepositoryRulesetRulesetUri]]]])
+
 slots.ghaDocument__workflows = Slot(uri=GHA.workflows, name="ghaDocument__workflows", curie=GHA.curie('workflows'),
                    model_uri=GHA.ghaDocument__workflows, domain=None, range=Optional[Union[dict[Union[str, GhaWorkflowWorkflowUri], Union[dict, GhaWorkflow]], list[Union[dict, GhaWorkflow]]]])
 
@@ -883,9 +907,6 @@ slots.ghaWorkflow__workflow_repository = Slot(uri=GHA.workflow_repository, name=
 
 slots.ghaWorkflow__permissions = Slot(uri=GHA.permissions, name="ghaWorkflow__permissions", curie=GHA.curie('permissions'),
                    model_uri=GHA.ghaWorkflow__permissions, domain=None, range=Optional[Union[Union[str, GhaPermission], list[Union[str, GhaPermission]]]])
-
-slots.ghaWorkflow__jobs = Slot(uri=GHA.jobs, name="ghaWorkflow__jobs", curie=GHA.curie('jobs'),
-                   model_uri=GHA.ghaWorkflow__jobs, domain=None, range=Union[Union[dict, GhaWorkflowJob], list[Union[dict, GhaWorkflowJob]]])
 
 slots.ghaReusableWorkflow__secrets = Slot(uri=GHA.secrets, name="ghaReusableWorkflow__secrets", curie=GHA.curie('secrets'),
                    model_uri=GHA.ghaReusableWorkflow__secrets, domain=None, range=Optional[Union[Union[dict, GhaWorkflowSecret], list[Union[dict, GhaWorkflowSecret]]]])
@@ -961,9 +982,6 @@ slots.ghaRepositoryRuleset__bypass_actors = Slot(uri=GHA.bypass_actors, name="gh
 slots.ghaRepositoryRuleset__rule_types = Slot(uri=GHA.rule_types, name="ghaRepositoryRuleset__rule_types", curie=GHA.curie('rule_types'),
                    model_uri=GHA.ghaRepositoryRuleset__rule_types, domain=None, range=Optional[Union[str, list[str]]],
                    pattern=re.compile(r'^[a-z_]+$'))
-
-slots.ghaRepositoryRuleset__requires_check = Slot(uri=GHA.requires_check, name="ghaRepositoryRuleset__requires_check", curie=GHA.curie('requires_check'),
-                   model_uri=GHA.ghaRepositoryRuleset__requires_check, domain=None, range=Optional[Union[Union[str, GhaRequiredStatusCheckCheckUri], list[Union[str, GhaRequiredStatusCheckCheckUri]]]])
 
 slots.ghaBypassActor__actor_id = Slot(uri=GHA.actor_id, name="ghaBypassActor__actor_id", curie=GHA.curie('actor_id'),
                    model_uri=GHA.ghaBypassActor__actor_id, domain=None, range=Optional[int])

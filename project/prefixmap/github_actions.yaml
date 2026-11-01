@@ -4,5 +4,6 @@
    "in_toto": "https://in-toto.io/attestation/",
    "linkml": "https://w3id.org/linkml/",
    "schema": "http://schema.org/",
+   "slsa": "https://w3id.org/lmodel/slsa/",
    "spdx_build": "https://spdx.org/rdf/3.0.1/terms/Build/"
 }

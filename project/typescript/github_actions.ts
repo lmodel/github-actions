@@ -118,6 +118,8 @@ export interface GhaOutput {
 export interface GhaWorkflow {
     /** The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`. */
     triggers: string[],
+    /** The jobs under the file's `jobs` key. */
+    jobs: GhaWorkflowJob[],
     /** The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`. */
     workflow_uri: string,
     /** The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`. */
@@ -126,8 +128,6 @@ export interface GhaWorkflow {
     workflow_repository?: string,
     /** The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access. */
     permissions?: string[],
-    /** The jobs under the file's `jobs` key. */
-    jobs: GhaWorkflowJob[],
 }
 
 
@@ -148,6 +148,8 @@ export interface GhaReusableWorkflow extends GhaWorkflow {
  * A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow.
  */
 export interface GhaWorkflowJob {
+    /** The workflow whose `jobs` key holds the job. A workflow holds its jobs inline, so a file states this only by nesting. */
+    job_of?: GhaWorkflowWorkflowUri,
     /** The job's key under `jobs`. */
     job_id: string,
     /** The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none. */
@@ -229,6 +231,8 @@ export interface GhaActionOutput extends GhaOutput {
  * A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets.
  */
 export interface GhaRepositoryRuleset {
+    /** The status checks the ruleset's required_status_checks rule requires, each a concept of its own. */
+    requires_check?: GhaRequiredStatusCheckCheckUri[],
     /** The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`. */
     ruleset_uri: string,
     /** The ruleset's numeric `id` in the REST API. */
@@ -249,8 +253,6 @@ export interface GhaRepositoryRuleset {
     bypass_actors?: GhaBypassActor[],
     /** The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`. */
     rule_types?: string[],
-    /** The status checks the ruleset's required_status_checks rule requires, each a concept of its own. */
-    requires_check?: GhaRequiredStatusCheckCheckUri[],
 }
 
 
@@ -271,6 +273,8 @@ export interface GhaBypassActor {
  * A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.
  */
 export interface GhaRequiredStatusCheck {
+    /** The rulesets that require the check. */
+    required_by?: GhaRepositoryRulesetRulesetUri[],
     /** An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place. */
     check_uri: string,
     /** The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own. */

@@ -100,6 +100,7 @@ interface GhaOutput
 
 type GhaRepositoryRuleset
   {
+    requiresCheck: [GhaRequiredStatusCheck]
     rulesetUri: String!
     rulesetId: Int
     rulesetSourceType: GhaRulesetSourceType
@@ -110,7 +111,6 @@ type GhaRepositoryRuleset
     refNameExclude: [String]
     bypassActors: [GhaBypassActor]
     ruleTypes: [String]
-    requiresCheck: [GhaRequiredStatusCheck]
   }
 
 interface GhaRequiredMixin
@@ -120,6 +120,7 @@ interface GhaRequiredMixin
 
 type GhaRequiredStatusCheck
   {
+    requiredBy: [GhaRepositoryRuleset]
     checkUri: String!
     checkContext: String!
     integrationId: Int
@@ -132,11 +133,11 @@ type GhaRequiredStatusCheck
 
 type GhaReusableWorkflow
   {
+    jobs: [GhaWorkflowJob]!
     workflowUri: String!
     workflowPath: String!
     workflowRepository: String
     permissions: [GhaPermission]
-    jobs: [GhaWorkflowJob]!
     inputs: [GhaWorkflowInput]
     outputs: [GhaWorkflowOutput]
     secrets: [GhaWorkflowSecret]
@@ -146,11 +147,11 @@ type GhaReusableWorkflow
 type GhaWorkflow
   {
     triggers: [String]!
+    jobs: [GhaWorkflowJob]!
     workflowUri: String!
     workflowPath: String!
     workflowRepository: String
     permissions: [GhaPermission]
-    jobs: [GhaWorkflowJob]!
   }
 
 type GhaWorkflowInput
@@ -164,6 +165,7 @@ type GhaWorkflowInput
 
 type GhaWorkflowJob
   {
+    jobOf: GhaWorkflow
     jobId: GhaIdentifier!
     jobName: String
     calls: String

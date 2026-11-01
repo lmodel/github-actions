@@ -16,6 +16,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper=false)
 public class GhaRepositoryRuleset  {
 
+  private List<GhaRequiredStatusCheck> requiresCheck;
   private URI rulesetUri;
   private Integer rulesetId;
   private String rulesetSourceType;
@@ -26,7 +27,6 @@ public class GhaRepositoryRuleset  {
   private List<String> refNameExclude;
   private List<GhaBypassActor> bypassActors;
   private List<String> ruleTypes;
-  private List<GhaRequiredStatusCheck> requiresCheck;
 
 
 }

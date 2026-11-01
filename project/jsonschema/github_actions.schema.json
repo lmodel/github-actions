@@ -451,6 +451,17 @@
                         "null"
                     ]
                 },
+                "required_by": {
+                    "description": "The rulesets that require the check.",
+                    "items": {
+                        "format": "uri",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
                 "skip_conditions": {
                     "description": "What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.",
                     "items": {
@@ -562,9 +573,9 @@
             },
             "required": [
                 "triggers",
+                "jobs",
                 "workflow_uri",
-                "workflow_path",
-                "jobs"
+                "workflow_path"
             ],
             "title": "GhaReusableWorkflow",
             "type": "object"
@@ -660,9 +671,9 @@
             },
             "required": [
                 "triggers",
+                "jobs",
                 "workflow_uri",
-                "workflow_path",
-                "jobs"
+                "workflow_path"
             ],
             "title": "GhaWorkflow",
             "type": "object"
@@ -783,6 +794,14 @@
                 },
                 "job_name": {
                     "description": "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "job_of": {
+                    "description": "The workflow whose `jobs` key holds the job. A workflow holds its jobs inline, so a file states this only by nesting.",
+                    "format": "uri",
                     "type": [
                         "string",
                         "null"

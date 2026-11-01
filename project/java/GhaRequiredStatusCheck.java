@@ -16,6 +16,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper=false)
 public class GhaRequiredStatusCheck  {
 
+  private List<GhaRepositoryRuleset> requiredBy;
   private URI checkUri;
   private String checkContext;
   private Integer integrationId;

@@ -7,6 +7,12 @@ description: >-
   accepts for a job, an input, an output or a secret, and the inputs and
   outputs that a reusable workflow and an action both declare.
 license: Apache-2.0
+in_language: en
+keywords:
+  - GitHub Actions
+  - input
+  - output
+  - identifier
 see_also:
   - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs
   - https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs
@@ -64,6 +70,8 @@ slots:
       The expression that sets the output, the file's `value` key, such as one
       that reads an output of a job or a step.
     slot_uri: gha:output_expression
+    aliases:
+      - value
     comments:
       - A slot rather than an attribute because GhaWorkflowOutput refines it.
 
@@ -88,6 +96,15 @@ classes:
     description: >-
       An input that a reusable workflow or an action declares, under the key a
       caller writes in its `with` map.
+    close_mappings:
+      - schema:PropertyValueSpecification
+    comments:
+      - >-
+        The mappings to schema.org are this project's own: an input specifies
+        a value a caller supplies, as schema.org's PropertyValueSpecification
+        specifies the input of an action, whose valueRequired the required
+        field already carries.
+    children_are_mutually_disjoint: true
     mixins:
       - GhaRequiredMixin
     slots:
@@ -97,10 +114,14 @@ classes:
         description: The key a caller writes in its `with` map.
         range: gha_identifier
         required: true
+        close_mappings:
+          - schema:valueName
       default:
         description: >-
           The value used when a caller supplies none, written as a string even
           where the input's type is a boolean or a number.
+        exact_mappings:
+          - schema:defaultValue
 
   GhaOutput:
     abstract: true
@@ -108,6 +129,7 @@ classes:
     description: >-
       An output that a reusable workflow or an action declares for the job or
       step that calls it to read.
+    children_are_mutually_disjoint: true
     slots:
       - description
       - output_expression

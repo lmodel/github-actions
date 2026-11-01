@@ -6,6 +6,15 @@ description: >-
   Workflow files and their jobs, and the reusable workflows that other
   workflows call, with the inputs, outputs and secrets they declare.
 license: Apache-2.0
+in_language: en
+keywords:
+  - GitHub Actions
+  - workflow
+  - reusable workflow
+  - job
+  - trigger
+  - permission
+  - runner
 see_also:
   - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
   - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
@@ -19,6 +28,8 @@ prefixes:
   xsd: http://www.w3.org/2001/XMLSchema#
   cdx: "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/"
   spdx_build: https://spdx.org/rdf/3.0.1/terms/Build/
+  schema: http://schema.org/
+  slsa: https://w3id.org/lmodel/slsa/
 
 imports:
   - linkml:types
@@ -48,6 +59,8 @@ slots:
       The names of the events under the file's `on` key, such as `push`,
       `pull_request`, `schedule` or `workflow_call`.
     slot_uri: gha:triggers
+    aliases:
+      - "on"
     multivalued: true
     pattern: "^[a-z_]+$"
     related_mappings:
@@ -59,6 +72,27 @@ slots:
         A slot rather than an attribute because GhaReusableWorkflow refines it;
         a pattern rather than an enumeration, because GitHub adds events.
 
+  jobs:
+    description: The jobs under the file's `jobs` key.
+    slot_uri: gha:jobs
+    domain: GhaWorkflow
+    range: GhaWorkflowJob
+    multivalued: true
+    required: true
+    inlined: true
+    inlined_as_list: true
+    comments:
+      - A slot rather than an attribute because job_of names it as its inverse.
+
+  job_of:
+    description: >-
+      The workflow whose `jobs` key holds the job. A workflow holds its jobs
+      inline, so a file states this only by nesting.
+    slot_uri: gha:job_of
+    domain: GhaWorkflowJob
+    range: GhaWorkflow
+    inverse: jobs
+
 classes:
   GhaWorkflow:
     class_uri: gha:Workflow
@@ -67,19 +101,27 @@ classes:
       events that run it, the access its GITHUB_TOKEN gets, and its jobs.
     see_also:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+    aliases:
+      - workflow
     close_mappings:
       - cdx:workflow
+    broad_mappings:
+      - schema:SoftwareSourceCode
     related_mappings:
       - spdx_build:Build
     slots:
       - triggers
+      - jobs
     slot_usage:
       triggers:
         required: true
     comments:
       - >-
         SPDX 3.0.1's Build records one run of a build, such as a run of this
-        workflow, so it is a related term and not a close one.
+        workflow, so it is a related term and not a close one. The mappings to
+        CycloneDX, SPDX and schema.org are this project's own; a workflow file
+        is code in a repository, of which schema.org's SoftwareSourceCode is
+        the broader term.
       - >-
         The ref a run checks the file out at belongs to the run, and GitHub's
         build type records it in provenance as workflow.ref; it is not a fact
@@ -110,6 +152,8 @@ classes:
           workflow.repository: an HTTPS address without `.git`.
         range: uri
         pattern: "^https://[^/]+/[^/]+/[^/]+$"
+        close_mappings:
+          - schema:codeRepository
         see_also:
           - https://actions.github.io/buildtypes/workflow/v1
       permissions:
@@ -120,13 +164,6 @@ classes:
           access.
         range: gha_permission
         multivalued: true
-      jobs:
-        description: The jobs under the file's `jobs` key.
-        range: GhaWorkflowJob
-        multivalued: true
-        required: true
-        inlined: true
-        inlined_as_list: true
 
   GhaReusableWorkflow:
     is_a: GhaWorkflow
@@ -135,6 +172,10 @@ classes:
       A workflow that other workflows call as a job, because its `on` key
       names `workflow_call`; it declares the inputs, outputs and secrets its
       callers pass and read.
+    aliases:
+      - reusable workflow
+    related_mappings:
+      - slsa:SlsaBuildPlatform
     see_also:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations
       - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call
@@ -142,7 +183,10 @@ classes:
       - >-
         When it generates provenance it is the builder: GitHub's build type
         sets builder.id to the server's address followed by the job's workflow
-        reference, which names this file and its ref.
+        reference, which names this file and its ref. So lmodel/slsa's
+        SlsaBuildPlatform, the builder that provenance names, is a related
+        term: this project's mapping, and not a close one, because a reusable
+        workflow that generates no provenance is no builder.
     slots:
       - inputs
       - outputs
@@ -171,6 +215,16 @@ classes:
     description: >-
       A job under a workflow's `jobs` key: steps that run on a runner, or a
       call to a reusable workflow.
+    aliases:
+      - job
+    close_mappings:
+      - cdx:task
+    comments:
+      - >-
+        The mapping is this project's own: CycloneDX makes a workflow of
+        tasks, as a GitHub workflow is made of jobs.
+    slots:
+      - job_of
     see_also:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs
     rules:
@@ -203,12 +257,16 @@ classes:
         range: gha_identifier
         required: true
       job_name:
+        aliases:
+          - name
         description: >-
           The job's `name`, which GitHub shows and its check run takes; the
           check run takes the job's id when it has none.
         see_also:
           - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname
       calls:
+        aliases:
+          - uses
         description: >-
           The reusable workflow the job runs, its `uses` value:
           `./.github/workflows/<file>` in the same repository, or
@@ -217,6 +275,8 @@ classes:
         see_also:
           - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses
       runs_on:
+        aliases:
+          - runs-on
         description: >-
           The runner labels from the job's `runs-on`: one label, a list, or the
           `labels` of a group. A runner must carry every one.
@@ -224,6 +284,8 @@ classes:
         see_also:
           - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on
       runner_group:
+        aliases:
+          - group
         description: The runner group the job's `runs-on.group` names.
         see_also:
           - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group
@@ -233,6 +295,8 @@ classes:
           owner, as GitHub's build type records runner_environment for a run.
         range: GhaRunnerEnvironment
       job_permissions:
+        aliases:
+          - permissions
         description: >-
           The access the job's own `permissions` key gives its GITHUB_TOKEN, in
           place of the workflow's. A called workflow can lower its token's
@@ -250,6 +314,8 @@ classes:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs
     attributes:
       input_type:
+        aliases:
+          - type
         description: >-
           The input's `type`, which a reusable workflow's input must state.
           Named input_type because a knowledge bundle reads `type` as the
@@ -276,6 +342,8 @@ classes:
     description: >-
       A secret under a reusable workflow's `on.workflow_call.secrets` key, by
       name; its value is never recorded.
+    aliases:
+      - secret
     see_also:
       - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets
     mixins:
@@ -296,10 +364,16 @@ enums:
     permissible_values:
       boolean:
         description: True or false.
+        meaning: xsd:boolean
       number:
         description: A number.
+        comments:
+          - >-
+            Unmapped: GitHub accepts any JSON number, which no one XML Schema
+            datatype matches.
       string:
         description: A string.
+        meaning: xsd:string
 
   GhaRunnerEnvironment:
     description: Who hosts the runner a job runs on, as GitHub's build type records it.
