@@ -95,6 +95,14 @@ linkml_meta = LinkMLMeta({'annotations': {'docs_read': {'tag': 'docs_read', 'val
                  './github_actions_workflow',
                  './github_actions_action',
                  './github_actions_rules'],
+     'in_language': 'en',
+     'keywords': ['GitHub Actions',
+                  'workflow',
+                  'reusable workflow',
+                  'action',
+                  'repository ruleset',
+                  'required status check',
+                  'continuous integration'],
      'license': 'Apache-2.0',
      'name': 'github_actions',
      'prefixes': {'gha': {'prefix_prefix': 'gha',
@@ -239,7 +247,13 @@ class GhaInput(GhaRequiredMixin):
     An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map.
     """
     linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'abstract': True,
+         'children_are_mutually_disjoint': True,
          'class_uri': 'gha:Input',
+         'close_mappings': ['schema:PropertyValueSpecification'],
+         'comments': ["The mappings to schema.org are this project's own: an input "
+                      "specifies a value a caller supplies, as schema.org's "
+                      'PropertyValueSpecification specifies the input of an action, '
+                      'whose valueRequired the required field already carries.'],
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_core',
          'mixins': ['GhaRequiredMixin']})
 
@@ -248,8 +262,8 @@ class GhaInput(GhaRequiredMixin):
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
-    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
+    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['schema:valueName'], 'domain_of': ['GhaInput']} })
+    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput'], 'exact_mappings': ['schema:defaultValue']} })
     required: Optional[bool] = Field(default=None, description="""Whether a caller must supply a value.""", json_schema_extra = { "linkml_meta": {'comments': ["An attribute rather than a slot: it carries LOKF's IRI for "
                       "required, and lokf adapt keeps an attribute's name, where it "
                       'would rename a slot that shares one with lokf.yaml.'],
@@ -262,6 +276,7 @@ class GhaOutput(ConfiguredBaseModel):
     An output that a reusable workflow or an action declares for the job or step that calls it to read.
     """
     linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'abstract': True,
+         'children_are_mutually_disjoint': True,
          'class_uri': 'gha:Output',
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_core'})
 
@@ -270,7 +285,8 @@ class GhaOutput(ConfiguredBaseModel):
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    output_expression: Optional[str] = Field(default=None, description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
+    output_expression: Optional[str] = Field(default=None, description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'aliases': ['value'],
+         'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
                       'refines it.'],
          'domain_of': ['GhaOutput'],
          'slot_uri': 'gha:output_expression'} })
@@ -281,10 +297,15 @@ class GhaWorkflow(ConfiguredBaseModel):
     """
     A workflow file in a repository's `.github/workflows` directory: the events that run it, the access its GITHUB_TOKEN gets, and its jobs.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:Workflow',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['workflow'],
+         'broad_mappings': ['schema:SoftwareSourceCode'],
+         'class_uri': 'gha:Workflow',
          'close_mappings': ['cdx:workflow'],
          'comments': ["SPDX 3.0.1's Build records one run of a build, such as a run of "
-                      'this workflow, so it is a related term and not a close one.',
+                      'this workflow, so it is a related term and not a close one. The '
+                      "mappings to CycloneDX, SPDX and schema.org are this project's "
+                      'own; a workflow file is code in a repository, of which '
+                      "schema.org's SoftwareSourceCode is the broader term.",
                       'The ref a run checks the file out at belongs to the run, and '
                       "GitHub's build type records it in provenance as workflow.ref; "
                       'it is not a fact of the file, so it is not modelled here.'],
@@ -293,22 +314,28 @@ class GhaWorkflow(ConfiguredBaseModel):
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax'],
          'slot_usage': {'triggers': {'name': 'triggers', 'required': True}}})
 
-    triggers: list[str] = Field(default=..., description="""The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because GhaReusableWorkflow '
+    triggers: list[str] = Field(default=..., description="""The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.""", json_schema_extra = { "linkml_meta": {'aliases': ['on'],
+         'comments': ['A slot rather than an attribute because GhaReusableWorkflow '
                       'refines it; a pattern rather than an enumeration, because '
                       'GitHub adds events.'],
          'domain_of': ['GhaWorkflow'],
          'related_mappings': ['cdx:trigger'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows'],
          'slot_uri': 'gha:triggers'} })
+    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because job_of names it as its '
+                      'inverse.'],
+         'domain': 'GhaWorkflow',
+         'domain_of': ['GhaWorkflow'],
+         'slot_uri': 'gha:jobs'} })
     workflow_uri: str = Field(default=..., description="""The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.""", json_schema_extra = { "linkml_meta": {'comments': ["GitHub's build type forms a reusable workflow's builder.id from "
                       'this address, followed by `@` and the ref.'],
          'domain_of': ['GhaWorkflow']} })
     workflow_path: str = Field(default=..., description="""The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow'],
          'see_also': ['https://actions.github.io/buildtypes/workflow/v1']} })
-    workflow_repository: Optional[str] = Field(default=None, description="""The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow'],
+    workflow_repository: Optional[str] = Field(default=None, description="""The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['schema:codeRepository'],
+         'domain_of': ['GhaWorkflow'],
          'see_also': ['https://actions.github.io/buildtypes/workflow/v1']} })
     permissions: Optional[list[str]] = Field(default=None, description="""The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow']} })
-    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow']} })
 
     @field_validator('triggers')
     def pattern_triggers(cls, v):
@@ -354,11 +381,17 @@ class GhaReusableWorkflow(GhaWorkflow):
     """
     A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:ReusableWorkflow',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['reusable workflow'],
+         'class_uri': 'gha:ReusableWorkflow',
          'comments': ["When it generates provenance it is the builder: GitHub's build "
                       "type sets builder.id to the server's address followed by the "
-                      "job's workflow reference, which names this file and its ref."],
+                      "job's workflow reference, which names this file and its ref. So "
+                      "lmodel/slsa's SlsaBuildPlatform, the builder that provenance "
+                      "names, is a related term: this project's mapping, and not a "
+                      'close one, because a reusable workflow that generates no '
+                      'provenance is no builder.'],
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_workflow',
+         'related_mappings': ['slsa:SlsaBuildPlatform'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations',
                       'https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call'],
          'slot_usage': {'inputs': {'description': "The inputs under the file's "
@@ -375,7 +408,8 @@ class GhaReusableWorkflow(GhaWorkflow):
     inputs: Optional[list[GhaWorkflowInput]] = Field(default=None, description="""The inputs under the file's `on.workflow_call.inputs` key.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaReusableWorkflow', 'GhaAction']} })
     outputs: Optional[list[GhaWorkflowOutput]] = Field(default=None, description="""The outputs under the file's `on.workflow_call.outputs` key.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaReusableWorkflow', 'GhaAction']} })
     secrets: Optional[list[GhaWorkflowSecret]] = Field(default=None, description="""The secrets under the file's `on.workflow_call.secrets` key, by name only; no value is ever recorded.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaReusableWorkflow']} })
-    triggers: list[str] = Field(default=..., description="""The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because GhaReusableWorkflow '
+    triggers: list[str] = Field(default=..., description="""The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.""", json_schema_extra = { "linkml_meta": {'aliases': ['on'],
+         'comments': ['A slot rather than an attribute because GhaReusableWorkflow '
                       'refines it; a pattern rather than an enumeration, because '
                       'GitHub adds events.'],
          'domain_of': ['GhaWorkflow'],
@@ -383,15 +417,20 @@ class GhaReusableWorkflow(GhaWorkflow):
          'related_mappings': ['cdx:trigger'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows'],
          'slot_uri': 'gha:triggers'} })
+    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because job_of names it as its '
+                      'inverse.'],
+         'domain': 'GhaWorkflow',
+         'domain_of': ['GhaWorkflow'],
+         'slot_uri': 'gha:jobs'} })
     workflow_uri: str = Field(default=..., description="""The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.""", json_schema_extra = { "linkml_meta": {'comments': ["GitHub's build type forms a reusable workflow's builder.id from "
                       'this address, followed by `@` and the ref.'],
          'domain_of': ['GhaWorkflow']} })
     workflow_path: str = Field(default=..., description="""The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow'],
          'see_also': ['https://actions.github.io/buildtypes/workflow/v1']} })
-    workflow_repository: Optional[str] = Field(default=None, description="""The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow'],
+    workflow_repository: Optional[str] = Field(default=None, description="""The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['schema:codeRepository'],
+         'domain_of': ['GhaWorkflow'],
          'see_also': ['https://actions.github.io/buildtypes/workflow/v1']} })
     permissions: Optional[list[str]] = Field(default=None, description="""The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow']} })
-    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflow']} })
 
     @field_validator('triggers')
     def pattern_triggers(cls, v):
@@ -437,7 +476,11 @@ class GhaWorkflowJob(ConfiguredBaseModel):
     """
     A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:WorkflowJob',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['job'],
+         'class_uri': 'gha:WorkflowJob',
+         'close_mappings': ['cdx:task'],
+         'comments': ["The mapping is this project's own: CycloneDX makes a workflow "
+                      'of tasks, as a GitHub workflow is made of jobs.'],
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_workflow',
          'rules': [{'description': 'A job that calls a reusable workflow names no '
                                    'runner labels: a calling job takes no `runs-on` '
@@ -455,17 +498,26 @@ class GhaWorkflowJob(ConfiguredBaseModel):
                                                                     'value_presence': 'PRESENT'}}}}],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs']})
 
+    job_of: Optional[str] = Field(default=None, description="""The workflow whose `jobs` key holds the job. A workflow holds its jobs inline, so a file states this only by nesting.""", json_schema_extra = { "linkml_meta": {'domain': 'GhaWorkflowJob',
+         'domain_of': ['GhaWorkflowJob'],
+         'inverse': 'jobs',
+         'slot_uri': 'gha:job_of'} })
     job_id: str = Field(default=..., description="""The job's key under `jobs`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob']} })
-    job_name: Optional[str] = Field(default=None, description="""The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob'],
+    job_name: Optional[str] = Field(default=None, description="""The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.""", json_schema_extra = { "linkml_meta": {'aliases': ['name'],
+         'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname']} })
-    calls: Optional[str] = Field(default=None, description="""The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob'],
+    calls: Optional[str] = Field(default=None, description="""The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.""", json_schema_extra = { "linkml_meta": {'aliases': ['uses'],
+         'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_iduses']} })
-    runs_on: Optional[list[str]] = Field(default=None, description="""The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob'],
+    runs_on: Optional[list[str]] = Field(default=None, description="""The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.""", json_schema_extra = { "linkml_meta": {'aliases': ['runs-on'],
+         'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on']} })
-    runner_group: Optional[str] = Field(default=None, description="""The runner group the job's `runs-on.group` names.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob'],
+    runner_group: Optional[str] = Field(default=None, description="""The runner group the job's `runs-on.group` names.""", json_schema_extra = { "linkml_meta": {'aliases': ['group'],
+         'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-runners-in-a-group']} })
     runner_environment: Optional[GhaRunnerEnvironment] = Field(default=None, description="""Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob']} })
-    job_permissions: Optional[list[str]] = Field(default=None, description="""The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob'],
+    job_permissions: Optional[list[str]] = Field(default=None, description="""The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.""", json_schema_extra = { "linkml_meta": {'aliases': ['permissions'],
+         'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions']} })
 
     @field_validator('calls')
@@ -490,15 +542,16 @@ class GhaWorkflowInput(GhaInput):
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_workflow',
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs']})
 
-    input_type: GhaWorkflowInputType = Field(default=..., description="""The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowInput'],
+    input_type: GhaWorkflowInputType = Field(default=..., description="""The input's `type`, which a reusable workflow's input must state. Named input_type because a knowledge bundle reads `type` as the class of the concept.""", json_schema_extra = { "linkml_meta": {'aliases': ['type'],
+         'domain_of': ['GhaWorkflowInput'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype']} })
     description: Optional[str] = Field(default=None, description="""What the input, output or secret is for, as the file describes it.""", json_schema_extra = { "linkml_meta": {'comments': ["It means what LOKF's description means and carries the same "
                       "IRI, so lokf adapt folds it into LOKF's slot and a knowledge "
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
-    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
+    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['schema:valueName'], 'domain_of': ['GhaInput']} })
+    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput'], 'exact_mappings': ['schema:defaultValue']} })
     required: Optional[bool] = Field(default=None, description="""Whether a caller must supply a value.""", json_schema_extra = { "linkml_meta": {'comments': ["An attribute rather than a slot: it carries LOKF's IRI for "
                       "required, and lokf adapt keeps an attribute's name, where it "
                       'would rename a slot that shares one with lokf.yaml.'],
@@ -521,7 +574,8 @@ class GhaWorkflowOutput(GhaOutput):
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    output_expression: str = Field(default=..., description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
+    output_expression: str = Field(default=..., description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'aliases': ['value'],
+         'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
                       'refines it.'],
          'domain_of': ['GhaOutput'],
          'slot_uri': 'gha:output_expression'} })
@@ -532,7 +586,8 @@ class GhaWorkflowSecret(GhaRequiredMixin):
     """
     A secret under a reusable workflow's `on.workflow_call.secrets` key, by name; its value is never recorded.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:WorkflowSecret',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['secret'],
+         'class_uri': 'gha:WorkflowSecret',
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_workflow',
          'mixins': ['GhaRequiredMixin'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callsecrets']})
@@ -554,9 +609,14 @@ class GhaAction(ConfiguredBaseModel):
     """
     An action: a directory whose `action.yml` or `action.yaml` file names its inputs, its outputs and the runtime that executes it. A workflow step runs it with `uses`.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:Action',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['action'],
+         'broad_mappings': ['schema:SoftwareSourceCode'],
+         'class_uri': 'gha:Action',
          'close_mappings': ['cdx:task'],
-         'comments': ['SLSA counts the actions a build runs among its steps, which the '
+         'comments': ["The mapping to schema.org is this project's own: an action is "
+                      "code in a repository, of which schema.org's SoftwareSourceCode "
+                      'is the broader term.',
+                      'SLSA counts the actions a build runs among its steps, which the '
                       "tenant defines; an action is never a build's trust boundary, as "
                       'a reusable workflow that signs provenance is.',
                       "The metadata file's name and description are the concept's "
@@ -602,15 +662,16 @@ class GhaActionInput(GhaInput):
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs'],
          'slot_usage': {'description': {'name': 'description', 'required': True}}})
 
-    deprecation_message: Optional[str] = Field(default=None, description="""The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaActionInput'],
+    deprecation_message: Optional[str] = Field(default=None, description="""The message GitHub shows a workflow that still passes the input, the file's `deprecationMessage`; present only when the input is deprecated.""", json_schema_extra = { "linkml_meta": {'aliases': ['deprecationMessage'],
+         'domain_of': ['GhaActionInput'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputsinput_iddeprecationmessage']} })
     description: str = Field(default=..., description="""What the input, output or secret is for, as the file describes it.""", json_schema_extra = { "linkml_meta": {'comments': ["It means what LOKF's description means and carries the same "
                       "IRI, so lokf adapt folds it into LOKF's slot and a knowledge "
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
-    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput']} })
+    input_id: str = Field(default=..., description="""The key a caller writes in its `with` map.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['schema:valueName'], 'domain_of': ['GhaInput']} })
+    default: Optional[str] = Field(default=None, description="""The value used when a caller supplies none, written as a string even where the input's type is a boolean or a number.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaInput'], 'exact_mappings': ['schema:defaultValue']} })
     required: Optional[bool] = Field(default=None, description="""Whether a caller must supply a value.""", json_schema_extra = { "linkml_meta": {'comments': ["An attribute rather than a slot: it carries LOKF's IRI for "
                       "required, and lokf adapt keeps an attribute's name, where it "
                       'would rename a slot that shares one with lokf.yaml.'],
@@ -636,7 +697,8 @@ class GhaActionOutput(GhaOutput):
                       'bundle reads one description key.'],
          'domain_of': ['GhaInput', 'GhaOutput', 'GhaWorkflowSecret'],
          'slot_uri': 'schema:description'} })
-    output_expression: Optional[str] = Field(default=None, description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
+    output_expression: Optional[str] = Field(default=None, description="""The expression that sets the output, the file's `value` key, such as one that reads an output of a job or a step.""", json_schema_extra = { "linkml_meta": {'aliases': ['value'],
+         'comments': ['A slot rather than an attribute because GhaWorkflowOutput '
                       'refines it.'],
          'domain_of': ['GhaOutput'],
          'slot_uri': 'gha:output_expression'} })
@@ -647,7 +709,8 @@ class GhaRepositoryRuleset(ConfiguredBaseModel):
     """
     A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:RepositoryRuleset',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['ruleset'],
+         'class_uri': 'gha:RepositoryRuleset',
          'comments': ["SLSA's Source track calls such rules technical controls on "
                       'protected named references, and asks that their meaning be '
                       'documented and their enforcement recorded in attestations; the '
@@ -659,19 +722,24 @@ class GhaRepositoryRuleset(ConfiguredBaseModel):
          'see_also': ['https://docs.github.com/en/rest/repos/rules',
                       'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets']})
 
+    requires_check: Optional[list[str]] = Field(default=None, description="""The status checks the ruleset's required_status_checks rule requires, each a concept of its own.""", json_schema_extra = { "linkml_meta": {'aliases': ['required_status_checks'],
+         'comments': ['A slot rather than an attribute because required_by names it as '
+                      'its inverse.'],
+         'domain': 'GhaRepositoryRuleset',
+         'domain_of': ['GhaRepositoryRuleset'],
+         'slot_uri': 'gha:requires_check'} })
     ruleset_uri: str = Field(default=..., description="""The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ruleset_id: Optional[int] = Field(default=None, description="""The ruleset's numeric `id` in the REST API.""", ge=1, json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ruleset_source_type: Optional[GhaRulesetSourceType] = Field(default=None, description="""What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ruleset_source: Optional[str] = Field(default=None, description="""The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ruleset_target: GhaRulesetTarget = Field(default=..., description="""What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
+    ruleset_id: Optional[int] = Field(default=None, description="""The ruleset's numeric `id` in the REST API.""", ge=1, json_schema_extra = { "linkml_meta": {'aliases': ['id'], 'domain_of': ['GhaRepositoryRuleset']} })
+    ruleset_source_type: Optional[GhaRulesetSourceType] = Field(default=None, description="""What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.""", json_schema_extra = { "linkml_meta": {'aliases': ['source_type'], 'domain_of': ['GhaRepositoryRuleset']} })
+    ruleset_source: Optional[str] = Field(default=None, description="""The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.""", json_schema_extra = { "linkml_meta": {'aliases': ['source'], 'domain_of': ['GhaRepositoryRuleset']} })
+    ruleset_target: GhaRulesetTarget = Field(default=..., description="""What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.""", json_schema_extra = { "linkml_meta": {'aliases': ['target'], 'domain_of': ['GhaRepositoryRuleset']} })
     enforcement: GhaRulesetEnforcement = Field(default=..., description="""Whether GitHub enforces the ruleset, the REST field `enforcement`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ref_name_include: Optional[list[str]] = Field(default=None, description="""The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
-    ref_name_exclude: Optional[list[str]] = Field(default=None, description="""The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
+    ref_name_include: Optional[list[str]] = Field(default=None, description="""The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.""", json_schema_extra = { "linkml_meta": {'aliases': ['include'], 'domain_of': ['GhaRepositoryRuleset']} })
+    ref_name_exclude: Optional[list[str]] = Field(default=None, description="""The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.""", json_schema_extra = { "linkml_meta": {'aliases': ['exclude'], 'domain_of': ['GhaRepositoryRuleset']} })
     bypass_actors: Optional[list[GhaBypassActor]] = Field(default=None, description="""The actors who may bypass the ruleset.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
     rule_types: Optional[list[str]] = Field(default=None, description="""The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.""", json_schema_extra = { "linkml_meta": {'comments': ['A pattern rather than an enumeration, because GitHub adds rule '
                       'types.'],
          'domain_of': ['GhaRepositoryRuleset']} })
-    requires_check: Optional[list[str]] = Field(default=None, description="""The status checks the ruleset's required_status_checks rule requires, each a concept of its own.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRepositoryRuleset']} })
 
     @field_validator('rule_types')
     def pattern_rule_types(cls, v):
@@ -691,7 +759,8 @@ class GhaBypassActor(ConfiguredBaseModel):
     """
     An actor who may bypass a ruleset, and when.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:BypassActor',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['bypass actor'],
+         'class_uri': 'gha:BypassActor',
          'from_schema': 'https://w3id.org/lmodel/github-actions/github_actions_rules',
          'see_also': ['https://docs.github.com/en/rest/repos/rules']})
 
@@ -734,7 +803,8 @@ class GhaRequiredStatusCheck(ConfiguredBaseModel):
     """
     A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.
     """
-    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'class_uri': 'gha:RequiredStatusCheck',
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'aliases': ['required status check'],
+         'class_uri': 'gha:RequiredStatusCheck',
          'comments': ['GitHub Actions reports each job as a check run named after the '
                       'job: its name, or its id when it has none. A job of a called '
                       'workflow is named after the calling job and the called job, '
@@ -765,10 +835,15 @@ class GhaRequiredStatusCheck(ConfiguredBaseModel):
                       'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks',
                       'https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks']})
 
+    required_by: Optional[list[str]] = Field(default=None, description="""The rulesets that require the check.""", json_schema_extra = { "linkml_meta": {'domain': 'GhaRequiredStatusCheck',
+         'domain_of': ['GhaRequiredStatusCheck'],
+         'inverse': 'requires_check',
+         'slot_uri': 'gha:required_by'} })
     check_uri: str = Field(default=..., description="""An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
-    check_context: str = Field(default=..., description="""The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
+    check_context: str = Field(default=..., description="""The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.""", json_schema_extra = { "linkml_meta": {'aliases': ['context'], 'domain_of': ['GhaRequiredStatusCheck']} })
     integration_id: Optional[int] = Field(default=None, description="""The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.""", ge=1, json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
-    strict_policy: Optional[bool] = Field(default=None, description="""Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
+    strict_policy: Optional[bool] = Field(default=None, description="""Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.""", json_schema_extra = { "linkml_meta": {'aliases': ['strict_required_status_checks_policy'],
+         'domain_of': ['GhaRequiredStatusCheck']} })
     do_not_enforce_on_create: Optional[bool] = Field(default=None, description="""Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
     job_path: Optional[list[str]] = Field(default=None, description="""The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck'], 'list_elements_ordered': True} })
     skip_conditions: Optional[list[str]] = Field(default=None, description="""What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })

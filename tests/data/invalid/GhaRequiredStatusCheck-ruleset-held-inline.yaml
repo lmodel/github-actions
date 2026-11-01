@@ -1,0 +1,7 @@
+# required_by names a ruleset by its address; it does not hold the ruleset.
+check_uri: https://example.org/knowledge/service/checks/lint
+check_context: Lint
+required_by:
+  - ruleset_uri: https://github.com/example-org/service/rules/1
+    ruleset_target: branch
+    enforcement: active

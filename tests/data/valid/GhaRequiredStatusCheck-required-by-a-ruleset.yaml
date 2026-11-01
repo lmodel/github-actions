@@ -1,0 +1,10 @@
+# A required check that names the ruleset requiring it, the inverse of the
+# ruleset's requires_check.
+check_uri: https://example.org/knowledge/service/checks/lint
+check_context: Lint
+integration_id: 15368
+job_path:
+  - lint
+emitted_by: https://github.com/example-org/service/.github/workflows/pull-request.yml
+required_by:
+  - https://github.com/example-org/service/rules/1

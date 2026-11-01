@@ -81,28 +81,28 @@ message GhaOutput {
 }
 // A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets.
 message GhaRepositoryRuleset {
-  // The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.
-  string ruleset_uri = 1;
-  // The ruleset's numeric `id` in the REST API.
-  int32 ruleset_id = 2;
-  // What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.
-  GhaRulesetSourceType ruleset_source_type = 3;
-  // The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.
-  string ruleset_source = 4;
-  // What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.
-  GhaRulesetTarget ruleset_target = 5;
-  // Whether GitHub enforces the ruleset, the REST field `enforcement`.
-  GhaRulesetEnforcement enforcement = 6;
-  // The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.
-  repeated string ref_name_include = 7;
-  // The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.
-  repeated string ref_name_exclude = 8;
-  // The actors who may bypass the ruleset.
-  repeated GhaBypassActor bypass_actors = 9;
-  // The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.
-  repeated string rule_types = 10;
   // The status checks the ruleset's required_status_checks rule requires, each a concept of its own.
-  repeated GhaRequiredStatusCheck requires_check = 11;
+  repeated GhaRequiredStatusCheck requires_check = 1;
+  // The ruleset's page, the REST response's `_links.html.href`, such as `https://github.com/<owner>/<repo>/rules/<id>`.
+  string ruleset_uri = 2;
+  // The ruleset's numeric `id` in the REST API.
+  int32 ruleset_id = 3;
+  // What owns the ruleset, the REST field `source_type`: a repository, an organization or an enterprise.
+  GhaRulesetSourceType ruleset_source_type = 4;
+  // The name of the repository, organization or enterprise that owns the ruleset, the REST field `source`, such as `<owner>/<repo>`.
+  string ruleset_source = 5;
+  // What the ruleset applies to, the REST field `target`. Named ruleset_target because LOKF defines a target slot of its own.
+  GhaRulesetTarget ruleset_target = 6;
+  // Whether GitHub enforces the ruleset, the REST field `enforcement`.
+  GhaRulesetEnforcement enforcement = 7;
+  // The refs the ruleset applies to, from `conditions.ref_name.include`: names or patterns such as `refs/heads/main`, or `~DEFAULT_BRANCH` or `~ALL`. A ref must match one of them.
+  repeated string ref_name_include = 8;
+  // The refs the ruleset leaves out, from `conditions.ref_name.exclude`, even when they match an included one.
+  repeated string ref_name_exclude = 9;
+  // The actors who may bypass the ruleset.
+  repeated GhaBypassActor bypass_actors = 10;
+  // The `type` of each rule the ruleset holds, such as `deletion`, `non_fast_forward`, `pull_request` or `required_status_checks`.
+  repeated string rule_types = 11;
 }
 // The field that says whether a caller must supply a value.
 message GhaRequiredMixin {
@@ -111,35 +111,37 @@ message GhaRequiredMixin {
 }
 // A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.
 message GhaRequiredStatusCheck {
+  // The rulesets that require the check.
+  repeated GhaRepositoryRuleset required_by = 1;
   // An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.
-  string check_uri = 1;
+  string check_uri = 2;
   // The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.
-  string check_context = 2;
+  string check_context = 3;
   // The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.
-  int32 integration_id = 3;
+  int32 integration_id = 4;
   // Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.
-  bool strict_policy = 4;
+  bool strict_policy = 5;
   // Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.
-  bool do_not_enforce_on_create = 5;
+  bool do_not_enforce_on_create = 6;
   // The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.
-  repeated string job_path = 6;
+  repeated string job_path = 7;
   // What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.
-  repeated string skip_conditions = 7;
+  repeated string skip_conditions = 8;
   // The top-level workflow whose job reports the check.
-  GhaWorkflow emitted_by = 8;
+  GhaWorkflow emitted_by = 9;
 }
 // A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read.
 message GhaReusableWorkflow {
-  // The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.
-  string workflow_uri = 1;
-  // The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.
-  string workflow_path = 2;
-  // The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.
-  string workflow_repository = 3;
-  // The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.
-  repeated string permissions = 4;
   // The jobs under the file's `jobs` key.
-  repeated GhaWorkflowJob jobs = 5;
+  repeated GhaWorkflowJob jobs = 1;
+  // The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.
+  string workflow_uri = 2;
+  // The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.
+  string workflow_path = 3;
+  // The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.
+  string workflow_repository = 4;
+  // The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.
+  repeated string permissions = 5;
   // The inputs under the file's `on.workflow_call.inputs` key.
   repeated GhaWorkflowInput inputs = 6;
   // The outputs under the file's `on.workflow_call.outputs` key.
@@ -153,16 +155,16 @@ message GhaReusableWorkflow {
 message GhaWorkflow {
   // The names of the events under the file's `on` key, such as `push`, `pull_request`, `schedule` or `workflow_call`.
   repeated string triggers = 1;
-  // The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.
-  string workflow_uri = 2;
-  // The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.
-  string workflow_path = 3;
-  // The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.
-  string workflow_repository = 4;
-  // The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.
-  repeated string permissions = 5;
   // The jobs under the file's `jobs` key.
-  repeated GhaWorkflowJob jobs = 6;
+  repeated GhaWorkflowJob jobs = 2;
+  // The file's address on its forge without a ref: `https://github.com/<owner>/<repo>/.github/workflows/<file>`.
+  string workflow_uri = 3;
+  // The file's path from the repository root, as GitHub's build type writes workflow.path. GitHub reads no subdirectory of `.github/workflows`.
+  string workflow_path = 4;
+  // The repository that holds the file, as GitHub's build type writes workflow.repository: an HTTPS address without `.git`.
+  string workflow_repository = 5;
+  // The access the file's top-level `permissions` key gives every job's GITHUB_TOKEN. Absent when the file sets none, so the repository's or organization's default applies; a scope the map leaves out gets no access.
+  repeated string permissions = 6;
 }
 // An input under a reusable workflow's `on.workflow_call.inputs` key.
 message GhaWorkflowInput {
@@ -179,20 +181,22 @@ message GhaWorkflowInput {
 }
 // A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow.
 message GhaWorkflowJob {
+  // The workflow whose `jobs` key holds the job. A workflow holds its jobs inline, so a file states this only by nesting.
+  GhaWorkflow job_of = 1;
   // The job's key under `jobs`.
-  string job_id = 1;
+  string job_id = 2;
   // The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.
-  string job_name = 2;
+  string job_name = 3;
   // The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.
-  string calls = 3;
+  string calls = 4;
   // The runner labels from the job's `runs-on`: one label, a list, or the `labels` of a group. A runner must carry every one.
-  repeated string runs_on = 4;
+  repeated string runs_on = 5;
   // The runner group the job's `runs-on.group` names.
-  string runner_group = 5;
+  string runner_group = 6;
   // Whether the job's runner is hosted by GitHub or by the repository's owner, as GitHub's build type records runner_environment for a run.
-  GhaRunnerEnvironment runner_environment = 6;
+  GhaRunnerEnvironment runner_environment = 7;
   // The access the job's own `permissions` key gives its GITHUB_TOKEN, in place of the workflow's. A called workflow can lower its token's access, never raise it.
-  repeated string job_permissions = 7;
+  repeated string job_permissions = 8;
 }
 // An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs.
 message GhaWorkflowOutput {

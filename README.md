@@ -36,7 +36,7 @@ These shaped the schema's design:
 
 ## Mappings
 
-The schema maps to three vocabularies. `GhaWorkflow` and `GhaAction` are close to [CycloneDX 1.7](https://cyclonedx.org/specification/overview/)'s `workflow` and `task`, and its `trigger` is related to `triggers`. [SPDX 3.0.1](https://spdx.github.io/spdx-spec/v3.0.1/)'s `Build` records a run of a workflow, and in-toto's [Test Result](https://github.com/in-toto/attestation/blob/main/spec/predicates/test-result.md) predicate records what a required check found. Both are related terms, not close ones.
+The schema maps to five vocabularies, and every mapping is the project's own. `GhaWorkflow`, `GhaWorkflowJob` and `GhaAction` are close to [CycloneDX 1.7](https://cyclonedx.org/specification/overview/)'s `workflow` and `task`, and its `trigger` is related to `triggers`. [schema.org](https://schema.org)'s `SoftwareSourceCode` is broader than a workflow or an action, and its `PropertyValueSpecification` is close to an input. [SPDX 3.0.1](https://spdx.github.io/spdx-spec/v3.0.1/)'s `Build` records a run of a workflow, in-toto's [Test Result](https://github.com/in-toto/attestation/blob/main/spec/predicates/test-result.md) predicate records what a required check found, and lmodel/slsa's `SlsaBuildPlatform` is the builder a reusable workflow becomes when it signs provenance. These three are related terms, not close ones.
 
 ## Not modelled here
 

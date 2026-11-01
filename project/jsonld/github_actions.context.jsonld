@@ -7,6 +7,7 @@
       "linkml": "https://w3id.org/linkml/",
       "schema": "http://schema.org/",
       "skos": "http://www.w3.org/2004/02/skos/core#",
+      "slsa": "https://w3id.org/lmodel/slsa/",
       "spdx_build": "https://spdx.org/rdf/3.0.1/terms/Build/",
       "@vocab": "https://w3id.org/lmodel/github-actions/",
       "description": {
@@ -84,10 +85,6 @@
       "ref_name_include": {
          "@id": "ref_name_include"
       },
-      "requires_check": {
-         "@type": "@id",
-         "@id": "requires_check"
-      },
       "rule_types": {
          "@id": "rule_types"
       },
@@ -149,10 +146,6 @@
          "@type": "@id",
          "@id": "secrets"
       },
-      "jobs": {
-         "@type": "@id",
-         "@id": "jobs"
-      },
       "permissions": {
          "@id": "permissions"
       },
@@ -205,12 +198,28 @@
          "@type": "@id",
          "@id": "inputs"
       },
+      "job_of": {
+         "@type": "@id",
+         "@id": "job_of"
+      },
+      "jobs": {
+         "@type": "@id",
+         "@id": "jobs"
+      },
       "output_expression": {
          "@id": "output_expression"
       },
       "outputs": {
          "@type": "@id",
          "@id": "outputs"
+      },
+      "required_by": {
+         "@type": "@id",
+         "@id": "required_by"
+      },
+      "requires_check": {
+         "@type": "@id",
+         "@id": "requires_check"
       },
       "triggers": {
          "@id": "triggers"

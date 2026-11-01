@@ -17,11 +17,11 @@ import lombok.*;
 public class GhaWorkflow  {
 
   private List<String> triggers;
+  private List<GhaWorkflowJob> jobs;
   private URI workflowUri;
   private String workflowPath;
   private URI workflowRepository;
   private List<String> permissions;
-  private List<GhaWorkflowJob> jobs;
 
 
 }

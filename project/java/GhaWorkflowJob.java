@@ -16,6 +16,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper=false)
 public class GhaWorkflowJob  {
 
+  private GhaWorkflow jobOf;
   private String jobId;
   private String jobName;
   private String calls;
