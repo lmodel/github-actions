@@ -68,6 +68,7 @@ derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv r
 
 ## Repository Structure
 
+* [docent/](docent/): a prompt for reviewing a pull request with ktl-docent, and the feedback one such review recorded
 * [docs/](docs/): the website's pages, with the generated schema pages in [elements/](docs/elements/)
 * [examples/](examples/): usage examples
 * [project/](project/): generated project files (do not edit them)

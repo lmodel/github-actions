@@ -11,6 +11,7 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 - **Mappings to schema.org and lmodel/slsa, and more to CycloneDX.** An input is close to schema.org's `PropertyValueSpecification`, a workflow and an action are narrower than `SoftwareSourceCode`, a job is close to CycloneDX's `task`, and a reusable workflow is related to slsa's `SlsaBuildPlatform`.
 - **`job_of` and `required_by`, the inverses of `jobs` and `requires_check`,** so the ontology states each pair with `owl:inverseOf`. Both are optional.
 - **GitHub's own key and REST field names as aliases**, such as `runs-on`, `uses` and `strict_required_status_checks_policy`, with `in_language` and `keywords` on every module, `xsd` meanings for the `boolean` and `string` input types, and the rule that a workflow's input or output is never an action's.
+- **`docent/pull-request-review.md`, a prompt that has ktl-docent review a pull request's workflow changes against the bundle on `main`,** with an example of the feedback such a review records.
 
 ## [0.3.0] - 2026-10-30
 
