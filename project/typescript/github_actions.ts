@@ -275,6 +275,8 @@ export interface GhaBypassActor {
 export interface GhaRequiredStatusCheck {
     /** The rulesets that require the check. */
     required_by?: GhaRepositoryRulesetRulesetUri[],
+    /** The top-level workflow whose job reports the check. */
+    emitted_by?: GhaWorkflowWorkflowUri,
     /** An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place. */
     check_uri: string,
     /** The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own. */
@@ -289,8 +291,6 @@ export interface GhaRequiredStatusCheck {
     job_path?: string[],
     /** What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`. */
     skip_conditions?: string[],
-    /** The top-level workflow whose job reports the check. */
-    emitted_by?: GhaWorkflowWorkflowUri,
 }
 
 

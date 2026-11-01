@@ -420,8 +420,9 @@
         {
           "text": "number",
           "description": "A number.",
+          "meaning": "xsd:double",
           "comments": [
-            "Unmapped: GitHub accepts any JSON number, which no one XML Schema datatype matches."
+            "GitHub holds a number as a double-precision float: its expressions turn a string that is no number into NaN, and the runner's workflow parser keeps a number as a C# Double (https://github.com/actions/runner/blob/110142c2c501c6ae9373d553efa826bedbaab5f7/src/Sdk/WorkflowParser/ObjectTemplating/Tokens/NumberToken.cs)."
           ]
         },
         {
@@ -667,11 +668,15 @@
       "definition_uri": "https://w3id.org/lmodel/github-actions/jobs",
       "description": "The jobs under the file's `jobs` key.",
       "comments": [
-        "A slot rather than an attribute because job_of names it as its inverse."
+        "A slot rather than an attribute because job_of names it as its inverse.",
+        "Close to the tasks of a CycloneDX workflow, as a job is close to a task."
       ],
       "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_workflow",
       "mappings": [
         "https://w3id.org/lmodel/github-actions/jobs"
+      ],
+      "close_mappings": [
+        "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/workflow/properties/tasks"
       ],
       "domain": "GhaWorkflow",
       "slot_uri": "https://w3id.org/lmodel/github-actions/jobs",
@@ -746,6 +751,46 @@
       ],
       "inverse": "requires_check",
       "range": "GhaRepositoryRuleset",
+      "multivalued": true,
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "emitted_by",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/emitted_by",
+      "description": "The top-level workflow whose job reports the check.",
+      "comments": [
+        "A slot rather than an attribute because emits_check names it as its inverse."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/emitted_by"
+      ],
+      "domain": "GhaRequiredStatusCheck",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/emitted_by",
+      "owner": "GhaRequiredStatusCheck",
+      "domain_of": [
+        "GhaRequiredStatusCheck"
+      ],
+      "inverse": "emits_check",
+      "range": "GhaWorkflow",
+      "@type": "SlotDefinition"
+    },
+    {
+      "name": "emits_check",
+      "definition_uri": "https://w3id.org/lmodel/github-actions/emits_check",
+      "description": "The required status checks that the workflow's jobs report.",
+      "comments": [
+        "No class lists it: GhaWorkflow would need the workflow module to import this one, which imports it. A document states the link from the check's side, with emitted_by, and the ontology states the pair, so a reasoner reads it from the workflow's side too."
+      ],
+      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
+      "mappings": [
+        "https://w3id.org/lmodel/github-actions/emits_check"
+      ],
+      "domain": "GhaWorkflow",
+      "slot_uri": "https://w3id.org/lmodel/github-actions/emits_check",
+      "owner": "emits_check",
+      "inverse": "emitted_by",
+      "range": "GhaRequiredStatusCheck",
       "multivalued": true,
       "@type": "SlotDefinition"
     },
@@ -1004,6 +1049,9 @@
       ],
       "aliases": [
         "name"
+      ],
+      "close_mappings": [
+        "http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/task/properties/name"
       ],
       "slot_uri": "https://w3id.org/lmodel/github-actions/job_name",
       "alias": "job_name",
@@ -1518,19 +1566,6 @@
       "range": "string",
       "multivalued": true,
       "pattern": "^(on|jobs)\\.\\S+$",
-      "@type": "SlotDefinition"
-    },
-    {
-      "name": "ghaRequiredStatusCheck__emitted_by",
-      "description": "The top-level workflow whose job reports the check.",
-      "from_schema": "https://w3id.org/lmodel/github-actions/github_actions_rules",
-      "slot_uri": "https://w3id.org/lmodel/github-actions/emitted_by",
-      "alias": "emitted_by",
-      "owner": "GhaRequiredStatusCheck",
-      "domain_of": [
-        "GhaRequiredStatusCheck"
-      ],
-      "range": "GhaWorkflow",
       "@type": "SlotDefinition"
     },
     {
@@ -2119,6 +2154,9 @@
           "aliases": [
             "name"
           ],
+          "close_mappings": [
+            "cdx:task/properties/name"
+          ],
           "@type": "SlotDefinition"
         },
         {
@@ -2647,14 +2685,14 @@
       ],
       "slots": [
         "required_by",
+        "emitted_by",
         "ghaRequiredStatusCheck__check_uri",
         "ghaRequiredStatusCheck__check_context",
         "ghaRequiredStatusCheck__integration_id",
         "ghaRequiredStatusCheck__strict_policy",
         "ghaRequiredStatusCheck__do_not_enforce_on_create",
         "ghaRequiredStatusCheck__job_path",
-        "ghaRequiredStatusCheck__skip_conditions",
-        "ghaRequiredStatusCheck__emitted_by"
+        "ghaRequiredStatusCheck__skip_conditions"
       ],
       "slot_usage": {},
       "attributes": [
@@ -2711,12 +2749,6 @@
           "multivalued": true,
           "pattern": "^(on|jobs)\\.\\S+$",
           "@type": "SlotDefinition"
-        },
-        {
-          "name": "emitted_by",
-          "description": "The top-level workflow whose job reports the check.",
-          "range": "GhaWorkflow",
-          "@type": "SlotDefinition"
         }
       ],
       "class_uri": "https://w3id.org/lmodel/github-actions/RequiredStatusCheck",
@@ -2725,7 +2757,7 @@
   ],
   "metamodel_version": "1.12.0",
   "source_file": "github_actions.yaml",
-  "source_file_date": "2026-11-01T00:24:41",
+  "source_file_date": "2026-11-01T18:10:23",
   "source_file_size": 3314,
   "@type": "SchemaDefinition",
   "@context": [

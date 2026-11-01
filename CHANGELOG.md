@@ -6,6 +6,11 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Added
+
+- **`emits_check`, the inverse of `emitted_by`,** so the ontology states the pair with `owl:inverseOf`. No class lists it, because the workflow module cannot import the rules module that imports it; a document states the link with `emitted_by`.
+- **`xsd:double` as the meaning of the `number` input type**, the double-precision float GitHub holds a number as, and close mappings from `jobs` and `job_name` to CycloneDX's `tasks` and `name`.
+
 ## [0.4.0] - 2026-11-01
 
 ### Added

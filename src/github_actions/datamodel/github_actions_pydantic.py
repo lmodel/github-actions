@@ -322,8 +322,11 @@ class GhaWorkflow(ConfiguredBaseModel):
          'related_mappings': ['cdx:trigger'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows'],
          'slot_uri': 'gha:triggers'} })
-    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because job_of names it as its '
-                      'inverse.'],
+    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['cdx:workflow/properties/tasks'],
+         'comments': ['A slot rather than an attribute because job_of names it as its '
+                      'inverse.',
+                      'Close to the tasks of a CycloneDX workflow, as a job is close '
+                      'to a task.'],
          'domain': 'GhaWorkflow',
          'domain_of': ['GhaWorkflow'],
          'slot_uri': 'gha:jobs'} })
@@ -417,8 +420,11 @@ class GhaReusableWorkflow(GhaWorkflow):
          'related_mappings': ['cdx:trigger'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows'],
          'slot_uri': 'gha:triggers'} })
-    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because job_of names it as its '
-                      'inverse.'],
+    jobs: list[GhaWorkflowJob] = Field(default=..., description="""The jobs under the file's `jobs` key.""", json_schema_extra = { "linkml_meta": {'close_mappings': ['cdx:workflow/properties/tasks'],
+         'comments': ['A slot rather than an attribute because job_of names it as its '
+                      'inverse.',
+                      'Close to the tasks of a CycloneDX workflow, as a job is close '
+                      'to a task.'],
          'domain': 'GhaWorkflow',
          'domain_of': ['GhaWorkflow'],
          'slot_uri': 'gha:jobs'} })
@@ -504,6 +510,7 @@ class GhaWorkflowJob(ConfiguredBaseModel):
          'slot_uri': 'gha:job_of'} })
     job_id: str = Field(default=..., description="""The job's key under `jobs`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaWorkflowJob']} })
     job_name: Optional[str] = Field(default=None, description="""The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none.""", json_schema_extra = { "linkml_meta": {'aliases': ['name'],
+         'close_mappings': ['cdx:task/properties/name'],
          'domain_of': ['GhaWorkflowJob'],
          'see_also': ['https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname']} })
     calls: Optional[str] = Field(default=None, description="""The reusable workflow the job runs, its `uses` value: `./.github/workflows/<file>` in the same repository, or `<owner>/<repo>/.github/workflows/<file>@<ref>`.""", json_schema_extra = { "linkml_meta": {'aliases': ['uses'],
@@ -839,6 +846,11 @@ class GhaRequiredStatusCheck(ConfiguredBaseModel):
          'domain_of': ['GhaRequiredStatusCheck'],
          'inverse': 'requires_check',
          'slot_uri': 'gha:required_by'} })
+    emitted_by: Optional[str] = Field(default=None, description="""The top-level workflow whose job reports the check.""", json_schema_extra = { "linkml_meta": {'comments': ['A slot rather than an attribute because emits_check names it as '
+                      'its inverse.'],
+         'domain': 'GhaRequiredStatusCheck',
+         'domain_of': ['GhaRequiredStatusCheck'],
+         'slot_uri': 'gha:emitted_by'} })
     check_uri: str = Field(default=..., description="""An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
     check_context: str = Field(default=..., description="""The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.""", json_schema_extra = { "linkml_meta": {'aliases': ['context'], 'domain_of': ['GhaRequiredStatusCheck']} })
     integration_id: Optional[int] = Field(default=None, description="""The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.""", ge=1, json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
@@ -847,7 +859,6 @@ class GhaRequiredStatusCheck(ConfiguredBaseModel):
     do_not_enforce_on_create: Optional[bool] = Field(default=None, description="""Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
     job_path: Optional[list[str]] = Field(default=None, description="""The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck'], 'list_elements_ordered': True} })
     skip_conditions: Optional[list[str]] = Field(default=None, description="""What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
-    emitted_by: Optional[str] = Field(default=None, description="""The top-level workflow whose job reports the check.""", json_schema_extra = { "linkml_meta": {'domain_of': ['GhaRequiredStatusCheck']} })
 
     @field_validator('check_context')
     def pattern_check_context(cls, v):

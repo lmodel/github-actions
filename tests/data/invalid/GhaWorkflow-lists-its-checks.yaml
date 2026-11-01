@@ -1,0 +1,13 @@
+# A workflow does not list the checks its jobs report: a check names its
+# workflow with emitted_by, and emits_check exists only in the ontology.
+workflow_uri: https://github.com/example-org/service/.github/workflows/lint.yml
+workflow_path: .github/workflows/lint.yml
+triggers:
+  - pull_request
+jobs:
+  - job_id: lint
+    job_name: Lint
+    runs_on:
+      - ubuntu-latest
+emits_check:
+  - https://example.org/knowledge/service/checks/lint

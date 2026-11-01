@@ -667,12 +667,12 @@ class GhaRequiredStatusCheck(YAMLRoot):
     check_uri: Union[str, GhaRequiredStatusCheckCheckUri] = None
     check_context: str = None
     required_by: Optional[Union[Union[str, GhaRepositoryRulesetRulesetUri], list[Union[str, GhaRepositoryRulesetRulesetUri]]]] = empty_list()
+    emitted_by: Optional[Union[str, GhaWorkflowWorkflowUri]] = None
     integration_id: Optional[int] = None
     strict_policy: Optional[Union[bool, Bool]] = None
     do_not_enforce_on_create: Optional[Union[bool, Bool]] = None
     job_path: Optional[Union[Union[str, GhaIdentifier], list[Union[str, GhaIdentifier]]]] = empty_list()
     skip_conditions: Optional[Union[str, list[str]]] = empty_list()
-    emitted_by: Optional[Union[str, GhaWorkflowWorkflowUri]] = None
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.check_uri):
@@ -688,6 +688,9 @@ class GhaRequiredStatusCheck(YAMLRoot):
         if not isinstance(self.required_by, list):
             self.required_by = [self.required_by] if self.required_by is not None else []
         self.required_by = [v if isinstance(v, GhaRepositoryRulesetRulesetUri) else GhaRepositoryRulesetRulesetUri(v) for v in self.required_by]
+
+        if self.emitted_by is not None and not isinstance(self.emitted_by, GhaWorkflowWorkflowUri):
+            self.emitted_by = GhaWorkflowWorkflowUri(self.emitted_by)
 
         if self.integration_id is not None and not isinstance(self.integration_id, int):
             self.integration_id = int(self.integration_id)
@@ -706,9 +709,6 @@ class GhaRequiredStatusCheck(YAMLRoot):
             self.skip_conditions = [self.skip_conditions] if self.skip_conditions is not None else []
         self.skip_conditions = [v if isinstance(v, str) else str(v) for v in self.skip_conditions]
 
-        if self.emitted_by is not None and not isinstance(self.emitted_by, GhaWorkflowWorkflowUri):
-            self.emitted_by = GhaWorkflowWorkflowUri(self.emitted_by)
-
         super().__post_init__(**kwargs)
 
 
@@ -723,7 +723,8 @@ class GhaWorkflowInputType(EnumDefinitionImpl):
         meaning=XSD["boolean"])
     number = PermissibleValue(
         text="number",
-        description="A number.")
+        description="A number.",
+        meaning=XSD["double"])
     string = PermissibleValue(
         text="string",
         description="A string.",
@@ -866,6 +867,12 @@ slots.requires_check = Slot(uri=GHA.requires_check, name="requires_check", curie
 
 slots.required_by = Slot(uri=GHA.required_by, name="required_by", curie=GHA.curie('required_by'),
                    model_uri=GHA.required_by, domain=GhaRequiredStatusCheck, range=Optional[Union[Union[str, GhaRepositoryRulesetRulesetUri], list[Union[str, GhaRepositoryRulesetRulesetUri]]]])
+
+slots.emitted_by = Slot(uri=GHA.emitted_by, name="emitted_by", curie=GHA.curie('emitted_by'),
+                   model_uri=GHA.emitted_by, domain=GhaRequiredStatusCheck, range=Optional[Union[str, GhaWorkflowWorkflowUri]])
+
+slots.emits_check = Slot(uri=GHA.emits_check, name="emits_check", curie=GHA.curie('emits_check'),
+                   model_uri=GHA.emits_check, domain=GhaWorkflow, range=Optional[Union[Union[str, GhaRequiredStatusCheckCheckUri], list[Union[str, GhaRequiredStatusCheckCheckUri]]]])
 
 slots.ghaDocument__workflows = Slot(uri=GHA.workflows, name="ghaDocument__workflows", curie=GHA.curie('workflows'),
                    model_uri=GHA.ghaDocument__workflows, domain=None, range=Optional[Union[dict[Union[str, GhaWorkflowWorkflowUri], Union[dict, GhaWorkflow]], list[Union[dict, GhaWorkflow]]]])
@@ -1016,9 +1023,6 @@ slots.ghaRequiredStatusCheck__job_path = Slot(uri=GHA.job_path, name="ghaRequire
 slots.ghaRequiredStatusCheck__skip_conditions = Slot(uri=GHA.skip_conditions, name="ghaRequiredStatusCheck__skip_conditions", curie=GHA.curie('skip_conditions'),
                    model_uri=GHA.ghaRequiredStatusCheck__skip_conditions, domain=None, range=Optional[Union[str, list[str]]],
                    pattern=re.compile(r'^(on|jobs)\.\S+$'))
-
-slots.ghaRequiredStatusCheck__emitted_by = Slot(uri=GHA.emitted_by, name="ghaRequiredStatusCheck__emitted_by", curie=GHA.curie('emitted_by'),
-                   model_uri=GHA.ghaRequiredStatusCheck__emitted_by, domain=None, range=Optional[Union[str, GhaWorkflowWorkflowUri]])
 
 slots.GhaWorkflow_triggers = Slot(uri=GHA.triggers, name="GhaWorkflow_triggers", curie=GHA.curie('triggers'),
                    model_uri=GHA.GhaWorkflow_triggers, domain=GhaWorkflow, range=Union[str, list[str]],

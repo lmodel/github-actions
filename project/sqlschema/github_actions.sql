@@ -88,12 +88,12 @@
 --     * Slot: bypass_mode Description: When the actor may bypass, the REST field `bypass_mode`, such as `always`, `pull_request` or `exempt`; GitHub's default is `always`.
 --     * Slot: GhaRepositoryRuleset_ruleset_uri Description: Autocreated FK slot
 -- # Class: GhaRequiredStatusCheck Description: A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report.
+--     * Slot: emitted_by Description: The top-level workflow whose job reports the check.
 --     * Slot: check_uri Description: An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.
 --     * Slot: check_context Description: The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.
 --     * Slot: integration_id Description: The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.
 --     * Slot: strict_policy Description: Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.
 --     * Slot: do_not_enforce_on_create Description: Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.
---     * Slot: emitted_by Description: The top-level workflow whose job reports the check.
 --     * Slot: GhaDocument_id Description: Autocreated FK slot
 -- # Class: GhaWorkflow_triggers
 --     * Slot: GhaWorkflow_workflow_uri Description: Autocreated FK slot
@@ -298,12 +298,12 @@ CREATE TABLE "GhaBypassActor" (
 CREATE INDEX "ix_GhaBypassActor_id" ON "GhaBypassActor" (id);
 
 CREATE TABLE "GhaRequiredStatusCheck" (
+	emitted_by TEXT,
 	check_uri TEXT NOT NULL,
 	check_context TEXT NOT NULL,
 	integration_id INTEGER,
 	strict_policy BOOLEAN,
 	do_not_enforce_on_create BOOLEAN,
-	emitted_by TEXT,
 	"GhaDocument_id" INTEGER,
 	PRIMARY KEY (check_uri),
 	FOREIGN KEY(emitted_by) REFERENCES "GhaWorkflow" (workflow_uri),
@@ -326,8 +326,8 @@ CREATE TABLE "GhaWorkflow_permissions" (
 	PRIMARY KEY ("GhaWorkflow_workflow_uri", permissions),
 	FOREIGN KEY("GhaWorkflow_workflow_uri") REFERENCES "GhaWorkflow" (workflow_uri)
 );
-CREATE INDEX "ix_GhaWorkflow_permissions_permissions" ON "GhaWorkflow_permissions" (permissions);
 CREATE INDEX "ix_GhaWorkflow_permissions_GhaWorkflow_workflow_uri" ON "GhaWorkflow_permissions" ("GhaWorkflow_workflow_uri");
+CREATE INDEX "ix_GhaWorkflow_permissions_permissions" ON "GhaWorkflow_permissions" (permissions);
 
 CREATE TABLE "GhaReusableWorkflow_triggers" (
 	"GhaReusableWorkflow_workflow_uri" TEXT,
@@ -344,8 +344,8 @@ CREATE TABLE "GhaReusableWorkflow_permissions" (
 	PRIMARY KEY ("GhaReusableWorkflow_workflow_uri", permissions),
 	FOREIGN KEY("GhaReusableWorkflow_workflow_uri") REFERENCES "GhaReusableWorkflow" (workflow_uri)
 );
-CREATE INDEX "ix_GhaReusableWorkflow_permissions_permissions" ON "GhaReusableWorkflow_permissions" (permissions);
 CREATE INDEX "ix_GhaReusableWorkflow_permissions_GhaReusableWorkflow_workflow_uri" ON "GhaReusableWorkflow_permissions" ("GhaReusableWorkflow_workflow_uri");
+CREATE INDEX "ix_GhaReusableWorkflow_permissions_permissions" ON "GhaReusableWorkflow_permissions" (permissions);
 
 CREATE TABLE "GhaRepositoryRuleset_ref_name_include" (
 	"GhaRepositoryRuleset_ruleset_uri" TEXT,
@@ -353,8 +353,8 @@ CREATE TABLE "GhaRepositoryRuleset_ref_name_include" (
 	PRIMARY KEY ("GhaRepositoryRuleset_ruleset_uri", ref_name_include),
 	FOREIGN KEY("GhaRepositoryRuleset_ruleset_uri") REFERENCES "GhaRepositoryRuleset" (ruleset_uri)
 );
-CREATE INDEX "ix_GhaRepositoryRuleset_ref_name_include_ref_name_include" ON "GhaRepositoryRuleset_ref_name_include" (ref_name_include);
 CREATE INDEX "ix_GhaRepositoryRuleset_ref_name_include_GhaRepositoryRuleset_ruleset_uri" ON "GhaRepositoryRuleset_ref_name_include" ("GhaRepositoryRuleset_ruleset_uri");
+CREATE INDEX "ix_GhaRepositoryRuleset_ref_name_include_ref_name_include" ON "GhaRepositoryRuleset_ref_name_include" (ref_name_include);
 
 CREATE TABLE "GhaRepositoryRuleset_ref_name_exclude" (
 	"GhaRepositoryRuleset_ruleset_uri" TEXT,
@@ -371,8 +371,8 @@ CREATE TABLE "GhaRepositoryRuleset_rule_types" (
 	PRIMARY KEY ("GhaRepositoryRuleset_ruleset_uri", rule_types),
 	FOREIGN KEY("GhaRepositoryRuleset_ruleset_uri") REFERENCES "GhaRepositoryRuleset" (ruleset_uri)
 );
-CREATE INDEX "ix_GhaRepositoryRuleset_rule_types_GhaRepositoryRuleset_ruleset_uri" ON "GhaRepositoryRuleset_rule_types" ("GhaRepositoryRuleset_ruleset_uri");
 CREATE INDEX "ix_GhaRepositoryRuleset_rule_types_rule_types" ON "GhaRepositoryRuleset_rule_types" (rule_types);
+CREATE INDEX "ix_GhaRepositoryRuleset_rule_types_GhaRepositoryRuleset_ruleset_uri" ON "GhaRepositoryRuleset_rule_types" ("GhaRepositoryRuleset_ruleset_uri");
 
 CREATE TABLE "GhaWorkflowJob_runs_on" (
 	"GhaWorkflowJob_id" INTEGER,
@@ -389,8 +389,8 @@ CREATE TABLE "GhaWorkflowJob_job_permissions" (
 	PRIMARY KEY ("GhaWorkflowJob_id", job_permissions),
 	FOREIGN KEY("GhaWorkflowJob_id") REFERENCES "GhaWorkflowJob" (id)
 );
-CREATE INDEX "ix_GhaWorkflowJob_job_permissions_GhaWorkflowJob_id" ON "GhaWorkflowJob_job_permissions" ("GhaWorkflowJob_id");
 CREATE INDEX "ix_GhaWorkflowJob_job_permissions_job_permissions" ON "GhaWorkflowJob_job_permissions" (job_permissions);
+CREATE INDEX "ix_GhaWorkflowJob_job_permissions_GhaWorkflowJob_id" ON "GhaWorkflowJob_job_permissions" ("GhaWorkflowJob_id");
 
 CREATE TABLE "GhaRepositoryRuleset_requires_check" (
 	"GhaRepositoryRuleset_ruleset_uri" TEXT,
@@ -399,8 +399,8 @@ CREATE TABLE "GhaRepositoryRuleset_requires_check" (
 	FOREIGN KEY("GhaRepositoryRuleset_ruleset_uri") REFERENCES "GhaRepositoryRuleset" (ruleset_uri),
 	FOREIGN KEY(requires_check_check_uri) REFERENCES "GhaRequiredStatusCheck" (check_uri)
 );
-CREATE INDEX "ix_GhaRepositoryRuleset_requires_check_requires_check_check_uri" ON "GhaRepositoryRuleset_requires_check" (requires_check_check_uri);
 CREATE INDEX "ix_GhaRepositoryRuleset_requires_check_GhaRepositoryRuleset_ruleset_uri" ON "GhaRepositoryRuleset_requires_check" ("GhaRepositoryRuleset_ruleset_uri");
+CREATE INDEX "ix_GhaRepositoryRuleset_requires_check_requires_check_check_uri" ON "GhaRepositoryRuleset_requires_check" (requires_check_check_uri);
 
 CREATE TABLE "GhaRequiredStatusCheck_required_by" (
 	"GhaRequiredStatusCheck_check_uri" TEXT,
@@ -409,8 +409,8 @@ CREATE TABLE "GhaRequiredStatusCheck_required_by" (
 	FOREIGN KEY("GhaRequiredStatusCheck_check_uri") REFERENCES "GhaRequiredStatusCheck" (check_uri),
 	FOREIGN KEY(required_by_ruleset_uri) REFERENCES "GhaRepositoryRuleset" (ruleset_uri)
 );
-CREATE INDEX "ix_GhaRequiredStatusCheck_required_by_required_by_ruleset_uri" ON "GhaRequiredStatusCheck_required_by" (required_by_ruleset_uri);
 CREATE INDEX "ix_GhaRequiredStatusCheck_required_by_GhaRequiredStatusCheck_check_uri" ON "GhaRequiredStatusCheck_required_by" ("GhaRequiredStatusCheck_check_uri");
+CREATE INDEX "ix_GhaRequiredStatusCheck_required_by_required_by_ruleset_uri" ON "GhaRequiredStatusCheck_required_by" (required_by_ruleset_uri);
 
 CREATE TABLE "GhaRequiredStatusCheck_job_path" (
 	"GhaRequiredStatusCheck_check_uri" TEXT,
@@ -418,8 +418,8 @@ CREATE TABLE "GhaRequiredStatusCheck_job_path" (
 	PRIMARY KEY ("GhaRequiredStatusCheck_check_uri", job_path),
 	FOREIGN KEY("GhaRequiredStatusCheck_check_uri") REFERENCES "GhaRequiredStatusCheck" (check_uri)
 );
-CREATE INDEX "ix_GhaRequiredStatusCheck_job_path_job_path" ON "GhaRequiredStatusCheck_job_path" (job_path);
 CREATE INDEX "ix_GhaRequiredStatusCheck_job_path_GhaRequiredStatusCheck_check_uri" ON "GhaRequiredStatusCheck_job_path" ("GhaRequiredStatusCheck_check_uri");
+CREATE INDEX "ix_GhaRequiredStatusCheck_job_path_job_path" ON "GhaRequiredStatusCheck_job_path" (job_path);
 
 CREATE TABLE "GhaRequiredStatusCheck_skip_conditions" (
 	"GhaRequiredStatusCheck_check_uri" TEXT,

@@ -17,6 +17,7 @@ import lombok.*;
 public class GhaRequiredStatusCheck  {
 
   private List<GhaRepositoryRuleset> requiredBy;
+  private GhaWorkflow emittedBy;
   private URI checkUri;
   private String checkContext;
   private Integer integrationId;
@@ -24,7 +25,6 @@ public class GhaRequiredStatusCheck  {
   private Boolean doNotEnforceOnCreate;
   private List<String> jobPath;
   private List<String> skipConditions;
-  private GhaWorkflow emittedBy;
 
 
 }

@@ -121,6 +121,7 @@ interface GhaRequiredMixin
 type GhaRequiredStatusCheck
   {
     requiredBy: [GhaRepositoryRuleset]
+    emittedBy: GhaWorkflow
     checkUri: String!
     checkContext: String!
     integrationId: Int
@@ -128,7 +129,6 @@ type GhaRequiredStatusCheck
     doNotEnforceOnCreate: Boolean
     jobPath: [GhaIdentifier]
     skipConditions: [String]
-    emittedBy: GhaWorkflow
   }
 
 type GhaReusableWorkflow

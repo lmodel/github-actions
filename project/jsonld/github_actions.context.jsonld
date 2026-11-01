@@ -13,6 +13,14 @@
       "description": {
          "@id": "schema:description"
       },
+      "emits_check": {
+         "@type": "@id",
+         "@id": "emits_check"
+      },
+      "emitted_by": {
+         "@type": "@id",
+         "@id": "emitted_by"
+      },
       "action_path": {
          "@id": "action_path"
       },
@@ -123,10 +131,6 @@
       "do_not_enforce_on_create": {
          "@type": "xsd:boolean",
          "@id": "do_not_enforce_on_create"
-      },
-      "emitted_by": {
-         "@type": "@id",
-         "@id": "emitted_by"
       },
       "integration_id": {
          "@type": "xsd:integer",
