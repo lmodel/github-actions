@@ -81,8 +81,12 @@ slots:
     required: true
     inlined: true
     inlined_as_list: true
+    close_mappings:
+      - cdx:workflow/properties/tasks
     comments:
       - A slot rather than an attribute because job_of names it as its inverse.
+      - >-
+        Close to the tasks of a CycloneDX workflow, as a job is close to a task.
 
   job_of:
     description: >-
@@ -259,6 +263,8 @@ classes:
       job_name:
         aliases:
           - name
+        close_mappings:
+          - cdx:task/properties/name
         description: >-
           The job's `name`, which GitHub shows and its check run takes; the
           check run takes the job's id when it has none.
@@ -367,10 +373,13 @@ enums:
         meaning: xsd:boolean
       number:
         description: A number.
+        meaning: xsd:double
         comments:
           - >-
-            Unmapped: GitHub accepts any JSON number, which no one XML Schema
-            datatype matches.
+            GitHub holds a number as a double-precision float: its expressions
+            turn a string that is no number into NaN, and the runner's workflow
+            parser keeps a number as a C# Double
+            (https://github.com/actions/runner/blob/110142c2c501c6ae9373d553efa826bedbaab5f7/src/Sdk/WorkflowParser/ObjectTemplating/Tokens/NumberToken.cs).
       string:
         description: A string.
         meaning: xsd:string

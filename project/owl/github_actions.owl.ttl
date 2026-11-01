@@ -11,6 +11,11 @@ xsd:boolean a owl:Class ;
 	rdfs:label "boolean" ;
 	rdfs:subClassOf gha:GhaWorkflowInputType ;
 	skos:definition "True or false." .
+xsd:double a owl:Class ;
+	rdfs:label "number" ;
+	rdfs:subClassOf gha:GhaWorkflowInputType ;
+	skos:definition "A number." ;
+	skos:note "GitHub holds a number as a double-precision float: its expressions turn a string that is no number into NaN, and the runner's workflow parser keeps a number as a C# Double (https://github.com/actions/runner/blob/110142c2c501c6ae9373d553efa826bedbaab5f7/src/Sdk/WorkflowParser/ObjectTemplating/Tokens/NumberToken.cs)." .
 xsd:string a rdfs:Datatype , owl:Class ;
 	rdfs:label "string" ;
 	rdfs:subClassOf gha:GhaWorkflowInputType ;
@@ -33,7 +38,7 @@ xsd:string a rdfs:Datatype , owl:Class ;
 gha:GhaAction a owl:Class ;
 	rdfs:label "GhaAction" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax> ;
-	rdfs:subClassOf _:c14n1 , _:c14n136 , _:c14n14 , _:c14n173 , _:c14n174 , _:c14n186 , _:c14n188 , _:c14n205 , _:c14n24 , _:c14n33 , _:c14n47 , _:c14n85 , _:c14n88 ;
+	rdfs:subClassOf _:c14n1 , _:c14n136 , _:c14n14 , _:c14n173 , _:c14n174 , _:c14n186 , _:c14n188 , _:c14n205 , _:c14n24 , _:c14n33 , _:c14n47 , _:c14n84 , _:c14n87 ;
 	skos:altLabel "action" ;
 	skos:broadMatch <http://schema.org/SoftwareSourceCode> ;
 	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/task> ;
@@ -44,7 +49,7 @@ gha:GhaAction a owl:Class ;
 gha:GhaActionInput a owl:Class ;
 	rdfs:label "GhaActionInput" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#inputs> ;
-	rdfs:subClassOf gha:GhaInput , _:c14n137 , _:c14n158 , _:c14n2 , _:c14n7 , _:c14n72 , _:c14n94 ;
+	rdfs:subClassOf gha:GhaInput , _:c14n137 , _:c14n158 , _:c14n2 , _:c14n7 , _:c14n71 , _:c14n93 ;
 	skos:definition "An input under an action's `inputs` key." ;
 	skos:exactMatch gha:ActionInput ;
 	skos:inScheme gha:github_actions_action .
@@ -75,7 +80,7 @@ gha:GhaActionRuntime\#node24 a owl:Class ;
 gha:GhaActionRuntime a owl:Class ;
 	rdfs:label "GhaActionRuntime" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-composite-actions> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-docker-container-actions> , <https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions> ;
-	owl:unionOf _:c14n105 ;
+	owl:unionOf _:c14n104 ;
 	skos:definition "The runtimes an action's `runs.using` may name." ;
 	skos:inScheme gha:github_actions_action ;
 	skos:note "SchemaStore's schema at the pinned commit also accepts node12 and node16, which GitHub's metadata syntax page no longer lists; tests/test_schema_rules.py checks that those two are the only difference." ;
@@ -83,20 +88,20 @@ gha:GhaActionRuntime a owl:Class ;
 gha:GhaBypassActor a owl:Class ;
 	rdfs:label "GhaBypassActor" ;
 	rdfs:seeAlso <https://docs.github.com/en/rest/repos/rules> ;
-	rdfs:subClassOf _:c14n102 , _:c14n202 , _:c14n21 , _:c14n39 , _:c14n45 , _:c14n82 , _:c14n89 , _:c14n90 , _:c14n93 ;
+	rdfs:subClassOf _:c14n101 , _:c14n202 , _:c14n21 , _:c14n39 , _:c14n45 , _:c14n81 , _:c14n88 , _:c14n89 , _:c14n92 ;
 	skos:altLabel "bypass actor" ;
 	skos:definition "An actor who may bypass a ruleset, and when." ;
 	skos:exactMatch gha:BypassActor ;
 	skos:inScheme gha:github_actions_rules .
 gha:GhaDocument a owl:Class ;
 	rdfs:label "GhaDocument" ;
-	rdfs:subClassOf _:c14n116 , _:c14n122 , _:c14n138 , _:c14n168 , _:c14n206 , _:c14n211 , _:c14n32 , _:c14n46 , _:c14n59 , _:c14n81 ;
+	rdfs:subClassOf _:c14n116 , _:c14n122 , _:c14n138 , _:c14n168 , _:c14n206 , _:c14n211 , _:c14n32 , _:c14n46 , _:c14n59 , _:c14n80 ;
 	skos:definition "A document that holds the workflows, actions, rulesets and required status checks of one or more repositories." ;
 	skos:exactMatch gha:Document ;
 	skos:inScheme <https://w3id.org/lmodel/github-actions> .
 gha:GhaInput a owl:Class ;
 	rdfs:label "GhaInput" ;
-	rdfs:subClassOf gha:GhaRequiredMixin , _:c14n101 , _:c14n150 , _:c14n183 , _:c14n25 , _:c14n30 , _:c14n34 , _:c14n38 , _:c14n48 , _:c14n8 , _:c14n95 ;
+	rdfs:subClassOf gha:GhaRequiredMixin , _:c14n100 , _:c14n150 , _:c14n183 , _:c14n25 , _:c14n30 , _:c14n34 , _:c14n38 , _:c14n48 , _:c14n8 , _:c14n94 ;
 	skos:closeMatch <http://schema.org/PropertyValueSpecification> ;
 	skos:definition "An input that a reusable workflow or an action declares, under the key a caller writes in its `with` map." ;
 	skos:exactMatch gha:Input ;
@@ -104,14 +109,14 @@ gha:GhaInput a owl:Class ;
 	skos:note "The mappings to schema.org are this project's own: an input specifies a value a caller supplies, as schema.org's PropertyValueSpecification specifies the input of an action, whose valueRequired the required field already carries." .
 gha:GhaOutput a owl:Class ;
 	rdfs:label "GhaOutput" ;
-	rdfs:subClassOf _:c14n144 , _:c14n157 , _:c14n176 , _:c14n178 , _:c14n184 , _:c14n199 , _:c14n53 , _:c14n65 , _:c14n83 , _:c14n97 ;
+	rdfs:subClassOf _:c14n144 , _:c14n157 , _:c14n176 , _:c14n178 , _:c14n184 , _:c14n199 , _:c14n53 , _:c14n65 , _:c14n82 , _:c14n96 ;
 	skos:definition "An output that a reusable workflow or an action declares for the job or step that calls it to read." ;
 	skos:exactMatch gha:Output ;
 	skos:inScheme gha:github_actions_core .
 gha:GhaRepositoryRuleset a owl:Class ;
 	rdfs:label "GhaRepositoryRuleset" ;
 	rdfs:seeAlso <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets> , <https://docs.github.com/en/rest/repos/rules> ;
-	rdfs:subClassOf _:c14n0 , _:c14n103 , _:c14n110 , _:c14n112 , _:c14n113 , _:c14n128 , _:c14n13 , _:c14n132 , _:c14n146 , _:c14n15 , _:c14n153 , _:c14n161 , _:c14n18 , _:c14n180 , _:c14n198 , _:c14n209 , _:c14n210 , _:c14n27 , _:c14n3 , _:c14n4 , _:c14n50 , _:c14n56 , _:c14n6 , _:c14n61 , _:c14n64 , _:c14n78 , _:c14n84 , _:c14n98 ;
+	rdfs:subClassOf _:c14n0 , _:c14n102 , _:c14n110 , _:c14n112 , _:c14n113 , _:c14n128 , _:c14n13 , _:c14n132 , _:c14n146 , _:c14n15 , _:c14n153 , _:c14n161 , _:c14n18 , _:c14n180 , _:c14n198 , _:c14n209 , _:c14n210 , _:c14n27 , _:c14n3 , _:c14n4 , _:c14n50 , _:c14n56 , _:c14n6 , _:c14n61 , _:c14n64 , _:c14n77 , _:c14n83 , _:c14n97 ;
 	skos:altLabel "ruleset" ;
 	skos:definition "A ruleset: named rules that GitHub enforces on the branches, tags or pushes of a repository, or of every repository in an organization or enterprise that it targets." ;
 	skos:exactMatch gha:RepositoryRuleset ;
@@ -119,13 +124,13 @@ gha:GhaRepositoryRuleset a owl:Class ;
 	skos:note "Of the rules' parameters, only those of required_status_checks are modelled, as GhaRequiredStatusCheck; rule_types says which other rules the ruleset holds." , "SLSA's Source track calls such rules technical controls on protected named references, and asks that their meaning be documented and their enforcement recorded in attestations; the slsa schema models that evidence." .
 gha:GhaRequiredMixin a owl:Class ;
 	rdfs:label "GhaRequiredMixin" ;
-	rdfs:subClassOf _:c14n142 , _:c14n9 , _:c14n91 ;
+	rdfs:subClassOf _:c14n142 , _:c14n9 , _:c14n90 ;
 	skos:definition "The field that says whether a caller must supply a value." ;
 	skos:inScheme gha:github_actions_core .
 gha:GhaRequiredStatusCheck a owl:Class ;
 	rdfs:label "GhaRequiredStatusCheck" ;
 	rdfs:seeAlso <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks> , <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks> , <https://docs.github.com/en/rest/checks/runs> , <https://docs.github.com/en/rest/repos/rules> ;
-	rdfs:subClassOf _:c14n11 , _:c14n119 , _:c14n121 , _:c14n124 , _:c14n125 , _:c14n143 , _:c14n148 , _:c14n149 , _:c14n152 , _:c14n155 , _:c14n166 , _:c14n17 , _:c14n172 , _:c14n194 , _:c14n195 , _:c14n20 , _:c14n203 , _:c14n22 , _:c14n28 , _:c14n42 , _:c14n71 , _:c14n75 , _:c14n92 , _:c14n96 ;
+	rdfs:subClassOf _:c14n11 , _:c14n119 , _:c14n121 , _:c14n124 , _:c14n125 , _:c14n143 , _:c14n148 , _:c14n149 , _:c14n152 , _:c14n155 , _:c14n166 , _:c14n17 , _:c14n172 , _:c14n194 , _:c14n195 , _:c14n20 , _:c14n203 , _:c14n22 , _:c14n28 , _:c14n42 , _:c14n70 , _:c14n74 , _:c14n91 , _:c14n95 ;
 	skos:altLabel "required status check" ;
 	skos:definition "A status check that a ruleset requires to pass before a change reaches a ref it targets, named by the context a check run must report." ;
 	skos:exactMatch gha:RequiredStatusCheck ;
@@ -135,7 +140,7 @@ gha:GhaRequiredStatusCheck a owl:Class ;
 gha:GhaReusableWorkflow a owl:Class ;
 	rdfs:label "GhaReusableWorkflow" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations> , <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_call> ;
-	rdfs:subClassOf gha:GhaWorkflow , _:c14n10 , _:c14n100 , _:c14n127 , _:c14n131 , _:c14n181 , _:c14n185 , _:c14n201 , _:c14n66 , _:c14n73 ;
+	rdfs:subClassOf gha:GhaWorkflow , _:c14n10 , _:c14n127 , _:c14n131 , _:c14n181 , _:c14n185 , _:c14n201 , _:c14n66 , _:c14n72 , _:c14n99 ;
 	skos:altLabel "reusable workflow" ;
 	skos:definition "A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read." ;
 	skos:exactMatch gha:ReusableWorkflow ;
@@ -219,7 +224,7 @@ gha:GhaRunnerEnvironment a owl:Class ;
 gha:GhaWorkflow a owl:Class ;
 	rdfs:label "GhaWorkflow" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> ;
-	rdfs:subClassOf _:c14n120 , _:c14n126 , _:c14n141 , _:c14n145 , _:c14n147 , _:c14n182 , _:c14n189 , _:c14n196 , _:c14n207 , _:c14n26 , _:c14n44 , _:c14n49 , _:c14n55 , _:c14n70 , _:c14n74 ;
+	rdfs:subClassOf _:c14n120 , _:c14n126 , _:c14n141 , _:c14n145 , _:c14n147 , _:c14n182 , _:c14n189 , _:c14n196 , _:c14n207 , _:c14n26 , _:c14n44 , _:c14n49 , _:c14n55 , _:c14n69 , _:c14n73 ;
 	skos:altLabel "workflow" ;
 	skos:broadMatch <http://schema.org/SoftwareSourceCode> ;
 	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/workflow> ;
@@ -231,26 +236,21 @@ gha:GhaWorkflow a owl:Class ;
 gha:GhaWorkflowInput a owl:Class ;
 	rdfs:label "GhaWorkflowInput" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputs> ;
-	rdfs:subClassOf gha:GhaInput , _:c14n86 , _:c14n87 , _:c14n99 ;
+	rdfs:subClassOf gha:GhaInput , _:c14n85 , _:c14n86 , _:c14n98 ;
 	skos:definition "An input under a reusable workflow's `on.workflow_call.inputs` key." ;
 	skos:exactMatch gha:WorkflowInput ;
 	skos:inScheme gha:github_actions_workflow .
-gha:GhaWorkflowInputType\#number a owl:Class ;
-	rdfs:label "number" ;
-	rdfs:subClassOf gha:GhaWorkflowInputType ;
-	skos:definition "A number." ;
-	skos:note "Unmapped: GitHub accepts any JSON number, which no one XML Schema datatype matches." .
 gha:GhaWorkflowInputType a owl:Class ;
 	rdfs:label "GhaWorkflowInputType" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_callinputsinput_idtype> ;
 	owl:unionOf _:c14n19 ;
 	skos:definition "The types a reusable workflow's input may state." ;
 	skos:inScheme gha:github_actions_workflow ;
-	linkml:permissible_values xsd:boolean , xsd:string , gha:GhaWorkflowInputType\#number .
+	linkml:permissible_values xsd:boolean , xsd:double , xsd:string .
 gha:GhaWorkflowJob a owl:Class ;
 	rdfs:label "GhaWorkflowJob" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobs> ;
-	rdfs:subClassOf _:c14n104 , _:c14n106 , _:c14n108 , _:c14n111 , _:c14n129 , _:c14n133 , _:c14n135 , _:c14n139 , _:c14n140 , _:c14n162 , _:c14n164 , _:c14n169 , _:c14n23 , _:c14n35 , _:c14n36 , _:c14n37 , _:c14n40 , _:c14n41 , _:c14n54 , _:c14n63 , _:c14n76 , _:c14n77 ;
+	rdfs:subClassOf _:c14n103 , _:c14n105 , _:c14n108 , _:c14n111 , _:c14n129 , _:c14n133 , _:c14n135 , _:c14n139 , _:c14n140 , _:c14n162 , _:c14n164 , _:c14n169 , _:c14n23 , _:c14n35 , _:c14n36 , _:c14n37 , _:c14n40 , _:c14n41 , _:c14n54 , _:c14n63 , _:c14n75 , _:c14n76 ;
 	skos:altLabel "job" ;
 	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/task> ;
 	skos:definition "A job under a workflow's `jobs` key: steps that run on a runner, or a call to a reusable workflow." ;
@@ -260,7 +260,7 @@ gha:GhaWorkflowJob a owl:Class ;
 gha:GhaWorkflowOutput a owl:Class ;
 	rdfs:label "GhaWorkflowOutput" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onworkflow_calloutputs> ;
-	rdfs:subClassOf gha:GhaOutput , _:c14n156 , _:c14n192 , _:c14n80 ;
+	rdfs:subClassOf gha:GhaOutput , _:c14n156 , _:c14n192 , _:c14n79 ;
 	skos:definition "An output under a reusable workflow's `on.workflow_call.outputs` key, set from an output of one of its jobs." ;
 	skos:exactMatch gha:WorkflowOutput ;
 	skos:inScheme gha:github_actions_workflow .
@@ -337,10 +337,21 @@ gha:do_not_enforce_on_create a owl:DatatypeProperty ;
 	rdfs:label "do_not_enforce_on_create" ;
 	skos:definition "Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`." ;
 	skos:inScheme gha:github_actions_rules .
+gha:emits_check a owl:ObjectProperty ;
+	rdfs:domain gha:GhaWorkflow ;
+	rdfs:label "emits_check" ;
+	rdfs:range gha:GhaRequiredStatusCheck ;
+	owl:inverseOf gha:emitted_by ;
+	skos:definition "The required status checks that the workflow's jobs report." ;
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "No class lists it: GhaWorkflow would need the workflow module to import this one, which imports it. A document states the link from the check's side, with emitted_by, and the ontology states the pair, so a reasoner reads it from the workflow's side too." .
 gha:emitted_by a owl:ObjectProperty ;
+	rdfs:domain gha:GhaRequiredStatusCheck ;
 	rdfs:label "emitted_by" ;
+	rdfs:range gha:GhaWorkflow ;
 	skos:definition "The top-level workflow whose job reports the check." ;
-	skos:inScheme gha:github_actions_rules .
+	skos:inScheme gha:github_actions_rules ;
+	skos:note "A slot rather than an attribute because emits_check names it as its inverse." .
 gha:enforcement a owl:ObjectProperty ;
 	rdfs:label "enforcement" ;
 	skos:definition "Whether GitHub enforces the ruleset, the REST field `enforcement`." ;
@@ -373,6 +384,7 @@ gha:job_name a owl:DatatypeProperty ;
 	rdfs:label "job_name" ;
 	rdfs:seeAlso <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname> ;
 	skos:altLabel "name" ;
+	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/task/properties/name> ;
 	skos:definition "The job's `name`, which GitHub shows and its check run takes; the check run takes the job's id when it has none." ;
 	skos:inScheme gha:github_actions_workflow .
 gha:job_of a owl:ObjectProperty ;
@@ -396,9 +408,10 @@ gha:jobs a owl:ObjectProperty ;
 	rdfs:domain gha:GhaWorkflow ;
 	rdfs:label "jobs" ;
 	rdfs:range gha:GhaWorkflowJob ;
+	skos:closeMatch <http://cyclonedx.org/schema/bom-1.7.schema.json#/definitions/workflow/properties/tasks> ;
 	skos:definition "The jobs under the file's `jobs` key." ;
 	skos:inScheme gha:github_actions_workflow ;
-	skos:note "A slot rather than an attribute because job_of names it as its inverse." .
+	skos:note "A slot rather than an attribute because job_of names it as its inverse." , "Close to the tasks of a CycloneDX workflow, as a job is close to a task." .
 gha:output_expression a owl:DatatypeProperty ;
 	rdfs:label "output_expression" ;
 	skos:altLabel "value" ;
@@ -565,27 +578,26 @@ _:c14n10 a owl:Restriction ;
 	owl:onProperty gha:triggers ;
 	owl:someValuesFrom _:c14n175 .
 _:c14n100 a owl:Restriction ;
-	owl:allValuesFrom gha:GhaWorkflowInput ;
-	owl:onProperty gha:inputs .
-_:c14n101 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:description .
-_:c14n102 a owl:Restriction ;
+_:c14n101 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:actor_id .
-_:c14n103 a owl:Restriction ;
+_:c14n102 a owl:Restriction ;
 	owl:allValuesFrom gha:GhaRulesetEnforcement ;
 	owl:onProperty gha:enforcement .
-_:c14n104 a owl:Restriction ;
+_:c14n103 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:runner_environment .
-_:c14n105 rdf:first gha:GhaActionRuntime\#composite ;
+_:c14n104 rdf:first gha:GhaActionRuntime\#composite ;
 	rdf:rest _:c14n191 .
-_:c14n106 a owl:Restriction ;
+_:c14n105 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:runs_on .
-_:c14n107 rdf:first gha:GhaRulesetTarget\#push ;
+_:c14n106 rdf:first gha:GhaRulesetTarget\#push ;
 	rdf:rest rdf:nil .
+_:c14n107 rdf:first xsd:double ;
+	rdf:rest _:c14n109 .
 _:c14n108 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:runner_environment .
@@ -623,7 +635,7 @@ _:c14n12 a owl:Restriction ;
 	owl:allValuesFrom xsd:string ;
 	owl:onProperty gha:secret_id .
 _:c14n120 a owl:Restriction ;
-	owl:allValuesFrom _:c14n251 ;
+	owl:allValuesFrom _:c14n249 ;
 	owl:onProperty gha:workflow_path .
 _:c14n121 a owl:Restriction ;
 	owl:allValuesFrom xsd:boolean ;
@@ -690,7 +702,7 @@ _:c14n140 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:calls .
 _:c14n141 a owl:Restriction ;
-	owl:allValuesFrom _:c14n222 ;
+	owl:allValuesFrom _:c14n219 ;
 	owl:onProperty gha:triggers .
 _:c14n142 a owl:Restriction ;
 	owl:minCardinality 0 ;
@@ -732,7 +744,7 @@ _:c14n153 a owl:Restriction ;
 	owl:onProperty gha:ruleset_id .
 _:c14n154 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n219 .
+	owl:withRestrictions _:c14n216 .
 _:c14n155 a owl:Restriction ;
 	owl:allValuesFrom xsd:boolean ;
 	owl:onProperty gha:strict_policy .
@@ -758,7 +770,7 @@ _:c14n162 a owl:Restriction ;
 	owl:onProperty gha:job_id .
 _:c14n163 xsd:pattern "^(read-all|write-all|\\{\\}|[a-z][a-z-]*: (read|write|none))$" .
 _:c14n164 a owl:Restriction ;
-	owl:allValuesFrom _:c14n247 ;
+	owl:allValuesFrom _:c14n245 ;
 	owl:onProperty gha:calls .
 _:c14n165 a owl:Restriction ;
 	owl:onProperty gha:runs_on ;
@@ -783,7 +795,7 @@ _:c14n171 a owl:Restriction ;
 	owl:allValuesFrom xsd:string ;
 	owl:onProperty gha:description .
 _:c14n172 a owl:Restriction ;
-	owl:allValuesFrom _:c14n232 ;
+	owl:allValuesFrom _:c14n226 ;
 	owl:onProperty gha:integration_id .
 _:c14n173 a owl:Restriction ;
 	owl:minCardinality 0 ;
@@ -835,9 +847,9 @@ _:c14n189 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:workflow_repository .
 _:c14n19 rdf:first xsd:boolean ;
-	rdf:rest _:c14n67 .
-_:c14n190 rdf:first gha:GhaRulesetTarget\#tag ;
 	rdf:rest _:c14n107 .
+_:c14n190 rdf:first gha:GhaRulesetTarget\#tag ;
+	rdf:rest _:c14n106 .
 _:c14n191 rdf:first gha:GhaActionRuntime\#docker ;
 	rdf:rest _:c14n197 .
 _:c14n192 a owl:Restriction ;
@@ -914,12 +926,12 @@ _:c14n214 a rdfs:Datatype ;
 _:c14n215 xsd:pattern "^[a-z_]+$" .
 _:c14n216 rdf:first _:c14n215 ;
 	rdf:rest rdf:nil .
-_:c14n217 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n216 .
-_:c14n218 xsd:pattern "^[a-z_]+$" .
-_:c14n219 rdf:first _:c14n218 ;
+_:c14n217 xsd:pattern "^[a-z_]+$" .
+_:c14n218 rdf:first _:c14n217 ;
 	rdf:rest rdf:nil .
+_:c14n219 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n218 .
 _:c14n22 a owl:Restriction ;
 	owl:allValuesFrom xsd:anyURI ;
 	owl:onProperty gha:check_uri .
@@ -968,7 +980,7 @@ _:c14n238 a owl:Restriction ;
 _:c14n239 rdf:first gha:GhaWorkflowJob ;
 	rdf:rest rdf:nil .
 _:c14n24 a owl:Restriction ;
-	owl:allValuesFrom _:c14n249 ;
+	owl:allValuesFrom _:c14n247 ;
 	owl:onProperty gha:action_path .
 _:c14n240 rdf:first _:c14n242 ;
 	rdf:rest _:c14n239 .
@@ -980,17 +992,17 @@ _:c14n242 a owl:Restriction ;
 _:c14n243 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
 	owl:withRestrictions _:c14n244 .
-_:c14n244 rdf:first _:c14n79 ;
+_:c14n244 rdf:first _:c14n16 ;
 	rdf:rest rdf:nil .
 _:c14n245 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
 	owl:withRestrictions _:c14n246 .
-_:c14n246 rdf:first _:c14n16 ;
+_:c14n246 rdf:first _:c14n118 ;
 	rdf:rest rdf:nil .
 _:c14n247 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
 	owl:withRestrictions _:c14n248 .
-_:c14n248 rdf:first _:c14n118 ;
+_:c14n248 rdf:first _:c14n43 ;
 	rdf:rest rdf:nil .
 _:c14n249 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
@@ -998,12 +1010,12 @@ _:c14n249 a rdfs:Datatype ;
 _:c14n25 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:input_id .
-_:c14n250 rdf:first _:c14n43 ;
+_:c14n250 rdf:first _:c14n115 ;
 	rdf:rest rdf:nil .
 _:c14n251 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
 	owl:withRestrictions _:c14n252 .
-_:c14n252 rdf:first _:c14n115 ;
+_:c14n252 rdf:first _:c14n78 ;
 	rdf:rest rdf:nil .
 _:c14n253 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
@@ -1035,7 +1047,7 @@ _:c14n263 a rdfs:Datatype ;
 	owl:withRestrictions _:c14n264 .
 _:c14n264 rdf:first _:c14n179 ;
 	rdf:rest rdf:nil .
-_:c14n265 rdf:first _:c14n69 ;
+_:c14n265 rdf:first _:c14n68 ;
 	rdf:rest rdf:nil .
 _:c14n266 rdf:first gha:GhaWorkflowInput ;
 	rdf:rest rdf:nil .
@@ -1113,7 +1125,7 @@ _:c14n49 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty gha:workflow_path .
 _:c14n5 rdf:first gha:GhaRulesetSourceType\#Repository ;
-	rdf:rest _:c14n68 .
+	rdf:rest _:c14n67 .
 _:c14n50 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:bypass_actors .
@@ -1165,104 +1177,105 @@ _:c14n65 a owl:Restriction ;
 _:c14n66 a owl:Restriction ;
 	owl:allValuesFrom gha:GhaWorkflowSecret ;
 	owl:onProperty gha:secrets .
-_:c14n67 rdf:first gha:GhaWorkflowInputType\#number ;
-	rdf:rest _:c14n109 .
-_:c14n68 rdf:first gha:GhaRulesetSourceType\#Organization ;
+_:c14n67 rdf:first gha:GhaRulesetSourceType\#Organization ;
 	rdf:rest _:c14n117 .
-_:c14n69 xsd:pattern "^https://[^/]+/[^/]+/[^/]+$" .
+_:c14n68 xsd:pattern "^https://[^/]+/[^/]+/[^/]+$" .
+_:c14n69 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty gha:triggers .
 _:c14n7 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:deprecation_message .
 _:c14n70 a owl:Restriction ;
-	owl:minCardinality 1 ;
-	owl:onProperty gha:triggers .
-_:c14n71 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:strict_policy .
-_:c14n72 a owl:Restriction ;
+_:c14n71 a owl:Restriction ;
 	owl:allValuesFrom xsd:string ;
 	owl:onProperty gha:deprecation_message .
-_:c14n73 a owl:Restriction ;
+_:c14n72 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:triggers .
-_:c14n74 a owl:Restriction ;
+_:c14n73 a owl:Restriction ;
 	owl:allValuesFrom _:c14n257 ;
 	owl:onProperty gha:workflow_repository .
-_:c14n75 a owl:Restriction ;
-	owl:allValuesFrom _:c14n245 ;
+_:c14n74 a owl:Restriction ;
+	owl:allValuesFrom _:c14n243 ;
 	owl:onProperty gha:skip_conditions .
-_:c14n76 a owl:Restriction ;
+_:c14n75 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty gha:job_id .
-_:c14n77 a owl:Restriction ;
+_:c14n76 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:job_of .
-_:c14n78 a owl:Restriction ;
-	owl:allValuesFrom _:c14n217 ;
+_:c14n77 a owl:Restriction ;
+	owl:allValuesFrom _:c14n222 ;
 	owl:onProperty gha:rule_types .
-_:c14n79 xsd:pattern "\\S" .
+_:c14n78 xsd:pattern "\\S" .
+_:c14n79 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty gha:output_expression .
 _:c14n8 a owl:Restriction ;
 	owl:allValuesFrom xsd:string ;
 	owl:onProperty gha:input_id .
 _:c14n80 a owl:Restriction ;
-	owl:maxCardinality 1 ;
-	owl:onProperty gha:output_expression .
-_:c14n81 a owl:Restriction ;
 	owl:allValuesFrom gha:GhaWorkflow ;
 	owl:onProperty gha:workflows .
-_:c14n82 a owl:Restriction ;
+_:c14n81 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:actor_type .
-_:c14n83 a owl:Restriction ;
+_:c14n82 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:output_id .
-_:c14n84 a owl:Restriction ;
-	owl:allValuesFrom _:c14n226 ;
+_:c14n83 a owl:Restriction ;
+	owl:allValuesFrom _:c14n232 ;
 	owl:onProperty gha:ruleset_id .
-_:c14n85 a owl:Restriction ;
+_:c14n84 a owl:Restriction ;
 	owl:allValuesFrom xsd:anyURI ;
 	owl:onProperty gha:action_uri .
-_:c14n86 a owl:Restriction ;
+_:c14n85 a owl:Restriction ;
 	owl:allValuesFrom gha:GhaWorkflowInputType ;
 	owl:onProperty gha:input_type .
-_:c14n87 a owl:Restriction ;
+_:c14n86 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:input_type .
-_:c14n88 a owl:Restriction ;
+_:c14n87 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty gha:action_path .
-_:c14n89 a owl:Restriction ;
+_:c14n88 a owl:Restriction ;
 	owl:allValuesFrom _:c14n214 ;
+	owl:onProperty gha:bypass_mode .
+_:c14n89 a owl:Restriction ;
+	owl:maxCardinality 1 ;
 	owl:onProperty gha:bypass_mode .
 _:c14n9 a owl:Restriction ;
 	owl:allValuesFrom xsd:boolean ;
 	owl:onProperty gha:required .
 _:c14n90 a owl:Restriction ;
 	owl:maxCardinality 1 ;
-	owl:onProperty gha:bypass_mode .
-_:c14n91 a owl:Restriction ;
-	owl:maxCardinality 1 ;
 	owl:onProperty gha:required .
-_:c14n92 a owl:Restriction ;
-	owl:allValuesFrom _:c14n243 ;
+_:c14n91 a owl:Restriction ;
+	owl:allValuesFrom _:c14n251 ;
 	owl:onProperty gha:check_context .
-_:c14n93 a owl:Restriction ;
+_:c14n92 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:bypass_mode .
-_:c14n94 a owl:Restriction ;
+_:c14n93 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty gha:description .
-_:c14n95 a owl:Restriction ;
+_:c14n94 a owl:Restriction ;
 	owl:allValuesFrom xsd:string ;
 	owl:onProperty gha:default .
-_:c14n96 a owl:Restriction ;
+_:c14n95 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:emitted_by .
-_:c14n97 owl:unionOf _:c14n123 .
-_:c14n98 a owl:Restriction ;
+_:c14n96 owl:unionOf _:c14n123 .
+_:c14n97 a owl:Restriction ;
 	owl:minCardinality 0 ;
 	owl:onProperty gha:ruleset_source .
-_:c14n99 a owl:Restriction ;
+_:c14n98 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty gha:input_type .
+_:c14n99 a owl:Restriction ;
+	owl:allValuesFrom gha:GhaWorkflowInput ;
+	owl:onProperty gha:inputs .
 

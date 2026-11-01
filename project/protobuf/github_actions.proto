@@ -113,22 +113,22 @@ message GhaRequiredMixin {
 message GhaRequiredStatusCheck {
   // The rulesets that require the check.
   repeated GhaRepositoryRuleset required_by = 1;
-  // An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.
-  string check_uri = 2;
-  // The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.
-  string check_context = 3;
-  // The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.
-  int32 integration_id = 4;
-  // Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.
-  bool strict_policy = 5;
-  // Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.
-  bool do_not_enforce_on_create = 6;
-  // The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.
-  repeated string job_path = 7;
-  // What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.
-  repeated string skip_conditions = 8;
   // The top-level workflow whose job reports the check.
-  GhaWorkflow emitted_by = 9;
+  GhaWorkflow emitted_by = 2;
+  // An identifier for the requirement. GitHub gives a required check no address of its own; in a knowledge bundle the concept's `id` takes its place.
+  string check_uri = 3;
+  // The context a check run must report, the rule's `required_status_checks[].context`. Named check_context because LOKF defines a context slot of its own.
+  string check_context = 4;
+  // The GitHub App the check must come from, the rule's `integration_id`; GitHub Actions is app 15368.
+  int32 integration_id = 5;
+  // Whether a pull request must be tested against the latest code of the branch it targets, the rule's `strict_required_status_checks_policy`.
+  bool strict_policy = 6;
+  // Whether a branch may be created although the check would otherwise stop it, the rule's `do_not_enforce_on_create`.
+  bool do_not_enforce_on_create = 7;
+  // The ids of the jobs from the top-level workflow's job to the job that reports the check: one id for a job of the workflow itself, the calling job's id first for a job of a called workflow.
+  repeated string job_path = 8;
+  // What in the workflow can skip the job that reports the check, each written as its key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.
+  repeated string skip_conditions = 9;
 }
 // A workflow that other workflows call as a job, because its `on` key names `workflow_call`; it declares the inputs, outputs and secrets its callers pass and read.
 message GhaReusableWorkflow {

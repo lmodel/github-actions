@@ -160,13 +160,13 @@ linkml:Sparqlpath xsd:string
 
 <GhaRequiredStatusCheck> CLOSED {
     (  $<GhaRequiredStatusCheck_tes> (  <required_by> @<GhaRepositoryRuleset> * ;
+          <emitted_by> @<GhaWorkflow> ? ;
           <check_context> @linkml:String ;
           <integration_id> @linkml:Integer ? ;
           <strict_policy> @linkml:Boolean ? ;
           <do_not_enforce_on_create> @linkml:Boolean ? ;
           <job_path> @<GhaIdentifier> * ;
-          <skip_conditions> @linkml:String * ;
-          <emitted_by> @<GhaWorkflow> ?
+          <skip_conditions> @linkml:String *
        ) ;
        rdf:type [ <RequiredStatusCheck> ]
     )
@@ -200,7 +200,7 @@ linkml:Sparqlpath xsd:string
 <GhaWorkflowInput> CLOSED {
     (  $<GhaWorkflowInput_tes> (  &<GhaInput_tes> ;
           rdf:type [ <Input> ] ? ;
-          <input_type> [ xsd:boolean <https://w3id.org/lmodel/github-actions/GhaWorkflowInputType#number> xsd:string ]
+          <input_type> [ xsd:boolean xsd:double xsd:string ]
        ) ;
        rdf:type [ <WorkflowInput> ] ?
     )

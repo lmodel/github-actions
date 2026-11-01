@@ -56,6 +56,28 @@ slots:
     multivalued: true
     inverse: requires_check
 
+  emitted_by:
+    description: The top-level workflow whose job reports the check.
+    slot_uri: gha:emitted_by
+    domain: GhaRequiredStatusCheck
+    range: GhaWorkflow
+    comments:
+      - A slot rather than an attribute because emits_check names it as its inverse.
+
+  emits_check:
+    description: The required status checks that the workflow's jobs report.
+    slot_uri: gha:emits_check
+    domain: GhaWorkflow
+    range: GhaRequiredStatusCheck
+    multivalued: true
+    inverse: emitted_by
+    comments:
+      - >-
+        No class lists it: GhaWorkflow would need the workflow module to import
+        this one, which imports it. A document states the link from the check's
+        side, with emitted_by, and the ontology states the pair, so a reasoner
+        reads it from the workflow's side too.
+
 classes:
   GhaRepositoryRuleset:
     class_uri: gha:RepositoryRuleset
@@ -216,6 +238,7 @@ classes:
         the check found, so it is a related term and not a close one.
     slots:
       - required_by
+      - emitted_by
     attributes:
       check_uri:
         identifier: true
@@ -266,9 +289,6 @@ classes:
           `on.pull_request.paths` or `jobs.test.if`.
         multivalued: true
         pattern: "^(on|jobs)\\.\\S+$"
-      emitted_by:
-        description: The top-level workflow whose job reports the check.
-        range: GhaWorkflow
 
 enums:
   GhaRulesetSourceType:

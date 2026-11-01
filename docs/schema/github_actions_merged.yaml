@@ -346,9 +346,11 @@ enums:
       number:
         text: number
         description: A number.
+        meaning: xsd:double
         comments:
-        - 'Unmapped: GitHub accepts any JSON number, which no one XML Schema datatype
-          matches.'
+        - 'GitHub holds a number as a double-precision float: its expressions turn
+          a string that is no number into NaN, and the runner''s workflow parser keeps
+          a number as a C# Double (https://github.com/actions/runner/blob/110142c2c501c6ae9373d553efa826bedbaab5f7/src/Sdk/WorkflowParser/ObjectTemplating/Tokens/NumberToken.cs).'
       string:
         text: string
         description: A string.
@@ -515,7 +517,10 @@ slots:
     description: The jobs under the file's `jobs` key.
     comments:
     - A slot rather than an attribute because job_of names it as its inverse.
+    - Close to the tasks of a CycloneDX workflow, as a job is close to a task.
     from_schema: https://w3id.org/lmodel/github-actions
+    close_mappings:
+    - cdx:workflow/properties/tasks
     domain: GhaWorkflow
     slot_uri: gha:jobs
     domain_of:
@@ -561,6 +566,31 @@ slots:
     - GhaRequiredStatusCheck
     inverse: requires_check
     range: GhaRepositoryRuleset
+    multivalued: true
+  emitted_by:
+    name: emitted_by
+    description: The top-level workflow whose job reports the check.
+    comments:
+    - A slot rather than an attribute because emits_check names it as its inverse.
+    from_schema: https://w3id.org/lmodel/github-actions
+    domain: GhaRequiredStatusCheck
+    slot_uri: gha:emitted_by
+    domain_of:
+    - GhaRequiredStatusCheck
+    range: GhaWorkflow
+  emits_check:
+    name: emits_check
+    description: The required status checks that the workflow's jobs report.
+    comments:
+    - 'No class lists it: GhaWorkflow would need the workflow module to import this
+      one, which imports it. A document states the link from the check''s side, with
+      emitted_by, and the ontology states the pair, so a reasoner reads it from the
+      workflow''s side too.'
+    from_schema: https://w3id.org/lmodel/github-actions
+    domain: GhaWorkflow
+    slot_uri: gha:emits_check
+    inverse: emitted_by
+    range: GhaRequiredStatusCheck
     multivalued: true
 classes:
   GhaDocument:
@@ -875,7 +905,10 @@ classes:
         description: The jobs under the file's `jobs` key.
         comments:
         - A slot rather than an attribute because job_of names it as its inverse.
+        - Close to the tasks of a CycloneDX workflow, as a job is close to a task.
         from_schema: https://w3id.org/lmodel/github-actions
+        close_mappings:
+        - cdx:workflow/properties/tasks
         domain: GhaWorkflow
         slot_uri: gha:jobs
         owner: GhaWorkflow
@@ -989,7 +1022,10 @@ classes:
         description: The jobs under the file's `jobs` key.
         comments:
         - A slot rather than an attribute because job_of names it as its inverse.
+        - Close to the tasks of a CycloneDX workflow, as a job is close to a task.
         from_schema: https://w3id.org/lmodel/github-actions
+        close_mappings:
+        - cdx:workflow/properties/tasks
         domain: GhaWorkflow
         slot_uri: gha:jobs
         owner: GhaReusableWorkflow
@@ -1087,6 +1123,8 @@ classes:
         - https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname
         aliases:
         - name
+        close_mappings:
+        - cdx:task/properties/name
         owner: GhaWorkflowJob
         domain_of:
         - GhaWorkflowJob
@@ -1829,6 +1867,7 @@ classes:
     - in_toto:test-result/v0.1
     slots:
     - required_by
+    - emitted_by
     attributes:
       check_uri:
         name: check_uri
@@ -1909,14 +1948,6 @@ classes:
         range: string
         multivalued: true
         pattern: ^(on|jobs)\.\S+$
-      emitted_by:
-        name: emitted_by
-        description: The top-level workflow whose job reports the check.
-        from_schema: https://w3id.org/lmodel/github-actions/github_actions_rules
-        owner: GhaRequiredStatusCheck
-        domain_of:
-        - GhaRequiredStatusCheck
-        range: GhaWorkflow
       required_by:
         name: required_by
         description: The rulesets that require the check.
@@ -1929,6 +1960,18 @@ classes:
         inverse: requires_check
         range: GhaRepositoryRuleset
         multivalued: true
+      emitted_by:
+        name: emitted_by
+        description: The top-level workflow whose job reports the check.
+        comments:
+        - A slot rather than an attribute because emits_check names it as its inverse.
+        from_schema: https://w3id.org/lmodel/github-actions
+        domain: GhaRequiredStatusCheck
+        slot_uri: gha:emitted_by
+        owner: GhaRequiredStatusCheck
+        domain_of:
+        - GhaRequiredStatusCheck
+        range: GhaWorkflow
     class_uri: gha:RequiredStatusCheck
 metamodel_version: 1.12.0
 source_file: src/github_actions/schema/github_actions.yaml

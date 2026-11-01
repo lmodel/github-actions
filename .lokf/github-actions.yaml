@@ -244,6 +244,8 @@ classes:
       job_name:
         aliases:
         - name
+        close_mappings:
+        - cdx:task/properties/name
         description: The job's `name`, which GitHub shows and its check run takes; the check run takes
           the job's id when it has none.
         see_also:
@@ -528,6 +530,7 @@ classes:
       a related term and not a close one.
     slots:
     - required_by
+    - emitted_by
     - id
     attributes:
       check_context:
@@ -564,9 +567,6 @@ classes:
           key's path in the file, such as `on.pull_request.paths` or `jobs.test.if`.
         multivalued: true
         pattern: ^(on|jobs)\.\S+$
-      emitted_by:
-        description: The top-level workflow whose job reports the check.
-        range: GhaWorkflow
     is_a: Concept
   GhaDocument:
     class_uri: gha:Document
@@ -648,8 +648,11 @@ slots:
     required: true
     inlined: true
     inlined_as_list: true
+    close_mappings:
+    - cdx:workflow/properties/tasks
     comments:
     - A slot rather than an attribute because job_of names it as its inverse.
+    - Close to the tasks of a CycloneDX workflow, as a job is close to a task.
   job_of:
     description: The workflow whose `jobs` key holds the job. A workflow holds its jobs inline, so a file
       states this only by nesting.
@@ -675,6 +678,24 @@ slots:
     range: GhaRepositoryRuleset
     multivalued: true
     inverse: requires_check
+  emitted_by:
+    description: The top-level workflow whose job reports the check.
+    slot_uri: gha:emitted_by
+    domain: GhaRequiredStatusCheck
+    range: GhaWorkflow
+    comments:
+    - A slot rather than an attribute because emits_check names it as its inverse.
+  emits_check:
+    description: The required status checks that the workflow's jobs report.
+    slot_uri: gha:emits_check
+    domain: GhaWorkflow
+    range: GhaRequiredStatusCheck
+    multivalued: true
+    inverse: emitted_by
+    comments:
+    - 'No class lists it: GhaWorkflow would need the workflow module to import this one, which imports
+      it. A document states the link from the check''s side, with emitted_by, and the ontology states
+      the pair, so a reasoner reads it from the workflow''s side too.'
 types:
   gha_identifier:
     typeof: string
@@ -709,8 +730,10 @@ enums:
         meaning: xsd:boolean
       number:
         description: A number.
+        meaning: xsd:double
         comments:
-        - 'Unmapped: GitHub accepts any JSON number, which no one XML Schema datatype matches.'
+        - 'GitHub holds a number as a double-precision float: its expressions turn a string that is no
+          number into NaN, and the runner''s workflow parser keeps a number as a C# Double (https://github.com/actions/runner/blob/110142c2c501c6ae9373d553efa826bedbaab5f7/src/Sdk/WorkflowParser/ObjectTemplating/Tokens/NumberToken.cs).'
       string:
         description: A string.
         meaning: xsd:string
