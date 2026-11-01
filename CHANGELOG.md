@@ -6,6 +6,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-01
+
 ### Added
 
 - **Mappings to schema.org and lmodel/slsa, and more to CycloneDX.** An input is close to schema.org's `PropertyValueSpecification`, a workflow and an action are narrower than `SoftwareSourceCode`, a job is close to CycloneDX's `task`, and a reusable workflow is related to slsa's `SlsaBuildPlatform`.
