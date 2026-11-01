@@ -16,19 +16,17 @@ GitHub Actions workflows, actions and repository rulesets (LinkML)
 
 From GitHub's documentation:
 
-* **Workflows** (`GhaWorkflow`, from [workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)): the events that run one, the access its `GITHUB_TOKEN` gets, and its jobs, each with its runner labels, runner group and permissions, or the reusable workflow it calls.
-* **Reusable workflows** (`GhaReusableWorkflow`, from workflow syntax and [reusable workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations)): the inputs, outputs and secrets under `on.workflow_call`.
-* **Actions** (`GhaAction`, from [metadata syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax)): the inputs and outputs of an `action.yml`, and the runtime `runs.using` names.
-* **Rulesets and required checks** (`GhaRepositoryRuleset` and `GhaRequiredStatusCheck`, from the REST API's [rules](https://docs.github.com/en/rest/repos/rules) and [check runs](https://docs.github.com/en/rest/checks/runs) at version 2026-03-10): a ruleset's target, enforcement, ref conditions, bypass actors and rule types, and each status check it requires. `emitted_by` ties a check to the workflow whose job reports it.
+* **Workflows** (`GhaWorkflow`, from [workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)): triggers, token permissions and jobs.
+* **Reusable workflows** (`GhaReusableWorkflow`, from [reusable workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations)): the inputs, outputs and secrets under `on.workflow_call`.
+* **Actions** (`GhaAction`, from [metadata syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax)): the inputs, outputs and runtime of an `action.yml`.
+* **Rulesets and required checks** (`GhaRepositoryRuleset` and `GhaRequiredStatusCheck`, from the REST API's [rules](https://docs.github.com/en/rest/repos/rules) and [check runs](https://docs.github.com/en/rest/checks/runs) at version 2026-03-10). `emitted_by` ties a check to the workflow whose job reports it.
 * **A workflow's identity in provenance**: `workflow_path`, `workflow_repository` and `runner_environment`, as GitHub's [build type](https://actions.github.io/buildtypes/workflow/v1) writes them.
 
-GitHub's pages are versionless, so the schema's `version` is their retrieval date, 2026-10-28. The schema header pins the REST API version and the SchemaStore commit of the `github-workflow.json` and `github-action.json` copied into [src/github_actions/schema/schemastore/](src/github_actions/schema/schemastore). A weekly workflow opens an issue when either changes. Release tags number the schema's versions.
+GitHub's pages are versionless, so the schema's `version` is their retrieval date, 2026-10-28. The schema header pins the REST API version and the SchemaStore commit of the two JSON Schemas copied into [src/github_actions/schema/schemastore/](src/github_actions/schema/schemastore), and a weekly workflow opens an issue when either changes.
 
 ## Influences
 
-These shaped the schema's design:
-
-* **SLSA**: a workflow's identity comes from GitHub's build type for SLSA provenance, where a reusable workflow that signs provenance is the `builder`. A required check is a technical control of SLSA's Source track, so [lmodel/slsa](https://github.com/lmodel/slsa) holds the evidence that it held.
+* **SLSA**: a workflow's identity comes from GitHub's build type for SLSA provenance, and [lmodel/slsa](https://github.com/lmodel/slsa) holds the evidence that a required check held.
 * **The OpenSSF Baseline and Scorecard**: their controls read a workflow's inputs, its permissions, a branch's required status checks and dependency pinning, so those facts are fields.
 * **otterdog**: a called job's check is named `caller job / called job`, spaced around the slash.
 * **LOKF and KTL**: the naming rule below, the classes rooted on `Concept`, and the inlined value classes, which let `lokf adapt` run without `--fold`.
@@ -36,7 +34,11 @@ These shaped the schema's design:
 
 ## Mappings
 
-The schema maps to five vocabularies, and every mapping is the project's own. `GhaWorkflow`, `GhaWorkflowJob` and `GhaAction` are close to [CycloneDX 1.7](https://cyclonedx.org/specification/overview/)'s `workflow` and `task`, a workflow's `jobs` and a job's `job_name` to its workflow's `tasks` and task's `name`, and its `trigger` is related to `triggers`. [schema.org](https://schema.org)'s `SoftwareSourceCode` is broader than a workflow or an action, and its `PropertyValueSpecification` is close to an input. [SPDX 3.0.1](https://spdx.github.io/spdx-spec/v3.0.1/)'s `Build` records a run of a workflow, in-toto's [Test Result](https://github.com/in-toto/attestation/blob/main/spec/predicates/test-result.md) predicate records what a required check found, and lmodel/slsa's `SlsaBuildPlatform` is the builder a reusable workflow becomes when it signs provenance. These three are related terms, not close ones.
+Every mapping is the project's own.
+
+* **[CycloneDX 1.7](https://cyclonedx.org/specification/overview/)**: a workflow, a job and an action are close to `workflow` and `task`.
+* **[schema.org](https://schema.org)**: `SoftwareSourceCode` is broader than a workflow or an action, and `PropertyValueSpecification` is close to an input.
+* **Related terms**: [SPDX 3.0.1](https://spdx.github.io/spdx-spec/v3.0.1/)'s `Build`, in-toto's [Test Result](https://github.com/in-toto/attestation/blob/main/spec/predicates/test-result.md) predicate and lmodel/slsa's `SlsaBuildPlatform`.
 
 ## Not modelled here
 
@@ -84,9 +86,9 @@ Run `just` to list the project's [just](https://github.com/casey/just/) recipes.
 
 ## Knowledge Trust Ladder (KTL)
 
-`.lokf/` holds this project's [KTL](https://w3id.org/ktl/) knowledge bundle. Its domain schema is `.lokf/github-actions.yaml`, which `lokf adapt` writes from `src/github_actions/schema/github_actions.yaml`. Edit the source, never the copy. A release carries the copy as `schema-<tag>-github-actions.yaml`, on the terms [CONTRIBUTING.md](CONTRIBUTING.md#releasing-maintainers) gives.
+`.lokf/` holds this project's [KTL](https://w3id.org/ktl/) knowledge bundle. Its domain schema, `.lokf/github-actions.yaml`, is the copy `just lokf-adapt` writes from `src/github_actions/schema/github_actions.yaml`, and `just lokf-adapt-check` says when it is stale. Edit the source, never the copy. A release carries the copy as `schema-<tag>-github-actions.yaml`, on the terms [CONTRIBUTING.md](CONTRIBUTING.md#releasing-maintainers) gives.
 
-`just lokf-adapt` rewrites the copy, and `just lokf-adapt-check` says when it is stale. `project.justfile` names the classes the copy roots on `Concept`, and a concept may name any of them, or a subclass, as its `type`. In Obsidian, add these classes to the KTL Registrar and KTL Curator plugins' *Known LOKF types* setting:
+The copy roots these classes on `Concept`, so a concept may name any of them, or a subclass, as its `type`. In Obsidian, add them to the *Known LOKF types* setting of the KTL Registrar and KTL Curator plugins:
 
 ```text
 GhaWorkflow, GhaReusableWorkflow, GhaAction, GhaRepositoryRuleset, GhaRequiredStatusCheck
@@ -94,15 +96,11 @@ GhaWorkflow, GhaReusableWorkflow, GhaAction, GhaRepositoryRuleset, GhaRequiredSt
 
 In the copy, LOKF's `id` replaces each class's identifier (`workflow_uri`, `action_uri`, `ruleset_uri` and `check_uri`), and an action's name and description are the concept's `title` and `description`.
 
-A host imports the copy beside `lokf.yaml` and slsa's copy, and LinkML merges the three into one namespace, where the last definition of a name wins silently. So no class, enum or type shares a name with either. A slot shares a name only where it carries LOKF's meaning and IRI (`description` and `required`), and [docs/about.md](docs/about.md) lists the slots renamed to avoid LOKF's names. `tests/test_schema_rules.py` checks both neighbours.
+No class, enum or type shares a name with LOKF's schema or with slsa's copy. A slot shares a name only where it carries LOKF's meaning and IRI (`description` and `required`), and [docs/about.md](docs/about.md) lists the slots renamed to avoid LOKF's names. `tests/test_schema_rules.py` checks both neighbours.
 
 ## License
 
-The schema and the code are under the Apache License 2.0 ([LICENSE](LICENSE)).
-
-SchemaStore's two schemas in [src/github_actions/schema/schemastore/](src/github_actions/schema/schemastore) keep their own notice, and GitHub's documentation is cited, never copied: see [NOTICE](NOTICE).
-
-This is not an official GitHub project, and its use implies no endorsement by GitHub.
+The schema and the code are under the Apache License 2.0 ([LICENSE](LICENSE)). SchemaStore's two schemas keep their own notice, and GitHub's documentation is cited, never copied: see [NOTICE](NOTICE). This is not an official GitHub project, and its use implies no endorsement by GitHub.
 
 ## Contributing and security
 
