@@ -6,6 +6,8 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-01
+
 ### Added
 
 - **`emits_check`, the inverse of `emitted_by`,** so the ontology states the pair with `owl:inverseOf`. No class lists it, because the workflow module cannot import the rules module that imports it; a document states the link with `emitted_by`.
