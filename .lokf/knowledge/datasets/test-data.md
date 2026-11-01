@@ -71,7 +71,7 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 - no class, enum, type or subset name in `.lokf/github-actions.yaml` appears in `.lokf/lokf.yaml` or `tests/neighbours/slsa.yaml`, and a slot or attribute name they share carries the same IRI;
 - every mapping in `.lokf/github-actions.yaml` is a CURIE whose prefix the copy binds, because a full address that no prefix covers makes every `lokf convert --schema` over the copy warn that it has no namespace.
 
-`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it is the `schema-v0.7.0-slsa.yaml` asset of slsa's v0.7.0 release, checked against its `.sha256` and attestation.
+`tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it is the `schema-v0.9.0-slsa.yaml` asset of slsa's v0.9.0 release, checked against its `.sha256` and attestation.
 
 ## tests/test_derive.py
 
