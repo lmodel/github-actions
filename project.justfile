@@ -16,8 +16,8 @@ gen-merged:
 
 # ============ Knowledge bundle: the adapted domain schema ============
 
-# `.lokf/github-actions.yaml` is the copy `lokf adapt` writes from the schema
-# so that it can sit beside `.lokf/lokf.yaml` (`lokf adapt --help` lists the
+# `.lokf/schema/github-actions.yaml` is the copy `lokf adapt` writes from the schema
+# so that it can sit beside `.lokf/schema/lokf.yaml` (`lokf adapt --help` lists the
 # moves). The roots are the top classes a knowledge concept may use as its
 # `type`; GhaReusableWorkflow follows GhaWorkflow. Each root has an identifier
 # of its own, which the copy replaces with LOKF's `id`. The recipes run the
@@ -27,12 +27,12 @@ gen-merged:
 lokf_cmd := env_var_or_default("LOKF_CMD", "uv run --project .lokf lokf")
 lokf_adapt_roots := "--root GhaWorkflow --root GhaAction --root GhaRepositoryRuleset --root GhaRequiredStatusCheck"
 
-# Rewrite .lokf/github-actions.yaml from the schema (run after every schema change)
+# Rewrite .lokf/schema/github-actions.yaml from the schema (run after every schema change)
 [group('knowledge bundle')]
 lokf-adapt:
-  {{lokf_cmd}} adapt {{source_schema_path}} {{lokf_adapt_roots}} --lokf .lokf/lokf.yaml -o .lokf/github-actions.yaml
+  {{lokf_cmd}} adapt {{source_schema_path}} {{lokf_adapt_roots}} --lokf .lokf/schema/lokf.yaml -o .lokf/schema/github-actions.yaml
 
-# Fail when .lokf/github-actions.yaml is stale against the schema or .lokf/lokf.yaml
+# Fail when .lokf/schema/github-actions.yaml is stale against the schema or .lokf/schema/lokf.yaml
 [group('knowledge bundle')]
 lokf-adapt-check:
-  {{lokf_cmd}} adapt {{source_schema_path}} {{lokf_adapt_roots}} --lokf .lokf/lokf.yaml -o .lokf/github-actions.yaml --check
+  {{lokf_cmd}} adapt {{source_schema_path}} {{lokf_adapt_roots}} --lokf .lokf/schema/lokf.yaml -o .lokf/schema/github-actions.yaml --check

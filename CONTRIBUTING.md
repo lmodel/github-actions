@@ -39,7 +39,7 @@ npx skills add noelmcloughlin/knowledge-trust-ladder --skill ktl-curator --yes  
 
 ## Before opening a pull request
 
-- **Edit the schema, then regenerate.** Edit `src/github_actions/schema/`, run `just gen-project`, `just gen-doc`, `just gen-merged` and `just lokf-adapt`, and commit the output; `project/`, `src/github_actions/datamodel/`, `docs/schema/` and `.lokf/github-actions.yaml` are generated.
+- **Edit the schema, then regenerate.** Edit `src/github_actions/schema/`, run `just gen-project`, `just gen-doc`, `just gen-merged` and `just lokf-adapt`, and commit the output; `project/`, `src/github_actions/datamodel/`, `docs/schema/` and `.lokf/schema/github-actions.yaml` are generated.
 - **Name the page a description renders.** Paraphrase GitHub's documentation or SchemaStore's schema, and give the page in `see_also` and the pull request; [AI_COVENANT.md](AI_COVENANT.md) says why.
 - **Leave `src/github_actions/schema/schemastore/` as upstream wrote it.** Replace both files from one SchemaStore commit instead and move the pin in `scripts/check_upstream_release.py` and the schema header; [NOTICE](NOTICE) records the commit, and `upstream-watch.yaml` checks it.
 - **Keep names apart from LOKF's and slsa's**: a host imports all three copies, so a shared name carries the same IRI. `tests/test_schema_rules.py` checks.

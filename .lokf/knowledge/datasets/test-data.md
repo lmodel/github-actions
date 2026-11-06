@@ -38,8 +38,7 @@ sources:
     title: the examples output folder
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:44:32Z"
-  revision: cc14f8e2bd682e256323ad6fcc7cd655e28798b9
+  at: "2026-11-06T21:20:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -68,8 +67,8 @@ Six tests compare the schema with the [SchemaStore copy](schemastore-copy.md) an
 - the input types are SchemaStore's;
 - the trigger pattern admits every event SchemaStore names;
 - the key and `uses` patterns are SchemaStore's;
-- no class, enum, type or subset name in `.lokf/github-actions.yaml` appears in `.lokf/lokf.yaml` or `tests/neighbours/slsa.yaml`, and a slot or attribute name they share carries the same IRI;
-- every mapping in `.lokf/github-actions.yaml` is a CURIE whose prefix the copy binds, because a full address that no prefix covers makes every `lokf convert --schema` over the copy warn that it has no namespace.
+- no class, enum, type or subset name in `.lokf/schema/github-actions.yaml` appears in `.lokf/schema/lokf.yaml` or `tests/neighbours/slsa.yaml`, and a slot or attribute name they share carries the same IRI;
+- every mapping in `.lokf/schema/github-actions.yaml` is a CURIE whose prefix the copy binds, because a full address that no prefix covers makes every `lokf convert --schema` over the copy warn that it has no namespace.
 
 `tests/neighbours/slsa.yaml` is lmodel/slsa's `lokf adapt` copy. The test file's comment says that it is the `schema-v0.9.0-slsa.yaml` asset of slsa's v0.9.0 release, checked against its `.sha256` and attestation.
 

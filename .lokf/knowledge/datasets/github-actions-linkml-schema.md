@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
 genre: reference
 title: github-actions LinkML schema
-description: "The modular LinkML schema of what GitHub Actions workflow files, action metadata files and repository rulesets state (schema id `https://w3id.org/lmodel/github-actions`, version 2026-10-28): `github_actions.yaml` imports a core, a workflow, an action and a rules module, and its `lokf adapt` copy in `.lokf/github-actions.yaml` is the bundle's domain schema."
+description: "The modular LinkML schema of what GitHub Actions workflow files, action metadata files and repository rulesets state (schema id `https://w3id.org/lmodel/github-actions`, version 2026-10-28): `github_actions.yaml` imports a core, a workflow, an action and a rules module, and its `lokf adapt` copy in `.lokf/schema/github-actions.yaml` is the bundle's domain schema."
 resource: src/github_actions/schema/github_actions.yaml
 version: "2026-10-28"
 license: Apache-2.0
@@ -39,13 +39,13 @@ sources:
     resource: project.justfile
     title: the lokf-adapt recipes and their roots
   - id: github-actions.yaml
-    resource: .lokf/github-actions.yaml
+    resource: .lokf/schema/github-actions.yaml
     title: the notes lokf adapt wrote
   - resource: .lokf/justfile
     title: the schema line
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T21:21:37Z"
+  at: "2026-11-06T21:20:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -87,7 +87,7 @@ The schema requires `triggers`, `workflow_path` and `jobs` on a workflow, `actio
 
 ## As the bundle's domain schema
 
-A LOKF domain schema is a LinkML schema that imports LOKF's `lokf.yaml` and adds a host's classes and keys, so that `lokf validate` checks the concepts typed with them. The README says that this bundle's domain schema is `.lokf/github-actions.yaml`, a copy that `lokf adapt` wrote from `src/github_actions/schema/github_actions.yaml`. Edit the source, never the copy. `just lokf-adapt` rewrites the copy, and `just lokf-adapt-check` fails when the copy is stale against the schema or `.lokf/lokf.yaml`. The `schema :=` line of `.lokf/justfile` names the copy, so `just lokf-validate` and `just lokf-check-refs` pass it to the validator.
+A LOKF domain schema is a LinkML schema that imports LOKF's `lokf.yaml` and adds a host's classes and keys, so that `lokf validate` checks the concepts typed with them. The README says that this bundle's domain schema is `.lokf/schema/github-actions.yaml`, a copy that `lokf adapt` wrote from `src/github_actions/schema/github_actions.yaml`. Edit the source, never the copy. `just lokf-adapt` rewrites the copy, and `just lokf-adapt-check` fails when the copy is stale against the schema or `.lokf/schema/lokf.yaml`. The `schema :=` line of `.lokf/justfile` names the copy, so `just lokf-validate` and `just lokf-check-refs` pass it to the validator.
 
 `project.justfile` passes four roots to `lokf adapt`: `GhaWorkflow`, `GhaAction`, `GhaRepositoryRuleset` and `GhaRequiredStatusCheck`. It says that `GhaReusableWorkflow` follows `GhaWorkflow`. It also says that the recipes run the `lokf` that the sidecar's floor pins, 0.9.0 or later, unless `LOKF_CMD` names another.[^project.justfile] The copy's notes say that `lokf adapt` re-rooted the four classes on `lokf:Concept`. It dropped `workflow_uri`, `action_uri`, `ruleset_uri` and `check_uri` for LOKF's `id`, and folded `description` into LOKF's.[^github-actions.yaml] So a concept may name any of the five classes as its `type`, and writes `id` in place of the class's own identifier. The concepts under `workflows/` in this bundle are typed `GhaWorkflow`.
 
@@ -103,4 +103,4 @@ The README lists the five classes for Obsidian users of the KTL Registrar and KT
 [^github_actions_rules.yaml]: src/github_actions/schema/github_actions_rules.yaml, the classes and enums
 [^readme.md]: README.md, the What it models and Knowledge Trust Ladder (KTL) sections
 [^project.justfile]: project.justfile, the knowledge bundle recipes
-[^github-actions.yaml]: .lokf/github-actions.yaml, the notes at the end
+[^github-actions.yaml]: .lokf/schema/github-actions.yaml, the notes at the end

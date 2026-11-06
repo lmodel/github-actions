@@ -1,5 +1,9 @@
 # Change Log
 
+## 2026-11-06
+
+* **Changed**: `lokf.yaml` and `github-actions.yaml` moved into `.lokf/schema/`, where KTL v0.62.0 keeps a sidecar's schema files, and the concepts that name them follow.
+
 ## 2026-11-01
 
 * **Changed**: the test-data page says the slsa neighbour copy is the schema asset of slsa's v0.9.0 release.
