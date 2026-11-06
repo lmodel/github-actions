@@ -120,8 +120,8 @@ def test_key_and_uses_patterns_are_schemastores():
 # What a host imports beside this schema's adapt copy: LOKF's schema, pinned
 # by the sidecar, and lmodel/slsa's adapt copy, the schema-v0.9.0-slsa.yaml
 # asset of slsa's v0.9.0 release, checked against its .sha256 and attestation.
-COPY = ROOT / ".lokf" / "github-actions.yaml"
-NEIGHBOURS = (ROOT / ".lokf" / "lokf.yaml", ROOT / "tests" / "neighbours" / "slsa.yaml")
+COPY = ROOT / ".lokf" / "schema" / "github-actions.yaml"
+NEIGHBOURS = (ROOT / ".lokf" / "schema" / "lokf.yaml", ROOT / "tests" / "neighbours" / "slsa.yaml")
 ELEMENT_KINDS = ("classes", "enums", "types", "subsets")
 
 
