@@ -6,6 +6,10 @@ The `v0.0.0` tag is a baseline, not a release: it marks where versioning starts 
 
 ## [Unreleased]
 
+### Changed
+
+- **The bundle's schema files sit in `.lokf/schema/`**: `lokf.yaml` and the `lokf adapt` copy `github-actions.yaml`, as KTL v0.62.0 lays them out.
+
 ## [0.5.1] - 2026-11-02
 
 ### Security

@@ -15,7 +15,7 @@ exclude: >-
     project/|
     docs/schema/|
     \.lokf/(scripts|m365)/|
-    \.lokf/(lokf|github-actions)\.yaml$|
+    \.lokf/schema/(lokf|github-actions)\.yaml$|
     tests/neighbours/
   )
 repos:
