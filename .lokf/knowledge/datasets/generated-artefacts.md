@@ -3,7 +3,7 @@ type: Dataset
 id: https://w3id.org/lmodel/github-actions/knowledge/datasets/generated-artefacts
 genre: reference
 title: Generated artefacts
-description: "Files generated from the github-actions schema and never edited by hand: project/ (Excel, GraphQL, Java, JSON-LD, JSON Schema, OWL, a prefix map, protobuf, SHACL, ShEx, SQL and TypeScript), the dataclass and Pydantic models in src/github_actions/datamodel/, the two schema files in docs/schema/, the gen-doc pages in docs/elements/ and the domain schema copy .lokf/github-actions.yaml."
+description: "Files generated from the github-actions schema and never edited by hand: project/ (Excel, GraphQL, Java, JSON-LD, JSON Schema, OWL, a prefix map, protobuf, SHACL, ShEx, SQL and TypeScript), the dataclass and Pydantic models in src/github_actions/datamodel/, the two schema files in docs/schema/, the gen-doc pages in docs/elements/ and the domain schema copy .lokf/schema/github-actions.yaml."
 resource: project
 derivedFrom:
   - https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
@@ -32,8 +32,7 @@ sources:
     title: the docs/elements rule
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T19:53:06Z"
-  revision: 4e47f1efc96b84011e7016edd847a71bfc692a33
+  at: "2026-11-06T21:20:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -58,7 +57,7 @@ These files are generated from the schema in `src/github_actions/schema/` and ne
 
 ## The domain schema copy
 
-`just lokf-adapt` writes `.lokf/github-actions.yaml`, the bundle's domain schema, and `just lokf-adapt-check` fails when it is stale. [github-actions LinkML schema](github-actions-linkml-schema.md) says what the copy changes.
+`just lokf-adapt` writes `.lokf/schema/github-actions.yaml`, the bundle's domain schema, and `just lokf-adapt-check` fails when it is stale. [github-actions LinkML schema](github-actions-linkml-schema.md) says what the copy changes.
 
 [^contributing.md]: CONTRIBUTING.md, the table of paths and the first item of Before opening a pull request
 [^generators.yaml]: .linkml/generators.yaml, excludes and generator_args

@@ -27,7 +27,7 @@ sources:
     title: the rules on names and conventions
 generated:
   by: process:ktl-librarian
-  at: "2026-10-28T21:21:37Z"
+  at: "2026-11-06T21:20:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -58,7 +58,7 @@ In the adapt copy, LOKF's `id` replaces each class's own identifier (`workflow_u
 
 ## How the rule is checked
 
-`test_names_apart_from_lokf_and_slsa` in `tests/test_schema_rules.py` reads `.lokf/github-actions.yaml`, `.lokf/lokf.yaml` and `tests/neighbours/slsa.yaml`.[^test_schema_rules.py] It fails when a class, enum, type or subset name appears in the copy and in a neighbour, or when a slot or attribute name they share expands to a different IRI. CONTRIBUTING.md asks contributors to keep names apart from LOKF's and slsa's for the same reason.
+`test_names_apart_from_lokf_and_slsa` in `tests/test_schema_rules.py` reads `.lokf/schema/github-actions.yaml`, `.lokf/schema/lokf.yaml` and `tests/neighbours/slsa.yaml`.[^test_schema_rules.py] It fails when a class, enum, type or subset name appears in the copy and in a neighbour, or when a slot or attribute name they share expands to a different IRI. CONTRIBUTING.md asks contributors to keep names apart from LOKF's and slsa's for the same reason.
 
 [^about.md]: docs/about.md, the second paragraph
 [^linkmllint.yaml]: .linkmllint.yaml, the comment and rules

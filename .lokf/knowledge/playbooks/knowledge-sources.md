@@ -12,7 +12,7 @@ sources:
   - resource: src/github_actions/schema
   - resource: src/github_actions/datamodel
   - resource: project.justfile
-  - resource: .lokf/github-actions.yaml
+  - resource: .lokf/schema/github-actions.yaml
   - resource: .lokf/justfile
   - resource: NOTICE
   - resource: LICENSE
@@ -58,7 +58,7 @@ sources:
   - resource: knowledge_bundle
 generated:
   by: process:ktl-librarian
-  at: "2026-10-29T16:18:56Z"
+  at: "2026-11-06T21:20:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -74,7 +74,7 @@ Each concept derived from a file or folder of this repository names it by its pa
 | Source | Yields | Re-check by |
 | --- | --- | --- |
 | `src/github_actions/schema/github_actions.yaml`, the four `github_actions_*.yaml` modules, `src/github_actions/schema/README.md` | `datasets/github-actions-linkml-schema`, the four `glossary/` terms | load `github_actions.yaml` with SchemaView and recount classes, enums, types and subsets per module; re-read the header's `version`, `source`, annotations and comments, each class's required slots, rules, mappings and comments |
-| `project.justfile`, `.lokf/github-actions.yaml`, `.lokf/justfile`, the README's Knowledge Trust Ladder (KTL) section | the domain-schema section of `datasets/github-actions-linkml-schema` | re-read the `--root` list, the `LOKF_CMD` note, the copy's notes, the `schema :=` line and the renamed keys |
+| `project.justfile`, `.lokf/schema/github-actions.yaml`, `.lokf/justfile`, the README's Knowledge Trust Ladder (KTL) section | the domain-schema section of `datasets/github-actions-linkml-schema` | re-read the `--root` list, the `LOKF_CMD` note, the copy's notes, the `schema :=` line and the renamed keys |
 | `README.md` (What it models, Influences, Mappings, Not modelled here), `docs/about.md`, `.linkmllint.yaml` | `explanations/scope-and-influences`, `explanations/element-names`, the four `references/` | re-read each section and the lint comment |
 | `src/github_actions/schema/schemastore/`, the SchemaStore section of `NOTICE` | `datasets/schemastore-copy` | re-read the pinned commit and each file's `$id`; the upstream watch compares the blobs weekly |
 | `scripts/check_upstream_release.py`, `.github/scripts/report-issue.sh` | `playbooks/update-upstream-pins`, `workflows/upstream-watch` | re-read `PINNED_COMMIT`, `PINNED_API_VERSION`, `DOCS_READ`, `KNOWN_DIFFERENCES` and the issue title |
