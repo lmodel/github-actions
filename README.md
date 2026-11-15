@@ -71,14 +71,14 @@ derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv r
 ## Repository Structure
 
 * [docent/](docent/): a prompt for reviewing a pull request with ktl-docent, and the feedback one such review recorded
-* [docs/](docs/): the website's pages, with the generated schema pages in [elements/](docs/elements/)
+* [docs/](docs/): the website's pages, with the generated schema pages in `docs/elements/`
 * [examples/](examples/): usage examples
 * [project/](project/): generated project files (do not edit them)
 * [scripts/](scripts/): the upstream watch, the derivation script and the export script
 * [src/github_actions/schema/](src/github_actions/schema): the LinkML schema, `github_actions.yaml` and the modules it imports (edit these)
 * [src/github_actions/datamodel/](src/github_actions/datamodel): the generated Python datamodel
 * [tests/](tests/): Python tests, with example data in [data/](tests/data)
-* [website/](website/): the Astro Starlight site built from the README, `docs/`, the schema's pages and the knowledge bundle
+* [website/](website/): the Hugo site built from the README, `docs/`, the schema's pages and the knowledge bundle
 
 ## Developer Tools
 
