@@ -2,6 +2,11 @@
 
 # github-actions
 
+[![Build and test](https://github.com/lmodel/github-actions/actions/workflows/main.yaml/badge.svg)](https://github.com/lmodel/github-actions/actions/workflows/main.yaml)
+[![Licence](https://img.shields.io/github/license/lmodel/github-actions?label=licence)](LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lmodel/github-actions/badge)](https://scorecard.dev/viewer/?uri=github.com/lmodel/github-actions)
+[![KTL scorecard](https://img.shields.io/endpoint?url=https://lmodel.github.io/github-actions/badge.json)](https://lmodel.github.io/github-actions/health/)
+
 GitHub Actions workflows, actions and repository rulesets (LinkML)
 
 > **Only want to ask?** Install `ktl-docent` into any agent you use, by a route from [the install page](https://w3id.org/ktl/docs/install/), and ask it about this project. It answers from the bundle and says how far each answer has been checked.
