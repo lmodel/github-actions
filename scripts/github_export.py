@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = []
 # ///
 """Print what GitHub records about rulesets or about a commit's checks.
@@ -43,7 +43,7 @@ an entry for GitHub Enterprise Server puts ``--api-url`` in its args. The
 repository is ``--repository``, or the one the origin remote names.
 ``--organization`` takes its place for an organization's rulesets.
 
-It needs Python 3.10 and nothing else, so the ingest can run it as a tracked
+It needs Python 3.11 and nothing else, so the ingest can run it as a tracked
 command with whatever ``python3`` the job has. Usage::
 
     python3 scripts/github_export.py rulesets [--repository OWNER/REPO]

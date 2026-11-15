@@ -71,7 +71,7 @@ uv run scripts/derive.py --root ../host-repository --check ../host-repository/.l
   --rulesets rulesets.md --rulesets organization-rulesets.md --check-runs check-runs.md
 ```
 
-derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.10 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.
+derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.11 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.
 
 ## Repository Structure
 
