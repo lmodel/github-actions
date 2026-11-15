@@ -2,6 +2,11 @@
 
 # github-actions
 
+[![Build and test](https://github.com/lmodel/github-actions/actions/workflows/main.yaml/badge.svg)](https://github.com/lmodel/github-actions/actions/workflows/main.yaml)
+[![Licence](https://img.shields.io/github/license/lmodel/github-actions?label=licence)](LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lmodel/github-actions/badge)](https://scorecard.dev/viewer/?uri=github.com/lmodel/github-actions)
+[![KTL scorecard](https://img.shields.io/endpoint?url=https://lmodel.github.io/github-actions/badge.json)](https://lmodel.github.io/github-actions/health/)
+
 GitHub Actions workflows, actions and repository rulesets (LinkML)
 
 > **Only want to ask?** Install `ktl-docent` into any agent you use, by a route from [the install page](https://w3id.org/ktl/docs/install/), and ask it about this project. It answers from the bundle and says how far each answer has been checked.
@@ -66,19 +71,19 @@ uv run scripts/derive.py --root ../host-repository --check ../host-repository/.l
   --rulesets rulesets.md --rulesets organization-rulesets.md --check-runs check-runs.md
 ```
 
-derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.10 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.
+derive.py's only dependency, PyYAML, is declared in its PEP 723 header, so `uv run` needs no project, and github_export.py needs Python 3.11 alone. A host copies both from a pinned release and records the version beside them. Its ingest can run `github_export.py rulesets` as an entry of `kind: command`, and the mirror file becomes the rulesets' source. The fixtures in [tests/derive/](tests/derive/) show each rule.
 
 ## Repository Structure
 
 * [docent/](docent/): a prompt for reviewing a pull request with ktl-docent, and the feedback one such review recorded
-* [docs/](docs/): the website's pages, with the generated schema pages in [elements/](docs/elements/)
+* [docs/](docs/): the website's pages, with the generated schema pages in `docs/elements/`
 * [examples/](examples/): usage examples
 * [project/](project/): generated project files (do not edit them)
 * [scripts/](scripts/): the upstream watch, the derivation script and the export script
 * [src/github_actions/schema/](src/github_actions/schema): the LinkML schema, `github_actions.yaml` and the modules it imports (edit these)
 * [src/github_actions/datamodel/](src/github_actions/datamodel): the generated Python datamodel
 * [tests/](tests/): Python tests, with example data in [data/](tests/data)
-* [website/](website/): the Astro Starlight site built from the README, `docs/`, the schema's pages and the knowledge bundle
+* [website/](website/): the Hugo site built from the README, `docs/`, the schema's pages and the knowledge bundle
 
 ## Developer Tools
 

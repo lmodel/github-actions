@@ -36,7 +36,7 @@ sources:
     title: the fixture repository and the two export files
 generated:
   by: process:ktl-librarian
-  at: "2026-10-30T15:31:58Z"
+  at: "2026-11-15T10:47:59Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -51,7 +51,7 @@ verified:
 
 ## Run it
 
-derive.py's only dependency is PyYAML, declared in its PEP 723 header, so `uv run` needs no project. github_export.py needs Python 3.10 alone. The README gives the commands:[^readme.md]
+derive.py's only dependency is PyYAML, declared in its PEP 723 header, so `uv run` needs no project. github_export.py needs Python 3.11 alone. The README gives the commands:[^readme.md]
 
 ```bash
 uv run scripts/derive.py --root ../host-repository

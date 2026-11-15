@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026-11-15
+
+* **Changed**: The concepts that state the project's Python floor or its test matrix say 3.11, since the project no longer supports Python 3.10.
+* **Changed**: The knowledge website workflow, the documentation site and the licence page describe the Hugo build that replaced the Astro one.
+* **Changed**: The concepts that cite the knowledge website describe the Hugo site that replaced the Astro one, set by `website/site.toml`.
+
 ## 2026-11-06
 
 * **Changed**: `lokf.yaml` and `github-actions.yaml` moved into `.lokf/schema/`, where KTL v0.62.0 keeps a sidecar's schema files, and the concepts that name them follow.
