@@ -24,7 +24,7 @@ sources:
     title: the license key
 generated:
   by: process:ktl-librarian
-  at: "2026-11-15T02:57:18Z"
+  at: "2026-11-15T03:06:55Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -42,7 +42,7 @@ verified:
 - **linkml-project-copier.** The project was generated from this template, and its justfile, configuration and documentation scaffolding derive from it, under the MIT License, copyright 2025 David Linke. The README credits the template by its DOI, `10.5281/zenodo.15163584`.
 - **The knowledge bundle's tooling.** The scripts under `.lokf/scripts/` and `.lokf/m365/` and the knowledge-librarian, knowledge-registrar, knowledge-release and knowledge-sync workflows are copies of the ktl-sidecar templates in knowledge-trust-ladder. `website/` and the knowledge-website workflow derive from its ktl-website templates. All of them are under Apache-2.0.
 
-`website/README.md` says that the site's two typefaces are self-hosted from Fontsource under the SIL Open Font License 1.1.
+`website/README.md` says that the site serves its two typefaces, Source Serif 4 and Atkinson Hyperlegible Next, under the SIL Open Font License 1.1, whose text is beside them in `website/static/fonts/`.
 
 The bundle's root `index.md` declares the license CC BY 4.0 for the knowledge bundle itself.
 
