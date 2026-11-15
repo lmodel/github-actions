@@ -58,7 +58,7 @@ sources:
   - resource: knowledge_bundle
 generated:
   by: process:ktl-librarian
-  at: "2026-11-06T21:20:55Z"
+  at: "2026-11-15T02:57:18Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -85,8 +85,8 @@ Each concept derived from a file or folder of this repository names it by its pa
 | `CONTRIBUTING.md`, `.copier-answers.yml`, the `test`, `lint` and `update` recipes of `justfile` | `playbooks/regenerate-and-test` | confirm the setup, the checklist and the recipes |
 | `.releaserc.json`, `.github/scripts/changelog-release.mjs`, `CHANGELOG.md`, `pyproject.toml`, the Releasing section of `CONTRIBUTING.md` | `playbooks/release` | re-read the release rules, the commands, the baseline paragraph and the versioning settings |
 | the nine files in `.github/workflows/` | the nine `workflows/` concepts | re-read each file's `on` keys, its top-level `permissions`, and each job's id, `name`, `runs-on` and `permissions`; check that none names `workflow_call`; the derivation check above compares the same facts |
-| `website/` | `services/documentation-site` | re-read `site.config.mjs` and `website/README.md` |
-| `NOTICE`, `LICENSE`, `website/NOTICE`, the License sections of `README.md` and `CONTRIBUTING.md` | `policies/license-and-attribution` | re-read each third-party entry |
+| `website/` | `services/documentation-site` | re-read `site.toml` and `website/README.md` |
+| `NOTICE`, `LICENSE`, the License sections of `README.md` and `CONTRIBUTING.md` | `policies/license-and-attribution` | re-read each third-party entry |
 | `SECURITY.md`, `.github/dependabot.yml` | `policies/security-policy` | re-read the table of surfaces and the settings not yet in force |
 | `AI_COVENANT.md` | `policies/ai-covenant` | re-read the project note and the section on agent automation |
 | GitHub's workflow syntax, reusable workflows and metadata syntax pages, the REST API's rules and check runs pages, and GitHub's build type at `https://actions.github.io/buildtypes/workflow/v1` | the four `references/` | external authorities, read on the date the schema header gives; the pages are versionless, so re-read them when that date moves |
