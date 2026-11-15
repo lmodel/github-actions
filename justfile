@@ -241,7 +241,7 @@ _add-artifacts:
 
 # Run documentation server
 _serve:
-  uv run mkdocs serve
+  bash website/scripts/build.sh serve
 
 # Initialize git repository
 _git-init:
