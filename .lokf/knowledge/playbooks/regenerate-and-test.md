@@ -3,7 +3,7 @@ type: Playbook
 id: https://w3id.org/lmodel/github-actions/knowledge/playbooks/regenerate-and-test
 genre: how-to
 title: Regenerate and test the schema
-description: "How to change the github-actions schema: set up with uv and just, edit src/github_actions/schema/, regenerate with just gen-project, gen-doc, gen-merged and lokf-adapt, add examples, then run the checks CI runs (just test on Python 3.10 to 3.14, just lint and just lokf-adapt-check on 3.13) and the pre-commit hooks."
+description: "How to change the github-actions schema: set up with uv and just, edit src/github_actions/schema/, regenerate with just gen-project, gen-doc, gen-merged and lokf-adapt, add examples, then run the checks CI runs (just test on Python 3.11 to 3.14, just lint and just lokf-adapt-check on 3.13) and the pre-commit hooks."
 resource: CONTRIBUTING.md
 about:
   - https://w3id.org/lmodel/github-actions/knowledge/datasets/github-actions-linkml-schema
@@ -32,7 +32,7 @@ sources:
     title: the hooks and the exclude list
 generated:
   by: process:ktl-librarian
-  at: "2026-11-06T21:20:55Z"
+  at: "2026-11-15T10:47:59Z"
 status: draft
 verified:
   - by: process:ktl-librarian
@@ -43,7 +43,7 @@ verified:
 
 ## Set up
 
-CONTRIBUTING.md asks for Python 3.10 or later, uv and just.[^contributing.md] Clone the repository, run `uv sync --group dev`, and list the recipes with `just --list`. On WSL2, run `export JUST_TEMPDIR=/tmp` first, because the justfile's shebang recipes otherwise fail.[^justfile] `.copier-answers.yml` records that the project was made from `gh:linkml/linkml-project-copier` at `v0.5.0-8-ga2117fc`.[^copier-answers.yml] `just update` runs `copier update` and upgrades `linkml` and `linkml-runtime` in `uv.lock`.
+CONTRIBUTING.md asks for Python 3.11 or later, uv and just.[^contributing.md] Clone the repository, run `uv sync --group dev`, and list the recipes with `just --list`. On WSL2, run `export JUST_TEMPDIR=/tmp` first, because the justfile's shebang recipes otherwise fail.[^justfile] `.copier-answers.yml` records that the project was made from `gh:linkml/linkml-project-copier` at `v0.5.0-8-ga2117fc`.[^copier-answers.yml] `just update` runs `copier update` and upgrades `linkml` and `linkml-runtime` in `uv.lock`.
 
 ## Change the schema
 
@@ -62,7 +62,7 @@ CONTRIBUTING.md asks for Python 3.10 or later, uv and just.[^contributing.md] Cl
 - Update `uv.lock`, or `.lokf/uv.lock`, in the same change as a dependency edit, because CI installs with `uv sync --locked` and fails otherwise.
 - Run `cd .lokf && just lokf-validate` after a change to `.lokf/`.
 
-[Build and test](../workflows/main.md) runs `just test` on Python 3.10 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell. CONTRIBUTING.md says that these checks are easy to trip locally.
+[Build and test](../workflows/main.md) runs `just test` on Python 3.11 to 3.14, and `just lint` and `just lokf-adapt-check` on Python 3.13 only.[^main.yaml] [Lint & docs](../workflows/lint-and-docs.md) runs ShellCheck, actionlint, markdownlint, lychee and codespell. CONTRIBUTING.md says that these checks are easy to trip locally.
 
 [^contributing.md]: CONTRIBUTING.md, Development setup and Before opening a pull request
 [^justfile]: justfile, the `_wsl2_compat_check`, `update`, `test` and `lint` recipes

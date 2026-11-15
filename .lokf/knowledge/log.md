@@ -2,6 +2,7 @@
 
 ## 2026-11-15
 
+* **Changed**: The concepts that state the project's Python floor or its test matrix say 3.11, since the project no longer supports Python 3.10.
 * **Changed**: The knowledge website workflow, the documentation site and the licence page describe the Hugo build that replaced the Astro one.
 * **Changed**: The concepts that cite the knowledge website describe the Hugo site that replaced the Astro one, set by `website/site.toml`.
 
