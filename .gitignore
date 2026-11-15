@@ -147,4 +147,4 @@ dmypy.json
 .agents/
 .claude/
 skills-lock.json
-/.github/release/node_modules/
+/.release/node_modules/
